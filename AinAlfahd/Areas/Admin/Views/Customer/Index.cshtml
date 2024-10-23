@@ -1,0 +1,60 @@
+﻿@model IEnumerable<dynamic>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Shipping Customers</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>عملاء الشحن الجوي</h2>
+        <hr />
+        <br />
+        <a class="btn btn-group btn-primary" asp-area="" asp-controller="Home" asp-action="Index">العودة الى الشاشة الرئيسية </a>
+        <br />
+        <br />
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>اسم العميل</th>
+                    <th>رقم جوال العميل</th>
+                    <th>الخدمة</th>
+                    <th>اجراء تعديل / حذف</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var customer in Model)
+                {
+                    var phoneToShow = "0" + customer.CustMob;
+                    var phone = customer.CustMob;
+                    if (!phone.ToString().StartsWith("964"))
+                    {
+                        phone = "964" + customer.CustMob;
+                    }
+                    <tr>
+                        <td>@customer.CustName</td>
+                        <td>
+                            <a href="https://wa.me/@phone" target="_blank">@phoneToShow</a>
+                        </td>
+                        <td>
+                            <ul>
+                                @foreach (var service in customer.Services)
+                                {
+                                    <li>@service</li>
+                                }
+                            </ul>
+                        </td>
+                        <td>
+                            <a asp-area="Admin" asp-controller="Customer" asp-action="AddCustomer" asp-route-custId="@customer.CustId">تعديل</a>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

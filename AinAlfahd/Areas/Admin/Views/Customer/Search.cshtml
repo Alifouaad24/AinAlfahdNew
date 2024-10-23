@@ -1,0 +1,112 @@
+﻿@{
+    ViewData["Title"] = "Search";
+    Layout = "_Layout";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <h3 class="text-center m-5">أدخل اسم العميل او رقم الجوال للبحث</h3>
+            <div class="col-md-6">
+                <div class="d-flex">
+                    <input id="wordForSearch" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="button" onclick="Search()">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <table class="table table-bordered table-striped">
+            <thead class="thead-light">
+                <tr>
+                    <th class="text-end m-1">رقم جوال العميل</th>
+                    <th class="text-end m-1">اسم العميل</th>
+                </tr>
+            </thead>
+            <tbody class="table tbody">
+                
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            console.log("jQuery is loaded and ready!");
+        });
+
+        function Search() {
+            console.log("Search is ready!");
+            const word = $('#wordForSearch').val();
+
+            if (word.trim() === '') {
+                alert('يرجى إدخال اسم العميل أو رقم الجوال للبحث.');
+                return;
+            }
+
+            const apiUrl = `/Admin/Customer/SerachAboutCust/${encodeURIComponent(word)}`;
+
+            $.ajax({
+                url: apiUrl,
+                type: 'GET',
+                success: function (data) {
+                    const tbody = $('table tbody');
+                    tbody.empty();
+
+                    if (Array.isArray(data) && data.length > 0) {
+                        data.forEach(customer => {
+
+
+                            let phoneNumber = customer.custMob;
+
+                            if (phoneNumber.startsWith('0')) {
+                                phoneNumber = 964 + phoneNumber.slice(1);
+                            }
+
+                            tbody.append(`
+                        <tr>
+                            <td class="text-end m-1">
+                               <a href="https://wa.me/${customer.custMob}" target="_blank">${phoneNumber}</a>
+                            </td>
+                            <td class="text-end m-1">${customer.custName}</td>
+                        </tr>
+                                    `);
+                        });
+                    } else {
+
+                        let phoneNumber = data.custMob;
+
+                        if (phoneNumber.startsWith('0')) {
+                            phoneNumber = 964 + phoneNumber.slice(1);
+                        }
+                        tbody.append(`
+                        <tr>
+                            <td class="text-end m-1">
+                                                <a href="https://wa.me/${data.custMob}" target="_blank">${phoneNumber}</a>
+                            </td>
+                                    <td class="text-end m-1">${data.custName}</td>
+                        </tr>
+                                            `);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
+                    alert('لم يتم العثور على بيانات العميل.');
+                }
+            });
+        }
+    </script>
+}
