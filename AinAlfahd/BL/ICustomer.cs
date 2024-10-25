@@ -7,7 +7,7 @@ namespace AinAlfahd.BL
     public interface ICustomer
     {
         Task<List<Customer>> GetAll();
-        Task<Customer> GetByWord(string word);
+        Task<List<Customer>> GetByWord(string word);
         Task<Customer> GetByID(int id);
         Task<bool> AddData(Customer model);
         Task<bool> UpdateData(Customer model);
@@ -28,9 +28,9 @@ namespace AinAlfahd.BL
             return allData;
         }
 
-        public async Task<Customer> GetByWord(string word)
+        public async Task<List<Customer>> GetByWord(string word)
         {
-            var allData = await db.Customers.FirstOrDefaultAsync(c => c.CustMob.Contains(word) || c.CustName.Contains(word) || c.Id.ToString() == word);
+            var allData = await db.Customers.Where(c => c.CustMob.Contains(word) || c.CustName.Contains(word) || c.Id.ToString() == word).ToListAsync();
             return allData;
         }
 
