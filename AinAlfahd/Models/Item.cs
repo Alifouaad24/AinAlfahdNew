@@ -10,6 +10,7 @@ public partial class Item
     public string? EngName { get; set; }
 
     public string? PCode { get; set; }
+    public string? OldCode { get; set; }
 
     public string? ArDesc { get; set; }
 

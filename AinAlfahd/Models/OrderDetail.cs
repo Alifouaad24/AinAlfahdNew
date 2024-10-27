@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AinAlfahd.Models;
 
@@ -9,7 +10,9 @@ public partial class OrderDetail
 
     public int? OrderNo { get; set; }
 
+    [ForeignKey("Item")]
     public int? ItemCode { get; set; }
+    public Item Item { get; set; }
 
     public int? Value { get; set; }
 
