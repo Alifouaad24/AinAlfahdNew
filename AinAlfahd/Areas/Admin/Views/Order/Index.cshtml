@@ -53,10 +53,13 @@
             $('.buttonFixSKU').css('display', 'none');
             $('#loadingMessage').hide();
             $('#loadingMessage2').hide();
+            $('#count').hide();
             console.log("jQuery is loaded and ready!");
         });
 
         function Search() {
+            $('#loadingMessage').hide();
+            $('#loadingMessage2').hide();
 
             $('.buttonFixSKU').css('display', 'none');
             console.log("Search is ready!");
@@ -95,11 +98,17 @@
                                     </tr>
                                 `);
                     } else {
+                        $('#loadingMessage').hide();
+                        $('#loadingMessage2').hide();
+                        $('#count').hide();
                         alert('لم يتم العثور على بيانات العميل.');
+
                     }
                 },
                 error: function (xhr, status, error) {
                     console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
+                    $('#loadingMessage').hide();
+                    $('#loadingMessage2').hide();
                     alert('حدث خطأ أثناء البحث عن البيانات.');
                 }
             });
@@ -125,6 +134,9 @@
                 },
                 error: function (xhr, status, error) {
                     console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
+                    $('#loadingMessage').hide();
+                    $('#loadingMessage2').hide();
+                    $('#count').hide();
                     alert('حدث خطأ أثناء البحث عن البيانات.');
                 }
             });
