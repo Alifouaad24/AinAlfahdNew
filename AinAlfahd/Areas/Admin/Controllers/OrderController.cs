@@ -7,6 +7,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System.Net;
+using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 
 namespace AinAlfahd.Areas.Admin.Controllers
@@ -54,26 +55,30 @@ namespace AinAlfahd.Areas.Admin.Controllers
                     if (item.Item != null && Regex.IsMatch(item.Item.PCode, @"^\d"))
                     {
                         total++;
-                        var newSku = await GetSKU(item.Item.WebUrl);
-
-                        var iteem = await dbContext.Items.FindAsync(item.Item.Id);
-                        if(iteem != null)
+                        if(item.Item.WebUrl != null)
                         {
-                            item.Item.OldCode = item.Item.PCode;
-                            if(newSku.Contains("Not found") || newSku.Contains("Error during Get SKU"))
-                            {
-                                continue;
-                            }
-                            else
+                            var newSku = await GetSKU(item.Item.WebUrl);
+
+                            var iteem = await dbContext.Items.FindAsync(item.Item.Id);
+                            if (iteem != null)
                             {
                                 item.Item.OldCode = item.Item.PCode;
-                                item.Item.PCode = newSku;
-                                dbContext.Update(iteem);
-                                await dbContext.SaveChangesAsync();
-                                sum++;
-                            }
+                                if (newSku.Contains("Not found") || newSku.Contains("Error during Get SKU"))
+                                {
+                                    continue;
+                                }
+                                else
+                                {
+                                    item.Item.OldCode = item.Item.PCode;
+                                    item.Item.PCode = newSku;
+                                    dbContext.Update(iteem);
+                                    await dbContext.SaveChangesAsync();
+                                    sum++;
+                                }
 
+                            }
                         }
+                        
                     }
                 }
 
@@ -129,5 +134,36 @@ namespace AinAlfahd.Areas.Admin.Controllers
                 
             }
         }
+
+
+
+        [HttpGet("/Admin/Order/UpdateSKU/{id}/{newSKU}")]
+        public async Task<IActionResult> UpdateSKU(int id, string newSKU)
+        {
+            var iteem = await dbContext.Items.FindAsync(id);
+
+            var existPCode = await dbContext.Items.Where(i => i.PCode == newSKU).FirstOrDefaultAsync();
+
+            if (existPCode == null)
+            {
+                iteem.OldCode = iteem.PCode;
+                iteem.PCode = newSKU;
+                var x = iteem.PCode;
+                var y = iteem.OldCode;
+                dbContext.Update(iteem);
+                await dbContext.SaveChangesAsync();
+
+                await SearchAboutOrder(iteem.Id);
+                return Ok(new
+                {
+                    PcCode = x,
+                    OlldCode = y
+
+                });
+            }
+
+            return Ok();
+
+            }
     }
 }

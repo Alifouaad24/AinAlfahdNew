@@ -35,8 +35,12 @@
         <table class="table table-bordered table-striped">
             <thead class="thead-light">
                 <tr>
+                    <th class="text-end"> تعديل</th>
+                    <th class="text-end">Web Url</th>
+                    <th class="text-end">Old SKU</th>
                     <th class="text-end">SKU رقم</th>
                     <th class="text-end">رقم الطلب</th>
+
                 </tr>
             </thead>
             <tbody id="tbody1">
@@ -85,16 +89,37 @@
                         data.forEach(customer => {
                             tbody.append(`
                                         <tr>
+                                             <td class="text-center m-1">
+                                                             <div class="d-flex justify-content-evenly align-items-center">
+                                                             <button class="executeButton btn btn-success text-black" onclick="executeFunction(this)">تعديل</button>
+                                             <input type="text" class="inputField ms-1 form-control">
+                                             <p hidden>${customer.item.id}</p>
+                                             
+                                                     </div>
+                                    </td>
+                                       <td class="text-end m-1"><a href="${customer.item.webUrl}">${customer.item.webUrl}</a></td>
+                                                                                                    <td class="text-end m-1">${customer.item.oldCode}</td>
                                                             <td class="text-end m-1">${customer.item.pCode}</td>
                                             <td class="text-end m-1">${customer.orderNo}</td>
+
                                         </tr>
                                     `);
                         });
                     } else if (data.orderNo && data.itemCode) {
                         tbody.append(`
                                     <tr>
+                <td class="text-center m-1">
+            <div class="d-flex align-items-center">
+                <input type="text" class="inputField form-control me-1">
+                <p hidden>${customer.item.id}</p>
+                <button class="executeButton btn btn-outline-success text-black" onclick="executeFunction(this)">تعديل</button>
+            </div>
+        </td>
+                                                                                                                <td class="text-end m-1"><a href="${data.item.webUrl}">${data.item.webUrl}</a></td>
+                                                                      <td class="text-end m-1">${data.item.oldCode}</td>
                                                 <td class="text-end m-1">${data.item.pCode}</td>
                                         <td class="text-end m-1">${data.orderNo}</td>
+                                      
                                     </tr>
                                 `);
                     } else {
@@ -142,5 +167,33 @@
             });
 
         }
+
+
+        function executeFunction(button) {
+            const inputValue = $(button).siblings('.inputField').val();
+            const id = $(button).siblings('p').text();
+            console.log("القيمة المدخلة:", inputValue);
+
+            const apiUrl = `/Admin/Order/UpdateSKU/${encodeURIComponent(id)}/${encodeURIComponent(inputValue)}`;
+
+            $.ajax({
+                url: apiUrl,
+                type: 'GET',
+                success: function (data) {
+                    console.log(data);
+                    const currentRow = $(button).closest('tr');
+
+                    currentRow.find('td:nth-child(4)').text(data.pcCode);
+                    currentRow.find('td:nth-child(3)').text(data.olldCode);
+
+                },
+                error: function (xhr, status, error) {
+                    console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
+                    alert('حدث خطأ أثناء تحديث الحقل.');
+                }
+            });
+        }
+
+
     </script>
 }
