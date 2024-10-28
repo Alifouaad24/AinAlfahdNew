@@ -204,7 +204,7 @@
 
             $(button).prop('disabled', true);
             $(button).siblings('button').prop('disabled', true);
-            $(button).find('.spinner').hide();
+            $(button).find('.spinner').show();
 
             const apiUrl = `/Admin/Order/UpdateSKUAuto/${encodeURIComponent(id)}`;
 
