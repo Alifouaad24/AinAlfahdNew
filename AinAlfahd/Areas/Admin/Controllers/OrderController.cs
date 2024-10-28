@@ -3,11 +3,15 @@ using AinAlfahd.Models;
 using Azure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using OpenQA.Selenium;
+using OpenQA.Selenium.BiDi.Modules.Network;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System.Net;
 using System.Reflection.Emit;
+using System.Security.Policy;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace AinAlfahd.Areas.Admin.Controllers
@@ -16,9 +20,11 @@ namespace AinAlfahd.Areas.Admin.Controllers
     public class OrderController : Controller
     {
         MasterDBContext dbContext;
+        private static readonly HttpClient client = new HttpClient();
         public OrderController(MasterDBContext dbContext)
         {
             this.dbContext = dbContext;
+
         }
         public IActionResult Index()
         {
@@ -44,7 +50,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
         [HttpGet("/Admin/Order/fixSKU/{orderId}")]
         public async Task<IActionResult> fixSKU(int orderId)
         {
-            int total = 0;
+            int Total = 0;
             int sum = 0;
             try
             {
@@ -54,7 +60,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
                 {
                     if (item.Item != null && Regex.IsMatch(item.Item.PCode, @"^\d"))
                     {
-                        total++;
+                        Total++;
                         if(item.Item.WebUrl != null)
                         {
                             var newSku = await GetSKU(item.Item.WebUrl);
@@ -87,7 +93,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
                 return Ok(new
                 {
                     fixedd = sum,
-                    total = total,
+                    total = Total,
                 });
             }
             catch (Exception ex)
@@ -165,5 +171,46 @@ namespace AinAlfahd.Areas.Admin.Controllers
             return Ok();
 
             }
+
+        [HttpGet("/Admin/Order/UpdateSKUAuto/{id}")]
+        public async Task<IActionResult> UpdateSKUAuto(int id)
+        {
+            var iteem = await dbContext.Items.FindAsync(id);
+
+            string url = "http://www.apiainalfahad.somee.com/api/SheIn/GetSKU";
+            var jsonBody = $"{{\"url\": \"{iteem.WebUrl}\"}}";
+
+            var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+            try
+            {
+                client.DefaultRequestHeaders.Add("accept", "*/*");
+                HttpResponseMessage response = await client.PostAsync(url, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseData = await response.Content.ReadAsStringAsync();
+                    return Ok(responseData);
+                }
+                else
+                {
+                    Console.WriteLine($"Error: {response.StatusCode}");
+                    string errorResponse = await response.Content.ReadAsStringAsync();
+                    return Ok(errorResponse);
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine($"Request error: {e.Message}");
+                return BadRequest(e.Message);
+            }
+
+;
+
+        }
+    }
+
+    class ItemRequest
+    {
+        public string url { get; set; }
     }
 }

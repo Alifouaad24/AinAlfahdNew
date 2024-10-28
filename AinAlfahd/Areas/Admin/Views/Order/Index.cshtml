@@ -89,9 +89,10 @@
                         data.forEach(customer => {
                             tbody.append(`
                                         <tr>
-                                             <td class="text-center m-1">
+                                             <td class="text-start m-1">
                                                              <div class="d-flex justify-content-evenly align-items-center">
-                                                             <button class="executeButton btn btn-success text-black" onclick="executeFunction(this)">تعديل</button>
+                                                                     <button class="executeButton btn btn-success ms-1 text-black" onclick="executeFunction(this)">تعديل</button>
+                                                                     <button class="executeButton btn btn-warning ms-1 text-black" onclick="executeAuto(this)">بحث</button>
                                              <input type="text" class="inputField ms-1 form-control">
                                              <p hidden>${customer.item.id}</p>
                                              
@@ -115,8 +116,8 @@
                 <button class="executeButton btn btn-outline-success text-black" onclick="executeFunction(this)">تعديل</button>
             </div>
         </td>
-                                                                                                                <td class="text-end m-1"><a href="${data.item.webUrl}">${data.item.webUrl}</a></td>
-                                                                      <td class="text-end m-1">${data.item.oldCode}</td>
+                                                    <td class="text-end m-1"><a href="${data.item.webUrl}">${data.item.webUrl}</a></td>
+                                                    <td class="text-end m-1">${data.item.oldCode}</td>
                                                 <td class="text-end m-1">${data.item.pCode}</td>
                                         <td class="text-end m-1">${data.orderNo}</td>
                                       
@@ -154,7 +155,8 @@
                     console.log(data);
                     $('#loadingMessage2').show();
                     $('#loadingMessage').hide();
-                    $('#count').text(data.fixedd + ' / ' + data.total);
+                    $('#count').text(data.fixedd
+                        + ' / ' + data.total);
 
                 },
                 error: function (xhr, status, error) {
@@ -190,6 +192,33 @@
                 error: function (xhr, status, error) {
                     console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
                     alert('حدث خطأ أثناء تحديث الحقل.');
+                }
+            });
+        }
+
+        function executeAuto(button) {
+            //const inputValue = $(button).siblings('.inputField').val();
+            const id = $(button).siblings('p').text();
+
+            $(button).prop('disabled', true);
+            $(button).siblings('button').prop('disabled', true);
+
+            const apiUrl = `/Admin/Order/UpdateSKUAuto/${encodeURIComponent(id)}`;
+
+            $.ajax({
+                url: apiUrl,
+                type: 'GET',
+                success: function (data) {
+                    console.log(data);
+                    $(button).prop('disabled', false);
+                    $(button).siblings('button').prop('disabled', false);
+                    $(button).siblings('.inputField').val(data.result.title);
+                },
+                error: function (xhr, status, error) {
+                    console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
+                    alert('حدث خطأ أثناء تحديث حقل ال SKU.');
+                    $(button).prop('disabled', false);
+                    $(button).siblings('button').prop('disabled', false);
                 }
             });
         }
