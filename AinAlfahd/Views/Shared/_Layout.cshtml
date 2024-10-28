@@ -42,7 +42,7 @@
             <div class="container-fluid">
 
                 @{
-                    var env = await db.TblConfigs.FindAsync(5);
+                    var env = await db.TblConfigs.FindAsync(2);
 
                 }
                 <a class="navbar-brand bg-danger p-3 fon text-white rounded-5" asp-area="" asp-controller="" asp-action="">Enviroment Work: @env.Db_env</a>
