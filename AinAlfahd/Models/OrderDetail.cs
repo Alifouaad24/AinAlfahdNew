@@ -8,7 +8,11 @@ public partial class OrderDetail
 {
     public int Id { get; set; }
 
+    [ForeignKey("Order")]
     public int? OrderNo { get; set; }
+    public Order Order { get; set; }
+
+
 
     [ForeignKey("Item")]
     public int? ItemCode { get; set; }

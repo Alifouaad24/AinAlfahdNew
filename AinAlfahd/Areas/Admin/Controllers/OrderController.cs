@@ -8,11 +8,13 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.BiDi.Modules.Network;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+using System.Globalization;
 using System.Net;
 using System.Reflection.Emit;
 using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AinAlfahd.Areas.Admin.Controllers
 {
@@ -31,6 +33,20 @@ namespace AinAlfahd.Areas.Admin.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Special()
+        {
+            return View();
+        }
+
+        [HttpGet("/Admin/Order/SearchAboutOrderByDate/{datee}")]
+        public async Task<IActionResult> SearchAboutOrderByDate(DateOnly datee)
+        {
+            var orders = await dbContext.OrderDetails.Include(o => o.Item).Include(od => od.Order).Where(o => o.Order.OrderDt >= datee).ToListAsync();
+            var ord = orders.Where(o => Regex.IsMatch(o.Item.PCode, @"^\d")).OrderBy(o => o.Order.OrderDt).Take(50)
+                .ToList();
+            return Ok(ord);
+        }
+
 
         [HttpGet("/Admin/Order/SearchAboutOrder/{orderId}")]
         public async Task<IActionResult> SearchAboutOrder(int orderId)
@@ -47,6 +63,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
 
         }
 
+       
         [HttpGet("/Admin/Order/fixSKU/{orderId}")]
         public async Task<IActionResult> fixSKU(int orderId)
         {

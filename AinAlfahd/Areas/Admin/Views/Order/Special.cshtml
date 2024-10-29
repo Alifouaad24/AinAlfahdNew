@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Special";
     Layout = "_Layout";
 }
 
@@ -14,38 +14,39 @@
 </head>
 <body>
 
-
     <div class="container mt-2">
         <div class="row justify-content-center">
-            <h3 class="text-center m-4">أدخل رقم الطلب </h3>
+            <h3 class="text-center m-4">أختر التاريخ للبحث</h3>
             <div class="col-md-8">
                 <div class="d-flex justify-content-evenly">
-                    <input id="OrderId" class="form-control ms-1 " type="search" placeholder="بحث" aria-label="Search">
+                    <input id="OrderId" class="form-control ms-1 " type="date" placeholder="بحث" aria-label="Search">
                 </div>
                 <div class="d-flex m-3 justify-content-center">
                     <button class="btn btn-outline-success text-black w-25 ms-1" type="button" onclick="Search()">بحث</button>
                     @* <button class="buttonFixSKU btn btn-outline-warning text-black w-25 ms-1" type="button" onclick="FixSKU()">SKU تحديث </button> *@
                 </div>
-                <div id="loadingMessage" style="display: flex; justify-content:center; color: blue;">جاري تنفيذ العملية، يرجى الانتظار...</div>
-                <div id="loadingMessage2" style="display: flex; justify-content:center; color: blue;"> ...SKU ( <p id="count"></p> ) تم تعديل</div>
-
             </div>
         </div>
+    </div>
+    <div class="d-flex justify-content-center align-items-center">
+        <span class="spinner1" style="display:none;"></span>
     </div>
 
     <div class="container mt-5">
         <table class="table table-bordered table-striped">
             <thead class="thead-light">
                 <tr>
-                    <th class="text-end"> تعديل</th>
+                    <th class="text-end"></th>
                     <th class="text-end">Web Url</th>
                     <th class="text-end">Old SKU</th>
                     <th class="text-end">SKU رقم</th>
+                    <th class="text-end">تاريخ الطلب</th>
                     <th class="text-end">رقم الطلب</th>
 
                 </tr>
             </thead>
             <tbody id="tbody1">
+              
             </tbody>
         </table>
     </div>
@@ -53,39 +54,41 @@
 </body>
 </html>
 
+
+
+
+
+
+
 @section Scripts {
     <script>
         $(document).ready(function () {
-            $('.buttonFixSKU').css('display', 'none');
-            $('#loadingMessage').hide();
-            $('#loadingMessage2').hide();
-            $('#count').hide();
+            $('.spinner1').hide();
             console.log("jQuery is loaded and ready!");
         });
 
+
+
         function Search() {
-            $('#loadingMessage').hide();
-            $('#loadingMessage2').hide();
-
-            $('.buttonFixSKU').css('display', 'none');
+            $('.spinner1').show();
             console.log("Search is ready!");
-            const id = $('#OrderId').val();
+            const date = $('#OrderId').val();
 
-            if (id.trim() === '') {
-                alert('يرجى إدخال رقم الطلب للبحث.');
+            if (date.trim() === '') {
+                alert('يرجى إدخال تاريخ محدد للبحث.');
                 return;
             }
 
-            const apiUrl = `/Admin/Order/SearchAboutOrder/${encodeURIComponent(id)}`;
+            const apiUrl = `/Admin/Order/SearchAboutOrderByDate/${encodeURIComponent(date)}`;
 
             $.ajax({
                 url: apiUrl,
                 type: 'GET',
                 success: function (data) {
+                    $('.spinner1').hide();
                     console.log(data);
                     const tbody = $('#tbody1');
                     tbody.empty();
-                    $('.buttonFixSKU').css('display', 'block');
 
                     if (Array.isArray(data) && data.length > 0) {
                         data.forEach(customer => {
@@ -103,6 +106,7 @@
                                        <td class="text-end m-1"><a href="${customer.item.webUrl}" traget="_blank">${customer.item.webUrl}</a></td>
                                                                                                     <td class="text-end m-1">${customer.item.oldCode}</td>
                                                             <td class="text-end m-1">${customer.item.pCode}</td>
+                                                                            <td class="text-end m-1">${customer.order.orderDt}</td>
                                             <td class="text-end m-1">${customer.orderNo}</td>
 
                                         </tr>
@@ -118,25 +122,22 @@
                 <button class="executeButton btn btn-outline-success text-black" onclick="executeFunction(this)">تعديل</button>
             </div>
         </td>
-                                                    <td class="text-end m-1"><a href="${data.item.webUrl}">${data.item.webUrl}</a></td>
+                                                            <td class="text-end m-1"><a href="${data.item.webUrl}" target="_blank">${data.item.webUrl}</a></td>
                                                     <td class="text-end m-1">${data.item.oldCode}</td>
                                                 <td class="text-end m-1">${data.item.pCode}</td>
+                                                        <td class="text-end m-1">${data.order.orderDt}</td>
                                         <td class="text-end m-1">${data.orderNo}</td>
                                       
                                     </tr>
                                 `);
                     } else {
-                        $('#loadingMessage').hide();
-                        $('#loadingMessage2').hide();
-                        $('#count').hide();
                         alert('لم يتم العثور على بيانات العميل.');
 
                     }
                 },
                 error: function (xhr, status, error) {
+                    $('.spinner1').hide();
                     console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
-                    $('#loadingMessage').hide();
-                    $('#loadingMessage2').hide();
                     alert('حدث خطأ أثناء البحث عن البيانات.');
                 }
             });
@@ -217,7 +218,7 @@
                     $(button).prop('disabled', false);
                     $(button).siblings('button').prop('disabled', false);
                     $(button).find('.spinner').hide();
-                    $(button).siblings('.inputField').val(resultObject.result.title || resultObject.result);
+                    $(button).siblings('.inputField').val(resultObject.result.title || resultObject.result || "Error");
                 },
                 error: function (xhr, status, error) {
                     console.error(`Error: ${xhr.status} - ${xhr.statusText}`);

@@ -18,6 +18,8 @@ mono_crash.*
 
 # App settings
 appsettings.json
+AinAlfahd/Migrations/
+
 
 # Build results
 [Dd]ebug/
