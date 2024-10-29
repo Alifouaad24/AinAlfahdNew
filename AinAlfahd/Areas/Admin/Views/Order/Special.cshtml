@@ -36,7 +36,7 @@
         <table class="table table-bordered table-striped">
             <thead class="thead-light">
                 <tr>
-                    <th class="text-end w-50">تعديل</th>
+                    <th class="text-end" colspan="3">تعديل</th>
                     <th class="text-end">Web Url</th>
                     <th class="text-end">Old SKU</th>
                     <th class="text-end">SKU رقم</th>
@@ -75,6 +75,7 @@
             const date = $('#OrderId').val();
 
             if (date.trim() === '') {
+                $('.spinner1').hide();
                 alert('يرجى إدخال تاريخ محدد للبحث.');
                 return;
             }
@@ -93,23 +94,29 @@
                     if (Array.isArray(data) && data.length > 0) {
                         data.forEach(customer => {
                             tbody.append(`
-                                        <tr>
-                                             <td class="text-start m-1">
-                                                             <div class="d-flex justify-content-evenly align-items-center">
-                                                                     <button class="executeButton btn btn-success ms-1 text-black" onclick="executeFunction(this)">تعديل</button>
-                                                                             <button class="executeButton btn btn-warning ms-1 text-black" onclick="executeAuto(this)">بحث<span class="spinner" style="display:none;"></span>  </button>
-                                             <input type="text" class="inputField ms-1 form-control">
-                                             <p hidden>${customer.item.id}</p>
-                                             
-                                                     </div>
-                                    </td>
-                                               <td class="text-end m-1"><a href="${customer.item.webUrl}" target="_blank">${customer.item.webUrl}</a></td>
-                                                                                                    <td class="text-end m-1">${customer.item.oldCode}</td>
-                                                            <td class="text-end m-1">${customer.item.pCode}</td>
-                                                                            <td class="text-end m-1">${customer.order.orderDt}</td>
-                                            <td class="text-end m-1">${customer.orderNo}</td>
+                                              <tr>
+            <td class="text-start p-2" colspan="3">
+                <div class="d-flex justify-content-evenly align-items-center">
+                    <button class="executeButton btn btn-success ms-1 text-black" onclick="executeFunction(this)">
+                        تعديل
+                    </button>
+                    <button class="executeButton btn btn-warning ms-1 text-black" onclick="executeAuto(this)">
+                                <span class="ss">بحث</span> <span class="spinner" style="display:none;"></span>
+                    </button>
+                    <input type="text" class="inputField ms-1 form-control">
+                    <p hidden>${customer.item.id}</p>
+                </div>
+            </td>
+        <td class="text-end p-2" style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            <a href="${customer.item.webUrl}" target="_blank">${customer.item.webUrl}</a>
+        </td>
 
-                                        </tr>
+            <td class="text-end p-2">${customer.item.oldCode}</td>
+            <td class="text-end p-2">${customer.item.pCode}</td>
+            <td class="text-end p-2">${customer.order.orderDt}</td>
+            <td class="text-end p-2">${customer.orderNo}</td>
+        </tr>
+
                                     `);
                         });
                     } else if (data.orderNo && data.itemCode) {
@@ -197,6 +204,8 @@
                     alert('حدث خطأ أثناء تحديث الحقل.');
                 }
             });
+
+            $(button).siblings('.inputField').val('');
         }
 
         function executeAuto(button) {
@@ -206,6 +215,7 @@
             $(button).prop('disabled', true);
             $(button).siblings('button').prop('disabled', true);
             $(button).find('.spinner').show();
+            $(button).find('.ss').hide();
 
             const apiUrl = `/Admin/Order/UpdateSKUAuto/${encodeURIComponent(id)}`;
 
@@ -218,6 +228,7 @@
                     $(button).prop('disabled', false);
                     $(button).siblings('button').prop('disabled', false);
                     $(button).find('.spinner').hide();
+                    $(button).find('.ss').show();
                     $(button).siblings('.inputField').val(resultObject.result.title || resultObject.result || "Error");
                 },
                 error: function (xhr, status, error) {
@@ -226,6 +237,7 @@
                     $(button).prop('disabled', false);
                     $(button).siblings('button').prop('disabled', false);
                     $(button).find('.spinner').hide();
+                    $(button).find('.ss').show();
                 }
             });
         }
