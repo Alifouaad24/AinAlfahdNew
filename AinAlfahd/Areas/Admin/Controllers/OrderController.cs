@@ -165,10 +165,6 @@ namespace AinAlfahd.Areas.Admin.Controllers
         {
             var iteem = await dbContext.Items.FindAsync(id);
 
-            var existPCode = await dbContext.Items.Where(i => i.PCode == newSKU).FirstOrDefaultAsync();
-
-            if (existPCode == null)
-            {
                 iteem.OldCode = iteem.PCode;
                 iteem.PCode = newSKU;
                 var x = iteem.PCode;
@@ -182,12 +178,8 @@ namespace AinAlfahd.Areas.Admin.Controllers
                     PcCode = x,
                     OlldCode = y
 
-                });
-            }
-
-            return Ok();
-
-            }
+                });   
+        }
 
         [HttpGet("/Admin/Order/UpdateSKUAuto/{id}")]
         public async Task<IActionResult> UpdateSKUAuto(int id)
