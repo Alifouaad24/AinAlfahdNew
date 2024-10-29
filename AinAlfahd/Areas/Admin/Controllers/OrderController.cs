@@ -41,7 +41,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
         [HttpGet("/Admin/Order/SearchAboutOrderByDate/{datee}")]
         public async Task<IActionResult> SearchAboutOrderByDate(DateOnly datee)
         {
-            var orders = await dbContext.OrderDetails.Include(o => o.Item).Include(od => od.Order).Where(o => o.Order.OrderDt >= datee).ToListAsync();
+            var orders = await dbContext.OrderDetails.Include(o => o.Item).Include(od => od.Order).Where(o => o.Order.OrderDt >= datee & o.Item.WebUrl != null).ToListAsync();
             var ord = orders.Where(o => Regex.IsMatch(o.Item.PCode, @"^\d")).OrderBy(o => o.Order.OrderDt).Take(50)
                 .ToList();
             return Ok(ord);
