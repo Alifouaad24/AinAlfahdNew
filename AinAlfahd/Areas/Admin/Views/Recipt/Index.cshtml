@@ -13,6 +13,7 @@
     <table class="table table-bordered table-striped">
         <thead class="thead-light">
             <tr>
+                <th class="text-end m-1">حالة الدفع</th>
                 <th class="text-end m-1">سعر البيع</th>
                 <th class="text-end m-1">الكلفة</th>
                 <th class="text-end m-1">الوزن</th>
@@ -25,6 +26,16 @@
             @foreach (var receipt in Model)
             {
                 <tr>
+                    @{
+                        if (@receipt.IsFinanced)
+                        {
+                            <td class="text-end m-1">مدفوعة</td>
+                        }else{
+                            <td class="text-end m-1">غير مدفوعة</td>
+                        }
+
+                    }
+                        
                     <td class="text-end m-1">@receipt.SellingPrice</td>
                     <td class="text-end m-1">@receipt.Cost</td>
                     <td class="text-end m-1">@receipt.Weight</td>

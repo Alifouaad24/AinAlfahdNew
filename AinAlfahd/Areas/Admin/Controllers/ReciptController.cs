@@ -26,7 +26,9 @@ namespace AinAlfahd.Areas.Admin.Controllers
         public async Task<IActionResult> AddReciept(int? id)
         {
             var customers = await dBContext.Customers.ToListAsync();
+            var excgange = await dBContext.Exchanges.FirstOrDefaultAsync();
 
+            ViewBag.ex = excgange.BankRate;
             ViewBag.Customer = customers.Select(c => new SelectListItem
             {
                 Value = c.Id.ToString(),

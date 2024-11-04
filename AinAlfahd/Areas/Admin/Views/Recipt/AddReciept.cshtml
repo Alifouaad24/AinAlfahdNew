@@ -13,6 +13,7 @@
 <br />
 <form asp-action="SaveRe" method="post">
     <input hidden asp-for="@Model.RecieptId" class="form-control" />
+    <input hidden id="exch" value="@ViewBag.ex" class="form-control" />
     <div class="row col-12 d-flex justify-content-between">
         <div class="col-md-6">
             <div class="row">
@@ -134,22 +135,34 @@
             $('#Currency').val("$");
         });
 
-        $('#Weight1').keyup(function () {
+        $('#Weight1').on('input change', function () {
+            $('#Cost1').val(0);
+            $('#SellingPrice1').val(0);
+
             const Weight = $('#Weight1').val();
+            const exch = $('#exch').val();
+
             $('#Cost1').val(+Weight * 5).trigger('change');
-            $('#SellingPrice1').val(+Weight * 8).trigger('change');
+            $('#SellingPrice1').val(+Weight * 8 * exch).trigger('change');
         });
 
-        $('#DisCount').keyup(function () {
+        $('#DisCount').on('input change', function () {
+            const Weight = $('#Weight1').val();
             const DisCount = $('#DisCount').val();
-            const Cost = $('#Cost1').val();
-            $('#Cost1').val(Cost -DisCount).trigger('change');
+            $('#Cost1').val(0);
+            $('#Cost1').val(+Weight * 5 - DisCount).trigger('change');
         });
 
-        $('#SellingDisCount').keyup(function () {
-            const DisCount = $('#SellingDisCount').val();
-            const Cost = $('#SellingPrice1').val();
-            $('#SellingPrice1').val(Cost - DisCount).trigger('change');
+        $('#SellingDisCount').on('input change', function () {
+            $('#SellingPrice1').val(0);
+            const Weight = $('#Weight1').val();
+            const exch = $('#exch').val();
+            $('#SellingPrice1').val(+Weight * 8 * exch).trigger('change');
+
+            const sell = $('#SellingPrice1').val();
+            const DisCount1 = $('#SellingDisCount').val();
+
+            $('#SellingPrice1').val(sell - DisCount1).trigger('change');
         });
     </script>
 
