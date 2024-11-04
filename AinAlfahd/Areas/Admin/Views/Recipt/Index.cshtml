@@ -1,7 +1,39 @@
-﻿
+﻿@using AinAlfahd.Models
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<Reciept>
 @{
     ViewData["Title"] = "Index";
+    Layout = "_Layout";
 }
 
-<h1>My Recipts</h1>
+<h2 class="mb-4 text-end"> الفواتير </h2>
+<hr />
+
+<div class="container mt-5">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-light">
+            <tr>
+                <th class="text-end m-1">سعر البيع</th>
+                <th class="text-end m-1">الكلفة</th>
+                <th class="text-end m-1">الوزن</th>
+                <th class="text-end m-1">اسم العميل</th>
+                <th class="text-end m-1">تاريخ الوصل</th>
+                <th class="text-end m-1">رقم الوصل</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var receipt in Model)
+            {
+                <tr>
+                    <td class="text-end m-1">@receipt.SellingPrice</td>
+                    <td class="text-end m-1">@receipt.Cost</td>
+                    <td class="text-end m-1">@receipt.Weight</td>
+                    <td class="text-end m-1">@receipt.Customer.CustName</td>
+                    <td class="text-end m-1">@receipt.RecieptDate.ToString("yyyy-MM-dd")</td>
+                    <td class="text-end m-1">@receipt.RecieptId</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 

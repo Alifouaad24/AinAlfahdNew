@@ -17,9 +17,10 @@ namespace AinAlfahd.Areas.Admin.Controllers
             this.dBContext = dBContext;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var recipts = await dBContext.Reciepts.Include(r => r.Customer).ToListAsync();
+            return View(recipts);
         }
 
         public async Task<IActionResult> AddReciept(int? id)
