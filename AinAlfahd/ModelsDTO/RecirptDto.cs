@@ -5,7 +5,9 @@ namespace AinAlfahd.ModelsDTO
     public class RecirptDto
     {
         public decimal Weight { get; set; }
+        public decimal Cost { get; set; }
         public decimal DisCount { get; set; }
+        public decimal SellingPrice { get; set; }
         public int CustomerId { get; set; }
 
         public DateTime RecieptDate { get; set; }

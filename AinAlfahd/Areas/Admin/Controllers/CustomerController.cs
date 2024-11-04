@@ -249,12 +249,5 @@ namespace AinAlfahd.Areas.Admin.Controllers
             }
             return View("AddCustomer");
         }
-
-        [HttpGet("/Admin/Customer/SerachAboutCust/{word}")]
-        public async Task<IActionResult> SerachAboutCust(string word)
-        {
-            var costomers = await _customerService.GetByWord(word);
-            return Ok(costomers);
-        }
     }
 }
