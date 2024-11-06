@@ -17,6 +17,7 @@
         public decimal? SellingDisCount { get; set; }
         public DateTime FinanceDate { get; set; }
         public bool IsFinanced { get; set; }
+        public bool CurrentState { get; set; }
 
 
         public int CustomerId { get; set; }

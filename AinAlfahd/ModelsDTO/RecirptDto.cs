@@ -4,6 +4,7 @@ namespace AinAlfahd.ModelsDTO
 {
     public class RecirptDto
     {
+        public int RecieptId { get; set; }
         public decimal Weight { get; set; }
         public decimal Cost { get; set; }
         public decimal DisCount { get; set; }
@@ -15,5 +16,6 @@ namespace AinAlfahd.ModelsDTO
         public decimal? SellingDisCount { get; set; }
         public DateTime FinanceDate { get; set; }
         public bool IsFinanced { get; set; }
+        public bool CurrentState { get; set; }
     }
 }

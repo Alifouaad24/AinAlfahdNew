@@ -3,7 +3,9 @@ using AinAlfahd.Models;
 using AinAlfahd.ModelsDTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.DotNet.Scaffolding.Shared.Project;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace AinAlfahd.Areas.Admin.Controllers
 {
@@ -19,7 +21,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var recipts = await dBContext.Reciepts.Include(r => r.Customer).ToListAsync();
+            var recipts = await dBContext.Reciepts.Where(c => c.CurrentState == true).Include(r => r.Customer).ToListAsync();
             return View(recipts);
         }
 
@@ -58,30 +60,80 @@ namespace AinAlfahd.Areas.Admin.Controllers
                 TempData["error"] = "البيانات المدخلة غير صحيحة الرجاء إعادة المحاولة !";
                 return RedirectToAction("AddReciept");
             }
-
-            var re = new Reciept
+            if(model.RecieptId == 0)
             {
-                Cost = model.Cost,
-                Currency ="$",
-                CustomerId = model.CustomerId,
-                DisCount = model.DisCount,
-                FinanceDate = model.FinanceDate,
-                InsertBy = "Anyy one",
-                IsFinanced = model.IsFinanced,
-                InsertDate = DateTime.Now,
-                SellingCurrency = "IQ",
-                RecieptDate = model.RecieptDate,
-                SellingDisCount = model.SellingDisCount,
-                SellingPrice = model.SellingPrice,
-                Weight = model.Weight,
-                TotalPriceFromCust = model.TotalPriceFromCust,
-            };
+                var re = new Reciept
+                {
+                    Cost = model.Cost,
+                    Currency = "$",
+                    CustomerId = model.CustomerId,
+                    DisCount = model.DisCount,
+                    FinanceDate = model.FinanceDate,
+                    InsertBy = "Anyy one",
+                    IsFinanced = model.IsFinanced,
+                    InsertDate = DateTime.Now,
+                    SellingCurrency = "IQ",
+                    RecieptDate = model.RecieptDate,
+                    SellingDisCount = model.SellingDisCount,
+                    SellingPrice = model.SellingPrice,
+                    Weight = model.Weight,
+                    TotalPriceFromCust = Math.Ceiling(model.TotalPriceFromCust),
+                    CurrentState = model.CurrentState,
+                };
 
-            await dBContext.Reciepts.AddAsync(re);
-            await dBContext.SaveChangesAsync();
-            TempData["error"] = "تم الحفظ بنجاح  !";
-            return RedirectToAction("AddReciept");
+                await dBContext.Reciepts.AddAsync(re);
+                await dBContext.SaveChangesAsync();
+                TempData["error"] = "تم الحفظ بنجاح  !";
+                return RedirectToAction("AddReciept");
             }
+            else
+            {
+                var rec = await dBContext.Reciepts.FindAsync(model.RecieptId);
+                if (rec != null)
+                {
+                    rec.Cost = model.Cost;
+                    rec.Currency = "$";
+                    rec.CustomerId = model.CustomerId;
+                    rec.DisCount = model.DisCount;
+                    rec.FinanceDate = model.FinanceDate;
+                    rec.InsertBy = "Anyy one";
+                    rec.IsFinanced = model.IsFinanced;
+                    rec.InsertDate = DateTime.Now;
+                    rec.SellingCurrency = "IQ";
+                    rec.RecieptDate = model.RecieptDate;
+                    rec.SellingDisCount = model.SellingDisCount;
+                    rec.SellingPrice = model.SellingPrice;
+                    rec.Weight = model.Weight;
+                    rec.TotalPriceFromCust = Math.Ceiling(model.TotalPriceFromCust);
+                    rec.CurrentState = true;
+
+                    dBContext.Reciepts.Update(rec);
+                    await dBContext.SaveChangesAsync();
+                    TempData["msg"] = "تم التعديل بنجاح  !";
+                    return RedirectToAction("Index");
+                }
+                else {
+                    TempData["error"] = "خطأ أثناء تعديل البيانات !";
+                    return RedirectToAction("AddReciept");
+                }
+
+            }
+            
+        }
+
+        public async Task<IActionResult> DeleteData(int id)
+        {
+            var rec = await dBContext.Reciepts.FindAsync(id);
+            if (rec != null) {
+
+                rec.CurrentState = false;
+                await dBContext.SaveChangesAsync();
+                TempData["msg"] = "تم الحذف بنجاح !";
+                return RedirectToAction("Index");
+            }
+            TempData["msg"] = "حدث خطأ اثناء حذف السجل !";
+            return RedirectToAction("Index");
+        }
 
         [HttpGet("/Admin/Customer/SerachAboutCust/{word}")]
         public async Task<IActionResult> SerachAboutCust(string word)

@@ -7,6 +7,7 @@
 }
 
 <h2 class="mb-4 text-end"> الفواتير </h2>
+<h4 class="text-center text-danger">@TempData["msg"]</h4>
 <hr />
 
 <div class="container mt-5">
@@ -28,8 +29,8 @@
             {
                 <tr>
                     <td class="d-flex justify-content-center">
-                        <a class="btn btn-primary">تعديل</a>
-                        <a class="btn ms-1 btn-danger">حذف</a>
+                        <a class="btn btn-primary" asp-action="AddReciept" asp-route-id="@receipt.RecieptId">تعديل</a>
+                        <a class="btn ms-1 btn-danger" asp-action="DeleteData"  asp-route-id="@receipt.RecieptId">حذف</a>
                     </td>
                     @{
                         if (@receipt.IsFinanced)
