@@ -111,8 +111,8 @@
                     <label asp-for="@Model.IsFinanced" class="form-check-label">تم الدفع</label>
                     <span asp-validation-for="IsFinanced" class="text-danger ms-2"></span>
                 </div>
-                <div hidden class="form-group m-1 form-check col-md-2 d-flex justify-content-end align-items-center">
-                    <input hidden asp-for="@Model.CurrentState" class="form-check-input me-2 ms-1" type="checkbox" checked />
+                <div class="form-group m-1  form-check col-md-2 d-none justify-content-end align-items-center">
+                    <input asp-for="@Model.CurrentState" class="form-check-input me-2 ms-1" type="checkbox" checked />
                     <label asp-for="@Model.CurrentState" class="form-check-label">الحالة</label>
                     <span asp-validation-for="CurrentState" class="text-danger ms-2"></span>
                 </div>
@@ -161,6 +161,7 @@
         $(document).ready(function () {
         console.log("jQuery is loaded and ready!");
             $('#SellingCurrency').val("IQ");
+            $('#DisCount').val(0);
             $('#Currency').val("$");
         });
 
@@ -218,7 +219,7 @@
         });
 
     </script>
-    <script>
+@*     <script>
         $('#costtocust').on('input change', function () {
             let value = $(this).val();
             value = value.replace(/[^0-9]/g, '');
@@ -236,7 +237,7 @@
             }
             $(this).val(value);
         });
-    </script>
+    </script> *@
     <script>
 
         function Search() {
