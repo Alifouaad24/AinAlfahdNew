@@ -15,7 +15,6 @@
         public decimal TotalPriceFromCust { get; set; }
         public string SellingCurrency { get; set; }
         public decimal? SellingDisCount { get; set; }
-        public DateTime FinanceDate { get; set; }
         public bool IsFinanced { get; set; }
         public bool CurrentState { get; set; }
 

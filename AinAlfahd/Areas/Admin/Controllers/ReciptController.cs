@@ -68,7 +68,6 @@ namespace AinAlfahd.Areas.Admin.Controllers
                     Currency = "$",
                     CustomerId = model.CustomerId,
                     DisCount = model.DisCount,
-                    FinanceDate = model.FinanceDate,
                     InsertBy = "Anyy one",
                     IsFinanced = model.IsFinanced,
                     InsertDate = DateTime.Now,
@@ -95,7 +94,6 @@ namespace AinAlfahd.Areas.Admin.Controllers
                     rec.Currency = "$";
                     rec.CustomerId = model.CustomerId;
                     rec.DisCount = model.DisCount;
-                    rec.FinanceDate = model.FinanceDate;
                     rec.InsertBy = "Anyy one";
                     rec.IsFinanced = model.IsFinanced;
                     rec.InsertDate = DateTime.Now;
