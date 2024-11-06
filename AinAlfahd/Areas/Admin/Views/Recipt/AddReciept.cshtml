@@ -5,7 +5,13 @@
     ViewData["Title"] = "AddReciept";
     Layout = "_Layout";
 }
-
+<style>
+    .table td:hover {
+        background-color: #f0f8ff;
+        cursor: pointer;
+    }
+    
+</style>
 <h2 class="mb-4">إدخال وصل استلام</h2>
 <hr />
 <h4 class="text-danger">@TempData["error"]</h4>
@@ -15,25 +21,36 @@
     <input hidden asp-for="@Model.RecieptId" class="form-control" />
     <input hidden id="exch" value="@ViewBag.ex" class="form-control" />
     <div class="row col-12 d-flex justify-content-between">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="row">
 
                 <div class="form-group mb-3 col-md-3">
-                    <label asp-for="@Model.Weight" class="form-label text-end">الوزن</label>
-                    <input id="Weight1" asp-for="@Model.Weight" class="form-control" />
+                    <label asp-for="@Model.Weight" class="form-label text-start">الوزن</label>
+                    <div class="d-flex justify-content-start">
+                        <input id="Weight1" style="width:80px" asp-for="@Model.Weight" class="form-control" />
+                        <input readonly value="KG" class="border-0 form-control ms-2" style="width:50px" />
+                    </div>
                     <span asp-validation-for="@Model.Weight" class="text-danger"></span>
                 </div>
-                <div class="form-group mb-3 col-md-3">
+
+                <div class="form-group mb-1 col-md-3">
+                    <label class="form-label text-end">تكلفة الواحدة</label>
+                    <div class="d-flex justify-content-start">
+                        <input readonly value="$5" class="border-1 form-control text-center ms-1" style="width:80px" />
+                    </div>
+                </div>
+
+                <div class="form-group mb-3 col-md-2">
                     <label asp-for="@Model.Cost" class="form-label text-end">الكلفة</label>
                     <input id="Cost1" readonly asp-for="@Model.Cost" class="form-control" />
                     <span asp-validation-for="@Model.Cost" class="text-danger"></span>
                 </div>
-                <div class="form-group mb-3 col-md-3">
+                <div class="form-group mb-3 col-md-2">
                     <label asp-for="@Model.DisCount" class="form-label text-end">الخصم</label>
                     <input id="DisCount" asp-for="@Model.DisCount" class="form-control" />
                     <span asp-validation-for="@Model.DisCount" class="text-danger"></span>
                 </div>
-                <div class="form-group mb-3 col-md-3">
+                <div class="form-group mb-3 col-md-2">
                     <label asp-for="@Model.Currency" class="form-label text-end">العملة</label>
                     <input readonly id="Currency" asp-for="@Model.Currency" class="form-control" />
                     <span asp-validation-for="@Model.Currency" class="text-danger"></span>
@@ -43,16 +60,10 @@
 
             <div class="row">
 
-                <div class="form-group mb-3 col-md-6">
+                <div class="form-group mb-3 col-md-12">
                     <label asp-for="@Model.RecieptDate" class="form-label text-end">تاريخ الوصل</label>
-                    <input asp-for="@Model.RecieptDate" class="form-control" type="date" />
+                    <input asp-for="@Model.RecieptDate" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-dd-MM")" />
                     <span asp-validation-for="@Model.RecieptDate" class="text-danger"></span>
-                </div>
-                <!-- Finance Date -->
-                <div class="form-group mb-3 col-md-6">
-                    <label asp-for="@Model.FinanceDate" class="form-label text-end">تاريخ الدفع</label>
-                    <input asp-for="@Model.FinanceDate" class="form-control" type="date" />
-                    <span asp-validation-for="@Model.FinanceDate" class="text-danger"></span>
                 </div>
             </div>
             <div class="row">
@@ -66,23 +77,36 @@
             </div>
 
             <div class="row mt-4">
-
+                <div class="form-group mb-3 col-md-2">
+                    <label  class="form-label text-start">سعر الصرف</label>
+                    <input readonly value="@{@ViewBag.ex} IQ" class="form-control" />
+                </div>
                 <div class="form-group mb-3 col-md-3">
+                    <label class="form-label text-start">تكلفة الواحدة</label>
+                    <input readonly value="$8" style="width:100px" class="form-control text-center" />
+                </div>
+
+                <div class="form-group mb-3 col-md-2">
                     <label asp-for="@Model.SellingPrice" class="form-label text-start">سعر المبيع</label>
                     <input id="SellingPrice1" readonly asp-for="@Model.SellingPrice" class="form-control" />
                     <span asp-validation-for="@Model.SellingPrice" class="text-danger"></span>
                 </div>
-                <div class="form-group mb-3 col-md-3">
-                    <label asp-for="@Model.SellingDisCount" class="form-label text-end">الخصم للعميل</label>
-                    <input id="SellingDisCount" asp-for="@Model.SellingDisCount" class="form-control" />
+                <div class="form-group mb-3 col-md-2">
+                    <label asp-for="@Model.SellingDisCount" class="form-label text-end">التعديلات</label>
+                    <input readonly id="SellingDisCount" asp-for="@Model.SellingDisCount" class="form-control" />
                     <span asp-validation-for="@Model.SellingDisCount" class="text-danger"></span>
                 </div>
-                <div class="form-group mb-3 col-md-3">
-                    <label asp-for="@Model.SellingCurrency" class="form-label text-end">نوع عملة المبيع</label>
+                <div class="form-group mb-3 col-md-2">
+                    <label asp-for="@Model.TotalPriceFromCust" class="form-label text-end">المبلغ</label>
+                    <input id="costtocust" asp-for="@Model.TotalPriceFromCust" class="form-control" />
+                    <span asp-validation-for="@Model.TotalPriceFromCust" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3 col-md-1">
+                    <label asp-for="@Model.SellingCurrency" class="form-label text-end">العملة</label>
                     <input readonly id="SellingCurrency" asp-for="@Model.SellingCurrency" class="form-control" />
                     <span asp-validation-for="@Model.SellingCurrency" class="text-danger"></span>
                 </div>
-                <div class="form-group mb-1 form-check col-md-3 border d-flex justify-content-end align-items-center">
+                <div class="form-group m-1 form-check col-md-2 d-flex justify-content-end align-items-center">
                     <input asp-for="@Model.IsFinanced" class="form-check-input me-2 ms-1" type="checkbox" />
                     <label asp-for="@Model.IsFinanced" class="form-check-label">تم الدفع</label>
                     <span asp-validation-for="IsFinanced" class="text-danger ms-2"></span>
@@ -98,7 +122,7 @@
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="container mt-5">
                 <div class="row justify-content-center">
                     <h5 class="text-center mb-5">أدخل اسم العميل او رقم الجوال للبحث</h5>
@@ -153,16 +177,16 @@
             $('#Cost1').val(+Weight * 5 - DisCount).trigger('change');
         });
 
-        $('#SellingDisCount').on('input change', function () {
+        $('#costtocust').on('input change', function () {
             $('#SellingPrice1').val(0);
             const Weight = $('#Weight1').val();
             const exch = $('#exch').val();
             $('#SellingPrice1').val(+Weight * 8 * exch).trigger('change');
 
             const sell = $('#SellingPrice1').val();
-            const DisCount1 = $('#SellingDisCount').val();
+            const total = $('#costtocust').val();
 
-            $('#SellingPrice1').val(sell - DisCount1).trigger('change');
+            $('#SellingDisCount').val(total - sell).trigger('change');
         });
     </script>
 

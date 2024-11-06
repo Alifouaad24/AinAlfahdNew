@@ -8,6 +8,7 @@ namespace AinAlfahd.ModelsDTO
         public decimal Cost { get; set; }
         public decimal DisCount { get; set; }
         public decimal SellingPrice { get; set; }
+        public decimal TotalPriceFromCust { get; set; }
         public int CustomerId { get; set; }
 
         public DateTime RecieptDate { get; set; }

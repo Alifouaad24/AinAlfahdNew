@@ -13,8 +13,9 @@
     <table class="table table-bordered table-striped">
         <thead class="thead-light">
             <tr>
+                <th class="text-end m-1">تعديلات</th>
                 <th class="text-end m-1">حالة الدفع</th>
-                <th class="text-end m-1">سعر البيع</th>
+                <th class="text-end m-1">المبلغ</th>
                 <th class="text-end m-1">الكلفة</th>
                 <th class="text-end m-1">الوزن</th>
                 <th class="text-end m-1">اسم العميل</th>
@@ -26,6 +27,10 @@
             @foreach (var receipt in Model)
             {
                 <tr>
+                    <td class="d-flex justify-content-center">
+                        <a class="btn btn-primary">تعديل</a>
+                        <a class="btn ms-1 btn-danger">حذف</a>
+                    </td>
                     @{
                         if (@receipt.IsFinanced)
                         {
@@ -36,9 +41,9 @@
 
                     }
                         
-                    <td class="text-end m-1">@receipt.SellingPrice</td>
-                    <td class="text-end m-1">@receipt.Cost</td>
-                    <td class="text-end m-1">@receipt.Weight</td>
+                    <td class="text-end m-1">@receipt.TotalPriceFromCust.ToString("N2") IQ</td>
+                    <td class="text-end m-1">@receipt.Cost $</td>
+                    <td class="text-end m-1">@receipt.Weight Kg</td>
                     <td class="text-end m-1">@receipt.Customer.CustName</td>
                     <td class="text-end m-1">@receipt.RecieptDate.ToString("yyyy-MM-dd")</td>
                     <td class="text-end m-1">@receipt.RecieptId</td>

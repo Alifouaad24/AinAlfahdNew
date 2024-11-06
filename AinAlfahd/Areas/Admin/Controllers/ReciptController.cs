@@ -25,7 +25,10 @@ namespace AinAlfahd.Areas.Admin.Controllers
 
         public async Task<IActionResult> AddReciept(int? id)
         {
-            var customers = await dBContext.Customers.ToListAsync();
+            var customers = await dBContext.Customers.Include(c => c.CustomerServices)
+                .ThenInclude(cs => cs.Service)
+                .Where(c => c.CustomerServices.Any(cs => cs.Service.Description == "Air Shipping"))
+                .ToListAsync();
             var excgange = await dBContext.Exchanges.FirstOrDefaultAsync();
 
             ViewBag.ex = excgange.ExchangeRate;
@@ -71,7 +74,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
                 SellingDisCount = model.SellingDisCount,
                 SellingPrice = model.SellingPrice,
                 Weight = model.Weight,
-                
+                TotalPriceFromCust = model.TotalPriceFromCust,
             };
 
             await dBContext.Reciepts.AddAsync(re);
