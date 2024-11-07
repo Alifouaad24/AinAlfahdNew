@@ -158,6 +158,13 @@
 
 @section Scripts{
     <script>
+
+        function getCloseTenUp(value) {
+            const magnitude = Math.pow(10, Math.floor(Math.log10(value) - 1));
+            return Math.ceil(value / magnitude) * magnitude;
+        }
+
+
         $(document).ready(function () {
         console.log("jQuery is loaded and ready!");
             $('#SellingCurrency').val("IQ");
@@ -172,17 +179,15 @@
 
             const Weight = $('#Weight1').val();
             const exch = $('#exch').val();
-            $('#costtocust').val(Math.ceil(+Weight * 8 * exch /100000) *100000).trigger('change');
+
             $('#Cost1').val(+Weight * 5).trigger('change');
             $('#SellingPrice1').val(+Weight * 8 * exch).trigger('change');
-        });
-
-        ////////////////////////
-        $('#Weight1').on('input change', function () {
-
+            var x = +Weight * 8 * exch;
+            $('#costtocust').val(getCloseTenUp(x)).trigger('change');
 
         });
-        /////////////////////////////
+
+
 
         $('#DisCount').on('input change', function () {
             const Weight = $('#Weight1').val();
