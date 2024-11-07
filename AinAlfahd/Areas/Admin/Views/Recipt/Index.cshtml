@@ -42,7 +42,7 @@
 
                     }
 
-                    <td class="text-end m-1">@((Math.Ceiling(receipt.TotalPriceFromCust / 1000.0m) * 1000).ToString("N0")) IQ</td>
+                    <td class="text-end m-1">@receipt.TotalPriceFromCust.ToString("N0") IQ</td>
 
                     <td class="text-end m-1">@receipt.Cost $</td>
                     <td class="text-end m-1">@receipt.Weight Kg</td>

@@ -172,10 +172,17 @@
 
             const Weight = $('#Weight1').val();
             const exch = $('#exch').val();
-
+            $('#costtocust').val(Math.ceil(+Weight * 8 * exch /100000) *100000).trigger('change');
             $('#Cost1').val(+Weight * 5).trigger('change');
             $('#SellingPrice1').val(+Weight * 8 * exch).trigger('change');
         });
+
+        ////////////////////////
+        $('#Weight1').on('input change', function () {
+
+
+        });
+        /////////////////////////////
 
         $('#DisCount').on('input change', function () {
             const Weight = $('#Weight1').val();
