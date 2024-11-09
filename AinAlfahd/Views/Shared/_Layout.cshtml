@@ -16,23 +16,30 @@
 
     <style>
         .bbode {
-            display: flex; /* استخدام flexbox لتوزيع العناصر */
+            display: flex;
         }
+
+
 
         .sidebar {
-            width: 250px; /* عرض القائمة الجانبية */
-            height: 100vh; /* ارتفاع القائمة الجانبية */
-            background-color: #343a40; /* لون الخلفية */
-            padding-top: 20px; 
+            width: 250px;
+            height: 100vh;
+            background-color: #343a40;
+            padding-top: 20px;
         }
 
-            .sidebar .nav-link {
-                color: #ffffff;
-            }
+        .sidebar .nav-link {
+            color: #ffffff;
+        }
 
         .main-content {
+            padding:100px;
             flex-grow: 1; 
-            padding: 20px; 
+            padding: 10px;
+            height: 80vh;
+            overflow-y: auto;
+            white-space: nowrap;
+            
         }
     </style>
 </head>
@@ -89,9 +96,9 @@
         </div>
 
         <div class="main-content">
-            <div class="container">
+            <div class="containers">
                 <main role="main" class="pb-3">
-                    @RenderBody() <!-- هنا يتم عرض محتوى الصفحات الفرعية -->
+                    @RenderBody()
                 </main>
             </div>
         </div>

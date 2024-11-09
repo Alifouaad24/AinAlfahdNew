@@ -136,7 +136,8 @@ namespace AinAlfahd.Areas.Admin.Controllers
         [HttpGet("/Admin/Customer/SerachAboutCust/{word}")]
         public async Task<IActionResult> SerachAboutCust(string word)
         {
-            var costomers = await dBContext.Customers.Where(c => c.CustMob.Contains(word) || c.CustName.Contains(word)).ToListAsync();
+            var costomers = await dBContext.Customers.Where(c => c.CustMob.Contains(word) || c.CustName.Contains(word) 
+            || c.Id.ToString() == word).ToListAsync();
             return Ok(costomers);
         }
     }
