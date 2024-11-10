@@ -22,10 +22,10 @@
 
 
         .sidebar {
-            width: 250px;
-            height: 100vh;
+            width: 15%;
+            height: 89.50vh;
             background-color: #343a40;
-            padding-top: 20px;
+            padding-top: 10px;
         }
 
         .sidebar .nav-link {
@@ -33,13 +33,11 @@
         }
 
         .main-content {
-            padding:100px;
-            flex-grow: 1; 
             padding: 10px;
+            flex-grow: 1;
             height: 80vh;
             overflow-y: auto;
             white-space: nowrap;
-            
         }
     </style>
 </head>
@@ -65,9 +63,6 @@
     <div class="bbode">
         <div class="sidebar">
             <ul class="navbar-nav flex-column">
-                @*             <li class="nav-item">
-                <a class="nav-link text-end fs-6 bg-gradient p-3 m-1 table-bordered rounded-5" asp-area="Admin" asp-controller="Customer" asp-action="AddZero">إضافة صفر الى بداية أرقام جوالات العملاء</a>
-                </li> *@
                 <li class="nav-item">
                     <a class="nav-link text-end fs-6 bg-gradient p-3 m-1 table-bordered rounded-5" asp-area="Admin" asp-controller="Customer" asp-action="Search">بحث عن عميل</a>
                 </li>
@@ -95,9 +90,9 @@
             </ul>
         </div>
 
-        <div class="main-content">
+        <div class="main-content position-relative">
             <div class="containers">
-                <main role="main" class="pb-3">
+                <main role="main" class="pb-1">
                     @RenderBody()
                 </main>
             </div>
@@ -106,11 +101,8 @@
     </div>
 
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - AinAlfahd - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

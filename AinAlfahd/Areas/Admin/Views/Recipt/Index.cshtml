@@ -6,52 +6,57 @@
     Layout = "_Layout";
 }
 
-<h2 class="mb-4 text-end"> الفواتير </h2>
-<h4 class="text-center text-danger">@TempData["msg"]</h4>
-<hr />
 
-<div class="container mt-5">
-    <table class="table table-bordered table-striped">
-        <thead class="thead-light">
-            <tr>
-                <th class="text-end m-1">تعديلات</th>
-                <th class="text-end m-1">حالة الدفع</th>
-                <th class="text-end m-1">المبلغ</th>
-                <th class="text-end m-1">الكلفة</th>
-                <th class="text-end m-1">الوزن</th>
-                <th class="text-end m-1">اسم العميل</th>
-                <th class="text-end m-1">تاريخ الوصل</th>
-                <th class="text-end m-1">رقم الوصل</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var receipt in Model)
-            {
+<div class="container">
+    <div class="position-sticky" style="top: 0; background-color: white; z-index: 1000;">
+        <h2 class="mb-4 p-1 text-end"> الفواتير </h2>
+        <h4 class="text-center text-danger">@TempData["msg"]</h4>
+        <hr />
+    </div>
+
+    <div style="max-height: 65vh; overflow-y: auto;">
+        <table class="table table-bordered table-striped">
+            <thead class="thead-light" style="position: sticky; top: 0; background-color: gray; z-index: 999;">
                 <tr>
-                    <td class="d-flex justify-content-center">
-                        <a class="btn btn-primary" asp-action="AddReciept" asp-route-id="@receipt.RecieptId">تعديل</a>
-                        <a class="btn ms-1 btn-danger" asp-action="DeleteData"  asp-route-id="@receipt.RecieptId">حذف</a>
-                    </td>
-                    @{
-                        if (@receipt.IsFinanced)
-                        {
-                            <td class="text-end m-1">مدفوعة</td>
-                        }else{
-                            <td class="text-end m-1">غير مدفوعة</td>
+                    <th class="text-end m-1" style="background-color: gray;">تعديلات</th>
+                    <th class="text-end m-1" style="background-color: gray;">حالة الدفع</th>
+                    <th class="text-end m-1 "style="background-color: gray;">المبلغ</th>
+                    <th class="text-end m-1" style="background-color: gray;">الكلفة</th>
+                    <th class="text-end m-1" style="background-color: gray;">الوزن</th>
+                    <th class="text-end m-1" style="background-color: gray;">اسم العميل</th>
+                    <th class="text-end m-1" style="background-color: gray;">تاريخ الوصل</th>
+                    <th class="text-end m-1" style="background-color: gray;">رقم الوصل</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var receipt in Model)
+                {
+                    <tr>
+                        <td class="d-flex justify-content-center">
+                            <a class="btn btn-primary" asp-action="AddReciept" asp-route-id="@receipt.RecieptId">تعديل</a>
+                            <a class="btn ms-1 btn-danger" asp-action="DeleteData"  asp-route-id="@receipt.RecieptId">حذف</a>
+                        </td>
+                        @{
+                            if (@receipt.IsFinanced)
+                            {
+                                <td class="text-end m-1">مدفوعة</td>
+                            }else{
+                                <td class="text-end m-1">غير مدفوعة</td>
+                            }
+
                         }
 
-                    }
+                        <td class="text-end m-1">@receipt.TotalPriceFromCust.ToString("N0") IQ</td>
 
-                    <td class="text-end m-1">@receipt.TotalPriceFromCust.ToString("N0") IQ</td>
-
-                    <td class="text-end m-1">@receipt.Cost $</td>
-                    <td class="text-end m-1">@receipt.Weight Kg</td>
-                    <td class="text-end m-1">@receipt.Customer.CustName</td>
-                    <td class="text-end m-1">@receipt.RecieptDate.ToString("yyyy-MM-dd")</td>
-                    <td class="text-end m-1">@receipt.RecieptId</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                        <td class="text-end m-1">@receipt.Cost $</td>
+                        <td class="text-end m-1">@receipt.Weight Kg</td>
+                        <td class="text-end m-1">@receipt.Customer.CustName</td>
+                        <td class="text-end m-1">@receipt.RecieptDate.ToString("yyyy-MM-dd")</td>
+                        <td class="text-end m-1">@receipt.RecieptId</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
