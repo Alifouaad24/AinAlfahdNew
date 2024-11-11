@@ -140,6 +140,15 @@ namespace AinAlfahd.Areas.Admin.Controllers
             || c.Id.ToString() == word).ToListAsync();
             return Ok(costomers);
         }
+
+        [HttpGet("/Admin/Recipt/SerachByDate/{from}/{to}")]
+        public async Task<IActionResult> SerachByDate(string from, string to)
+        {
+            var recipts = await dBContext.Reciepts.Where(c => c.CurrentState == true & c.RecieptDate > DateTime.Parse(from) & c.RecieptDate < DateTime.Parse(to))
+                .Include(r => r.Customer).ToListAsync();
+
+            return Ok(recipts);
+        }
     }
 
     }
