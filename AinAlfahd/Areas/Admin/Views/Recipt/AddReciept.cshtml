@@ -294,19 +294,20 @@
 
         $("#wordForSearch").autocomplete({
             source: function (request, response) {
-                console.log("autocomplete");
+
                 const apiUrl = `/Admin/Customer/SerachAboutCust1/${encodeURIComponent(request.term)}`;
 
                 $.ajax({
                     url: apiUrl,
                     type: 'GET',
                     success: function (data) {
-                        console.log(data);
+
                         const customerNames = data.map(customer => ({
                             label: customer.custName,
                             value: customer.custName,
                             id: customer.id
                         }));
+
                         response(customerNames);
                     },
                     error: function (xhr, status, error) {
