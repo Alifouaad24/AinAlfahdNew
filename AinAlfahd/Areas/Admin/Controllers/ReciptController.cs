@@ -141,6 +141,13 @@ namespace AinAlfahd.Areas.Admin.Controllers
             return Ok(costomers);
         }
 
+        [HttpGet("/Admin/Customer/SerachAboutCust1/{word}")]
+        public async Task<IActionResult> SerachAboutCust1(string word)
+        {
+            var costomers = await dBContext.Customers.Where(c => c.CustName.StartsWith(word)).ToListAsync();
+            return Ok(costomers);
+        }
+
         [HttpGet("/Admin/Recipt/SerachByDate/{from}/{to}")]
         public async Task<IActionResult> SerachByDate(string from, string to)
         {

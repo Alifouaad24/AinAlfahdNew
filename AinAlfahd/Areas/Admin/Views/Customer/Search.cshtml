@@ -46,6 +46,9 @@
     <script>
         $(document).ready(function () {
             console.log("jQuery is loaded and ready!");
+            console.log($.ui.autocomplete);
+            console.log($.ui);
+
         });
 
         function Search() {
@@ -110,4 +113,39 @@
             });
         }
     </script>
+
+    <script>
+
+        $("#wordForSearch").autocomplete({
+                source: function (request, response) {
+                    console.log("autocomplete");
+                const apiUrl = `/Admin/Customer/SerachAboutCust1/${encodeURIComponent(request.term)}`;
+
+                    $.ajax({
+                        url: apiUrl,
+                        type: 'GET',
+                        success: function (data) {
+                            console.log(data);
+                            const customerNames = data.map(customer => ({
+                            label: customer.custName,
+                            value: customer.custName,
+                            id: customer.id
+                        }));
+                            response(customerNames);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
+                        }
+                    });
+                },
+                minLength: 3,
+                select: function (event, ui) {
+
+                    $("#wordForSearch").val(ui.item.value);
+                    Search();
+                }
+            });
+
+    </script>
+
 }
