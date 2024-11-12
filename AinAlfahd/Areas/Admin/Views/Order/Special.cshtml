@@ -19,7 +19,7 @@
             <h3 class="text-center m-4">أختر التاريخ للبحث</h3>
             <div class="col-md-8">
                 <div class="d-flex justify-content-evenly">
-                    <input id="OrderId" class="form-control ms-1 " type="date" placeholder="بحث" aria-label="Search">
+                    <input id="OrderId" class="form-control ms-1 " value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" placeholder="بحث" aria-label="Search">
                 </div>
                 <div class="d-flex m-3 justify-content-center">
                     <button class="btn btn-outline-success text-black w-25 ms-1" type="button" onclick="Search()">بحث</button>
@@ -138,7 +138,7 @@
                                     </tr>
                                 `);
                     } else {
-                        alert('لم يتم العثور على بيانات العميل.');
+                        alert('لم يتم العثور على بيانات .');
 
                     }
                 },
