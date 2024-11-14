@@ -6,6 +6,56 @@ html {
   html {
     font-size: 16px;
   }
+
+    .sidebar {
+        width: 15%;
+        overflow: auto;
+        height: 89.50vh;
+        background-color: #343a40;
+        padding-top: 10px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 9999;
+    }
+
+    .main-content {
+        padding: 10px;
+        flex-grow: 1;
+        height: 89vh;
+        margin-left: 12%;
+        overflow-y: auto;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 630px) {
+
+    .sidebar.active {
+        left: 0px;
+    }
+
+    .sidebar {
+        width: 50%;
+        opacity: 0.7;
+        overflow: auto;
+        height: 89.50vh;
+        background-color: #343a40;
+        padding-top: 10px;
+        position: absolute;
+        left: -900px;
+        top: 2%;
+        z-index: 9999;
+    }
+
+    .main-content {
+        padding: 10px;
+        flex-grow: 1;
+        height: 89vh;
+        margin-left: 1%;
+        overflow-y: auto;
+        white-space: nowrap;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
