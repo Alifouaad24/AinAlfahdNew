@@ -52,7 +52,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveRe(RecirptDto model)
+        public async Task<IActionResult> SaveRe([FromBody] RecirptDto model)
         {
 
             if (!ModelState.IsValid)

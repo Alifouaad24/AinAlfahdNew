@@ -1,0 +1,308 @@
+﻿@using AinAlfahd.Models
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model Order
+@{
+    ViewData["Title"] = "SeaShipphngScreen";
+    Layout = "_Layout";
+}
+
+<h1 class="text-center text-info bg-light p-2 fw-bold-400">إضافة طلب شحن بحري</h1>
+<h3 class="text-center text-danger bg-light p-2 fw-light">@TempData["err"]</h3>
+<h3 class="text-center text-success bg-light p-2 fw-light">@TempData["msg"]</h3>
+
+<form action="ExecuteOpeation" method="post">
+    <div class="row col-12 d-flex justify-content-between">
+        <div class="col-md-5 ms-5">
+            <div class="row">
+                <div class="row">
+                    <div class="form-group mb-3 col-md-10">
+                        <label class="form-label text-start">اسم العميل</label>
+                        <input id="CusName" readonly class="form-control" />
+                        <input hidden id="CustomerId11" name="CustomerId11" readonly class="form-control" />
+                    </div>
+                </div>
+
+                <div hidden class="form-group mb-1 col-md-5">
+                    <label class="form-label text-end">حالة الطلب</label>
+                    <div class="d-flex justify-content-start">
+                        <input readonly value="1" name="OrderSt" class="border-1 form-control text-center ms-1" style="width:80px" />
+                    </div>
+                </div>
+                <div class="form-group mb-3 col-md-5">
+                    <label class="form-label text-end">الوزن</label>
+                    <input id="weght12" name="weight" class="form-control" />
+                </div>
+                <div class="form-group mb-1 col-md-2">
+                    <label class="form-label text-end"></label>
+                    <input readonly id="weght12" value="Kg" class="form-control border-0 mt-2 ms-0" />
+                </div>
+            </div> 
+            <div class="row col-6 mt-12">
+                <div class="col-md-12 text-start">
+                    <button type="button" onclick="addOrderToTable()" class="btn col-md-12 btn-primary">إضافة إلى الجدول</button>
+
+                    @* <button type="submit" class="btn col-md-12 btn-primary">حفظ</button> *@
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="container mt-2">
+                <div class="row justify-content-center">
+                    <h5 class="text-center mb-4">أدخل اسم العميل او رقم الجوال للبحث</h5>
+                    <div class="col-md-10">
+                        <div class="d-flex justify-content-end">
+                            <input id="wordForSearch" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container col-10 mt-4" style="max-height: 250px; overflow-y: auto;">
+                <table class="table table-bordered table-striped">
+                    <thead class="thead-light">
+                        <tr>
+                            <th class="text-center m-1">اسم العميل</th>
+                            <th hidden class="text-end m-1">معرف العميل</th>
+                        </tr>
+                    </thead>
+                    <tbody class="fooooree">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+       
+    </div>
+</form>
+
+<hr />
+<div class="container mt-5" style="max-height: 300px; overflow-y: auto;">
+    <table id="orderTable" dir="ltr" class="table table-bordered table-striped">
+        <thead class="thead-light  ">
+            <tr>
+                <th class="text-start text-end m-1">عمليات</th>
+                <th class="text-start text-end m-1">المبلغ</th>
+                <th class="text-start text-end m-1">الوزن</th>
+                <th hidden class="text-start text-end m-1">المعرف</th>
+                <th class="text-start text-end m-1">اسم العميل</th>
+            </tr>
+        </thead>
+        <tbody id="orderTableBody" class="text-end">
+            
+        </tbody>
+    </table>
+</div>
+<div class="row col-12 mt-12">
+    <div class="col-md-12 text-center">
+        <button type="button" onclick="submitOrders()" class="btn col-md-3 btn-success">حفظ</button>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+
+        function addOrderToTable() {
+            let order = {
+                customerName: document.getElementById("CusName").value,
+                customerId: document.getElementById("CustomerId11").value,
+                weight: document.getElementById("weght12").value,
+                amount: document.getElementById("weght12").value < 10 ? document.getElementById("weght12").value * 4 : 38
+            };
+
+            let tableBody = document.getElementById("orderTableBody");
+            let row = document.createElement("tr");
+
+            row.innerHTML = `
+             <td><button type="button" onclick="deletetr(this)" class="btn col-md-3 btn-success">إزالة</button></td>
+            <td>${order.amount}</td>
+            <td>${order.weight}</td>
+            <td hidden>${order.customerId}</td>
+            <td>${order.customerName}</td>
+            `;
+
+            tableBody.appendChild(row);
+        }
+
+        function submitOrders() {
+            let orders = collectOrders();
+
+            $.ajax({
+                url: '/Admin/Order/ExecuteOperation',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(orders),
+                success: function (response) {
+                    alert("تم إرسال الطلبات بنجاح!");
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+
+
+        function collectOrders() {
+            let orders = [];
+            let tableRows = document.querySelectorAll("#orderTableBody tr");
+
+            tableRows.forEach(row => {
+                let order = {
+                    amount: row.cells[1].textContent,
+                    weight: row.cells[2].textContent,
+                    customerId: row.cells[3].textContent,
+                };
+                orders.push(order);
+            });
+
+            return orders;
+        }
+
+
+
+        $(document).ready(function () {
+        console.log("jQuery is loaded and ready!");
+        });
+
+    </script>
+
+    <script>
+
+        function Search() {
+            console.log("Search is ready!");
+            const word = $('#wordForSearch').val();
+
+            if (word.trim() === '') {
+                alert('يرجى إدخال اسم العميل أو رقم الجوال للبحث.');
+                return;
+            }
+
+            const apiUrl = `/Admin/Customer/SerachAboutCust/${encodeURIComponent(word)}`;
+
+            $.ajax({
+                url: apiUrl,
+                type: 'GET',
+                success: function (data) {
+                    const tbody = $('.fooooree');
+                    tbody.empty();
+
+                    if (Array.isArray(data) && data.length > 0) {
+                        data.forEach(customer => {
+                            tbody.append(`
+                                <tr>
+                                    <td class="text-end m-1" onclick="selectCustomer('${customer.custName}' , '${customer.id}')">${customer.custName}</td>
+                                            <td class="text-end m-1" hidden onclick="selectCustomer('${customer.custName}' , '${customer.id}')">${customer.id}</td>
+                                </tr>
+                             `);
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
+                    alert('لم يتم العثور على بيانات العميل.');
+                }
+            });
+        }
+
+        function selectCustomer(customerName, iid) {
+            console.log(customerName);
+            $('#CustomerId11').val(iid);
+            $('#CusName').val(customerName);
+        }
+    </script>
+
+    <script>
+
+        $("#wordForSearch").autocomplete({
+            source: function (request, response) {
+
+                const apiUrl = `/Admin/Customer/SerachAboutCust1/${encodeURIComponent(request.term)}`;
+
+                $.ajax({
+                    url: apiUrl,
+                    type: 'GET',
+                    success: function (data) {
+
+                        const customerNames = data.map(customer => ({
+                            label: customer.custName,
+                            value: customer.custName,
+                            id: customer.id
+                        }));
+
+                        response(customerNames);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
+                    }
+                });
+            },
+            minLength: 3,
+            select: function (event, ui) {
+
+                $("#wordForSearch").val(ui.item.value);
+                Search();
+            }
+        });
+
+        function deletetr(button) {
+            const row = button.parentNode.parentNode;
+            row.remove();
+        }
+
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* <div class="row mt-4">
+                <div class="form-group mb-3 col-md-2">
+                    <label class="form-label text-start">سعر الصرف</label>
+                    <input readonly value="@{
+                        @ViewBag.ex} IQ" class="form-control" />
+                </div>
+                <div class="form-group mb-3 col-md-3">
+                    <label class="form-label text-start">تكلفة الواحدة</label>
+                    <input readonly value="$8" style="width:100px" class="form-control text-center" />
+                </div>
+
+                <div class="form-group mb-3 col-md-2">
+                    <label asp-for="@Model.SellingPrice" class="form-label text-start">سعر المبيع</label>
+                    <input id="SellingPrice1" readonly asp-for="@Model.SellingPrice" class="form-control" />
+                    <span asp-validation-for="@Model.SellingPrice" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3 col-md-2">
+                    <label asp-for="@Model.SellingDisCount" class="form-label text-end">التعديلات</label>
+                    <input readonly id="SellingDisCount" asp-for="@Model.SellingDisCount" class="form-control" />
+                    <span asp-validation-for="@Model.SellingDisCount" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3 col-md-2">
+                    <label asp-for="@Model.TotalPriceFromCust" class="form-label text-end">المبلغ</label>
+                    <input id="costtocust" asp-for="@Model.TotalPriceFromCust" class="form-control" />
+                    <span asp-validation-for="@Model.TotalPriceFromCust" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3 col-md-1">
+                    <label asp-for="@Model.SellingCurrency" class="form-label text-end">العملة</label>
+                    <input readonly id="SellingCurrency" asp-for="@Model.SellingCurrency" class="form-control" />
+                    <span asp-validation-for="@Model.SellingCurrency" class="text-danger"></span>
+                </div>
+                <div class="form-group m-1 form-check col-md-2 d-flex justify-content-end align-items-center">
+                    <input asp-for="@Model.IsFinanced" class="form-check-input me-2 ms-1" type="checkbox" />
+                    <label asp-for="@Model.IsFinanced" class="form-check-label">تم الدفع</label>
+                    <span asp-validation-for="IsFinanced" class="text-danger ms-2"></span>
+                </div>
+                <div class="form-group m-1  form-check col-md-2 d-none justify-content-end align-items-center">
+                    <input asp-for="@Model.CurrentState" class="form-check-input me-2 ms-1" type="checkbox" checked />
+                    <label asp-for="@Model.CurrentState" class="form-check-label">الحالة</label>
+                    <span asp-validation-for="CurrentState" class="text-danger ms-2"></span>
+                </div>
+            </div> *@

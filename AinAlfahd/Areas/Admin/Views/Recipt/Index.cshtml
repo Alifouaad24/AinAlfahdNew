@@ -9,6 +9,7 @@
 @{
     decimal cost = 0;
     decimal f = 0;
+    int countOfLines = 0;
 }
 
 <style>
@@ -86,6 +87,7 @@
                 {
                     cost += receipt.Cost;
                     f += receipt.TotalPriceFromCust;
+                    countOfLines++;
 
                     <tr>
                         <td class="d-flex justify-content-center">
@@ -117,11 +119,14 @@
 </div>
 <br />
 <div class="info-card row col-12">
-    <div class="value col-5">
+    <div class="value col-4">
         <span class="currency text-danger">Cost :</span> @cost.ToString("N0") <span class="currency text-success">$</span>
     </div>
-    <div class="value col-5" ">
+    <div class="value col-4">
         <span class="currency text-danger">Profits :</span> @f.ToString("N0") <span class="currency text-success">IQ</span>
+    </div>
+    <div class="value col-4">
+        <span class="currency text-danger">Lines: @countOfLines</span>
     </div>
 </div>
 

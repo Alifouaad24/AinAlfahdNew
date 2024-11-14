@@ -83,4 +83,6 @@ public partial class OrderDetail
     public int? WhsBatchId { get; set; }
 
     public int? Whsid { get; set; }
+
+    public decimal weight { get; set; }
 }

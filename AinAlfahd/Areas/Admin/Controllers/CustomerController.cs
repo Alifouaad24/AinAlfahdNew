@@ -79,7 +79,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
                 return View(customer1);
             }
 
-            return View(customer);
+            return View(new Customer());
         }
 
         public async Task AddZero()

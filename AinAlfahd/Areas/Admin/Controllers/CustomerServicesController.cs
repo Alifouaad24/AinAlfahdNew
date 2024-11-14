@@ -16,14 +16,6 @@ namespace AinAlfahd.Areas.Admin.Controllers
         }
         public async Task<IActionResult> AddCustomerService()
         {
-            var customers = await dBContext.Customers.ToListAsync();
-
-            ViewBag.Customers = customers.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.CustName,
-            }).ToList();
-
 
             var services = await dBContext.Services.ToListAsync();
 

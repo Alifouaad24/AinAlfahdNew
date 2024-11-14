@@ -8,6 +8,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.BiDi.Modules.Network;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
 using System.Reflection.Emit;
@@ -212,14 +213,86 @@ namespace AinAlfahd.Areas.Admin.Controllers
                 Console.WriteLine($"Request error: {e.Message}");
                 return BadRequest(e.Message);
             }
+        }
 
-;
+
+        public async Task<IActionResult> SeaShipphngScreen()
+        {
+            return View();
+        }
+
+        [HttpPost("/Admin/Order/ExecuteOperation")]
+        public async Task<IActionResult> ExecuteOperation([FromBody] List<OrderMo> orders)
+        {
+
+            try
+            {
+                var ordsGr = orders.GroupBy(or => or.CustomerId).ToList();
+                int total = 0;
+
+                foreach (var group in ordsGr)
+                {
+                    var order = new Order
+                    {
+                        OrderOwner = Convert.ToInt32(group.Key),
+                        OrderStatus = Convert.ToInt32(1),
+                        OrderDt = DateOnly.FromDateTime(DateTime.Now),
+                    };
+
+
+                    await dbContext.Orders.AddAsync(order);
+                    await dbContext.SaveChangesAsync();
+
+                    foreach (var o in group)
+                    {
+                        var detail = new OrderDetail
+                        {
+                            OrderNo = order.Id,
+                            OriginalAmount = (int)o.Amount,
+                            ItemCode = 3011,
+                            weight = o.Weight
+                        };
+
+
+                        await dbContext.OrderDetails.AddAsync(detail);
+                        await dbContext.SaveChangesAsync();
+                    }
+
+                    foreach (var o in group)
+                    {
+                        total += (int)o.Amount;
+                    }
+
+                    order.NetAmount = total;
+                    dbContext.Orders.Update(order);
+                    await dbContext.SaveChangesAsync();
+                    total = 0;
+                }
+
+
+                TempData["msg"] = "تم إدخال البيانات بنجاح !";
+                return RedirectToAction("SeaShipphngScreen");
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+                TempData["err"] = "حدث خطأ أثناء إدخال البيانات يرجى المحولة مجددا والتحقق من ادخال كافة المعلومات المطلوبة !";
+                return RedirectToAction("SeaShipphngScreen");
+            }
 
         }
+
     }
 
     class ItemRequest
     {
         public string url { get; set; }
+    }
+
+    public class OrderMo
+    {
+        public string CustomerId { get; set; }
+        public decimal Weight { get; set; }
+        public decimal Amount { get; set; }
     }
 }

@@ -3,42 +3,157 @@
 @model CustomerService
 @{
     ViewData["Title"] = "AddCustomerService";
-}
+    Layout = "_Layout";
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Customer Service</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="container mt-5">
-        <h2>Add a Service to a Customer</h2>
-        <br />
-        <a class="btn btn-group btn-primary" asp-area="" asp-controller="Home" asp-action="Index">العودة الى الشاشة الرئيسية </a>
+    }
+
+<h2 class="text-center bg-light p-2 m-5">إضافة خدمة لعميل </h2>
+
+<div class="row d-flex justify-content-between col-md-10 mt-5">
+
+    <div class="container col-md-5 mt-5">
+        
         <br />
         <span>@TempData["message"]</span>
         <form asp-action="save" method="post" asp-controller="CustomerServices" class="mt-4">
 
             <div class="form-group">
-                <label for="customer">Select Customer</label>
-                <select id="customer" asp-for="@Model.CustomerId" class="form-control" asp-items="@ViewBag.Customers">
-                </select>
+                <label class="m-2" for="customer">اسم العميل</label>
+                <input hidden id="customerIID" asp-for="@Model.CustomerId" class="form-control" asp-items="@ViewBag.Customers" />
+                <input id="customerNNam" class="form-control m-2" asp-items="@ViewBag.Customers" />
             </div>
 
             <div class="form-group">
-                <label for="service">Select Service</label>
-                <select id="service" asp-for="@Model.ServiceId" class="form-control" asp-items="@ViewBag.Services">
+                <label class="m-2" for="service">اختر نوع الخدمة</label>
+                <select id="service" asp-for="@Model.ServiceId" class="form-control m-2" asp-items="@ViewBag.Services">
                 </select>
             </div>
 
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Add Service</button>
+            <div class="form-group m-2 col-6">
+                <button type="submit" class="btn btn-primary">حفظ</button>
             </div>
 
         </form>
     </div>
-</body>
-</html>
+
+
+    <div class="col-md-5 mt-1">
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <h3 class="text-center m-3">أدخل اسم العميل او رقم الجوال للبحث</h3>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <input id="wordForSearch" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mt-5">
+            <table class="table table-bordered table-striped">
+                <thead class="thead-light">
+                    <tr>
+                        <th class="text-end m-1">اسم العميل</th>
+                    </tr>
+                </thead>
+                <tbody class="table tbody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            console.log("jQuery is loaded and ready!");
+            console.log($.ui.autocomplete);
+            console.log($.ui);
+
+        });
+
+        function Search() {
+            console.log("Search is ready!");
+            const word = $('#wordForSearch').val();
+
+            if (word.trim() === '') {
+                alert('يرجى إدخال اسم العميل أو رقم الجوال للبحث.');
+                return;
+            }
+
+            const apiUrl = `/Admin/Customer/SerachAboutCust/${encodeURIComponent(word)}`;
+
+            $.ajax({
+                url: apiUrl,
+                type: 'GET',
+                success: function (data) {
+                    const tbody = $('table tbody');
+                    tbody.empty();
+
+                    if (Array.isArray(data) && data.length > 0) {
+                        data.forEach(customer => {
+
+
+                            let phoneNumber = customer.custMob;
+
+                            if (phoneNumber.startsWith('0')) {
+                                phoneNumber = 964 + phoneNumber.slice(1);
+                            }
+
+                            tbody.append(`
+                                <tr>
+                                          <td class="text-end m-1" onclick="MoveeIDAndName('${customer.custName}', ${customer.id})">${customer.custName}</td>
+                                </tr>
+                                            `);
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
+                    alert('لم يتم العثور على بيانات العميل.');
+                }
+            });
+        }
+    </script>
+
+    <script>
+
+        $("#wordForSearch").autocomplete({
+            source: function (request, response) {
+                console.log("autocomplete");
+                const apiUrl = `/Admin/Customer/SerachAboutCust1/${encodeURIComponent(request.term)}`;
+
+                $.ajax({
+                    url: apiUrl,
+                    type: 'GET',
+                    success: function (data) {
+                        console.log(data);
+                        const customerNames = data.map(customer => ({
+                            label: customer.custName,
+                            value: customer.custName,
+                            id: customer.id
+                        }));
+                        response(customerNames);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
+                    }
+                });
+            },
+            minLength: 3,
+            select: function (event, ui) {
+
+                $("#wordForSearch").val(ui.item.value);
+                Search();
+            }
+        });
+
+        function MoveeIDAndName(name, id) {
+            $('#customerNNam').val(name).trigger('change');
+            $('#customerIID').val(id).trigger('change');
+        }
+
+    </script>
+
+}
