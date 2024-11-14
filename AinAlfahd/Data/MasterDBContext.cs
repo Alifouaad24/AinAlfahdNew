@@ -127,6 +127,8 @@ public partial class MasterDBContext : DbContext
     public DbSet<Address> Addresses { get; set; }
     public DbSet<Reciept> Reciepts { get; set; }
 
+    public DbSet<Systemm> Systems { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
