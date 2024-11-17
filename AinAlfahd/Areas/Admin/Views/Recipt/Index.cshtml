@@ -91,8 +91,8 @@
 
                     <tr>
                         <td class="d-flex justify-content-center">
-                            <a class="btn btn-primary" asp-action="AddReciept" asp-route-id="@receipt.RecieptId">تعديل</a>
-                            <a class="btn ms-1 btn-danger" asp-action="DeleteData"  asp-route-id="@receipt.RecieptId">حذف</a>
+                            <a class="btn btn-primary" asp-action="AddReciept" asp-route-id="@receipt.RecieptId"><i class="fas fa-edit"></i></a>
+                            <a class="btn ms-1 btn-danger" asp-action="DeleteData" asp-route-id="@receipt.RecieptId"><i class="fas fa-trash"></i></a>
                         </td>
                         @{
                             if (@receipt.IsFinanced)

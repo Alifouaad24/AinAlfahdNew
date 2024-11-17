@@ -1,5 +1,6 @@
 ﻿using AinAlfahd.Data;
 using AinAlfahd.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -32,14 +33,22 @@ namespace AinAlfahd.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task Save(CustomerService customerService, List<int> ServiceIds)
+        public async Task<IActionResult> Save(CustomerService customerService, List<int> ServiceIds)
         {
             if (!ModelState.IsValid)
+            {
                 TempData["message"] = "حدث خطأ أثناء حفظ البيانات";
-               RedirectToAction("AddCustomerService");
+                RedirectToAction("AddCustomerService");
+            }
+
 
             if (ServiceIds != null && ServiceIds.Any())
             {
+                var sers = await dBContext.CustomerServices.Where(s => s.CustomerId == customerService.CustomerId).ToListAsync();
+
+                dBContext.CustomerServices.RemoveRange(sers);
+                await dBContext.SaveChangesAsync();
+
                 foreach (var serviceId in ServiceIds)
                 {
                     var CustomerService = new CustomerService
@@ -55,7 +64,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
 
 
             TempData["message"] = "تم الحفظ بنجاح";
-            RedirectToAction("AddCustomerService");
+            return RedirectToAction("AddCustomerService");
 
         }
 

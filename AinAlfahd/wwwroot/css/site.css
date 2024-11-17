@@ -23,7 +23,7 @@ html {
         padding: 10px;
         flex-grow: 1;
         height: 89vh;
-        margin-left: 12%;
+        margin-left: 18%;
         overflow-y: auto;
         white-space: nowrap;
     }

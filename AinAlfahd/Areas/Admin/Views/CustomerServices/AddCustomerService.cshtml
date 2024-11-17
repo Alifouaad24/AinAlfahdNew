@@ -7,6 +7,11 @@
 
     }
 
+    <style>
+    .table tr:hover{
+        cursor: pointer;
+    }
+    </style>
 <h2 class="text-center bg-light p-2 m-5">إضافة خدمة لعميل </h2>
 
 <div class="row d-flex justify-content-between col-md-10 mt-5">
@@ -163,13 +168,6 @@
 
     </script>
     <script>
-
-        $('#customerIID').change(function () {
-            let id = $('#customerIID').val();
-            LoadCustomerServices(id);
-        })
-
-
         function LoadCustomerServices(customerId) {
             console.log(customerId);
             console.log("LoadCustomerServices");
@@ -180,13 +178,13 @@
                 type: 'GET',
                 success: function (data) {
                     console.log(data);
-                     // $('input[name="ServiceIds"]').prop('checked', false);
+                     $('input[name="ServiceIds"]').prop('checked', false);
 
-                     // if (Array.isArray(data) && data.length > 0) {
-                     //        data.forEach(service => {
-                     //        $(`#service_${service.serviceId}`).prop('checked', true);
-                     //        });
-                     // }
+                     if (Array.isArray(data) && data.length > 0) {
+                            data.forEach(service => {
+                           $(`#service_${service.id}`).prop('checked', true);
+                            });
+                     }
                 },
                 error: function (xhr, status, error) {
                     console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
@@ -194,6 +192,11 @@
                 }
             });
         }
+
+        $('#customerIID').change(function () {
+            let id = $('#customerIID').val();
+            LoadCustomerServices(id);
+        })
     </script>
 
 }

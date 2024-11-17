@@ -151,6 +151,7 @@ public partial class Order
     public int? PreClose { get; set; }
 
     public int? CenrtralBankPrice { get; set; }
+    //public bool CurrentState { get; set; }
 
     public List<OrderDetail> OrderDetails { get; set; }
 }

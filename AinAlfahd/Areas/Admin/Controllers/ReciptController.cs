@@ -52,7 +52,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveRe([FromBody] RecirptDto model)
+        public async Task<IActionResult> SaveRe(RecirptDto model)
         {
 
             if (!ModelState.IsValid)
@@ -62,6 +62,12 @@ namespace AinAlfahd.Areas.Admin.Controllers
             }
             if(model.RecieptId == 0)
             {
+                var reci = await dBContext.Reciepts.Where(r => r.CustomerId == model.CustomerId & r.Weight == model.Weight & r.RecieptDate == model.RecieptDate).FirstOrDefaultAsync();
+                if (reci != null)
+                {
+                    TempData["error"] = "الوصل موجود مسبقا  !";
+                    return RedirectToAction("AddReciept");
+                }
                 var re = new Reciept
                 {
                     Cost = model.Cost,

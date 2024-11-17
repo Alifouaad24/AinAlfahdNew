@@ -15,7 +15,7 @@
                 <th class="text-end m-1" style="background-color: gray;">اسم المنتج</th>
                 <th class="text-end m-1" style="background-color: gray;">الوزن</th>
                 <th class="text-end m-1" style="background-color: gray;">اسم العميل</th>
-                <th class="text-end m-1" style="background-color: gray;">تاريخ الوصل</th>
+                <th class="text-end m-1" style="background-color: gray;">تاريخ الطلب</th>
                 <th class="text-end m-1" style="background-color: gray;">رقم الوصل</th>
             </tr>
         </thead>
@@ -27,9 +27,9 @@
 
                 <tr>
                     <td class="d-flex justify-content-center">
-                        @* <a class="btn btn-primary" asp-action="" asp-route-id="@oder">تعديل</a> *@
-                        @* <a class="btn ms-1 btn-danger" asp-action="DeleteData" asp-route-id="@oder">حذف</a> *@
-                    </td>
+                            <a class="btn btn-success" asp-action="" asp-route-id="@oder"><i class="fas fa-edit"></i></a>
+                            <a class="btn ms-1 btn-danger" asp-action="DeleteData" asp-route-id="@oder"><i class="fas fa-trash"></i></a>
+                        </td>
                         <td class="text-end m-1">@oderdet.Item.PCode</td>
                         <td class="text-end m-1">@oderdet.Item.EngName</td>
                         <td class="text-end m-1">@oderdet.weight</td>
