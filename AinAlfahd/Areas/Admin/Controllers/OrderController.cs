@@ -34,6 +34,20 @@ namespace AinAlfahd.Areas.Admin.Controllers
             return View();
         }
 
+        public async Task<IActionResult> OrderTable()
+        {
+            var orders = await dbContext.Orders
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Item)
+                .Include(o => o.Customer)
+                .Take(50)
+                .ToListAsync();
+
+            var groupedOrders = orders.GroupBy(o => o.OrderOwner).ToList();
+
+            return View(orders);
+        }
+
         public async Task<IActionResult> Special()
         {
             return View();

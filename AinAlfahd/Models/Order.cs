@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AinAlfahd.Models;
 
@@ -9,7 +10,9 @@ public partial class Order
 
     public DateOnly? OrderDt { get; set; }
 
+    [ForeignKey(nameof(Customer))]
     public int? OrderOwner { get; set; }
+    public Customer Customer { get; set; }
 
     public int? WithDelivery { get; set; }
 
@@ -148,4 +151,6 @@ public partial class Order
     public int? PreClose { get; set; }
 
     public int? CenrtralBankPrice { get; set; }
+
+    public List<OrderDetail> OrderDetails { get; set; }
 }

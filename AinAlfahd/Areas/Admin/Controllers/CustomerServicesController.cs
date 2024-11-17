@@ -25,27 +25,47 @@ namespace AinAlfahd.Areas.Admin.Controllers
                 Text = a.Description
             }).ToList();
 
+            ViewBag.serrr = services;
+
             var CustSer = new CustomerService();
             return View(CustSer);
         }
 
         [HttpPost]
-        public async Task Save(CustomerService customerService)
+        public async Task Save(CustomerService customerService, List<int> ServiceIds)
         {
             if (!ModelState.IsValid)
                 TempData["message"] = "حدث خطأ أثناء حفظ البيانات";
                RedirectToAction("AddCustomerService");
 
-            var CustomerService = new CustomerService
+            if (ServiceIds != null && ServiceIds.Any())
             {
-                CustomerId = customerService.CustomerId,
-                ServiceId = customerService.ServiceId,
-            };
+                foreach (var serviceId in ServiceIds)
+                {
+                    var CustomerService = new CustomerService
+                    {
+                        CustomerId = customerService.CustomerId,
+                        ServiceId = serviceId,
+                    };
 
-            await dBContext.CustomerServices.AddAsync(CustomerService);
-            await dBContext.SaveChangesAsync();
+                    await dBContext.CustomerServices.AddAsync(CustomerService);
+                    await dBContext.SaveChangesAsync();
+                }
+            }
+
+
             TempData["message"] = "تم الحفظ بنجاح";
             RedirectToAction("AddCustomerService");
+
+        }
+
+        [HttpGet("/Admin/CustomerServices/GetCustomerServices/{customerId}")]
+        public async Task<IActionResult> GetCustomerServices(int customerId)
+        {
+
+            var services = await dBContext.CustomerServices.Where(cs => cs.CustomerId == customerId).Include(cs => cs.Service).ToListAsync();
+            var actulSer = services.Select(s => s.Service).ToList();
+            return Ok(actulSer);
 
         }
     }

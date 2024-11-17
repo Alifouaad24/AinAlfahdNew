@@ -1,0 +1,46 @@
+﻿@using AinAlfahd.Models
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<Order>
+@{
+    ViewData["Title"] = "OrderTable";
+    Layout = "_Layout";
+}
+
+<div class="border border-dark m-5 ms-5" style="max-height: 70vh; overflow-y: auto;">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-light" style="position: sticky; top: 0; background-color: gray; z-index: 999;">
+            <tr>
+                <th class="text-end m-1" style="background-color: gray;">تعديلات</th>
+                <th class="text-end m-1 " style="background-color: gray;">الرمز</th>
+                <th class="text-end m-1" style="background-color: gray;">اسم المنتج</th>
+                <th class="text-end m-1" style="background-color: gray;">الوزن</th>
+                <th class="text-end m-1" style="background-color: gray;">اسم العميل</th>
+                <th class="text-end m-1" style="background-color: gray;">تاريخ الوصل</th>
+                <th class="text-end m-1" style="background-color: gray;">رقم الوصل</th>
+            </tr>
+        </thead>
+        <tbody class="foooor">
+            @foreach (var oder in Model)
+            {
+                @foreach (var oderdet in oder.OrderDetails)
+                {
+
+                <tr>
+                    <td class="d-flex justify-content-center">
+                        @* <a class="btn btn-primary" asp-action="" asp-route-id="@oder">تعديل</a> *@
+                        @* <a class="btn ms-1 btn-danger" asp-action="DeleteData" asp-route-id="@oder">حذف</a> *@
+                    </td>
+                        <td class="text-end m-1">@oderdet.Item.PCode</td>
+                        <td class="text-end m-1">@oderdet.Item.EngName</td>
+                        <td class="text-end m-1">@oderdet.weight</td>
+                    <td class="text-end m-1">@oder.Customer.CustName</td>
+                    <td class="text-end m-1">@oder.OrderDt</td>
+                    <td class="text-end m-1">@oder.Id</td>
+                </tr>
+            }
+            }
+
+        </tbody>
+    </table>
+</div>
+

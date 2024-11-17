@@ -5,6 +5,12 @@
     ViewData["Title"] = "SeaShipphngScreen";
     Layout = "_Layout";
 }
+<style>
+    .table tr:hover {
+        cursor: pointer;
+    }
+
+</style>
 
 <h1 class="text-center text-info bg-light p-2 fw-bold-400">إضافة طلب شحن بحري</h1>
 <h3 class="text-center text-danger bg-light p-2 fw-light">@TempData["err"]</h3>
@@ -85,14 +91,14 @@
                 <th class="text-start text-end m-1">اسم العميل</th>
             </tr>
         </thead>
-        <tbody id="orderTableBody" class="text-end">
+        <tbody id="orderTableBody" class="text-end orderTableBody1">
             
         </tbody>
     </table>
 </div>
 <div class="row col-12 mt-12">
     <div class="col-md-12 text-center">
-        <button type="button" onclick="submitOrders()" class="btn col-md-3 col-6 btn-success">حفظ</button>
+        <button type="button" onclick="submitOrders()" id="Savebtn" class="btn col-md-3 col-6 btn-success">حفظ</button>
     </div>
 </div>
 
@@ -111,8 +117,9 @@
             let row = document.createElement("tr");
 
             row.innerHTML = `
-             <td><button type="button" onclick="deletetr(this)" class="btn col-md-3 btn-outline -warning">إزالة</button></td>
-            <td>${order.amount}</td>
+                             <td><button type="button" onclick="deletetr(this)" class="btn col-md-3 btn-outline -warning"><i class="fas fa-trash"></i>
+        </button></td>
+                    <td>$${order.amount}</td>
             <td>${order.weight}</td>
             <td hidden>${order.customerId}</td>
             <td>${order.customerName}</td>
@@ -136,6 +143,10 @@
                     console.error('Error:', error);
                 }
             });
+
+
+            let tableBody = document.getElementById("orderTableBody");
+            $('#orderTableBody').empty();
         }
 
 
@@ -158,8 +169,37 @@
 
 
         $(document).ready(function () {
-        console.log("jQuery is loaded and ready!");
+            console.log("jQuery is loaded and ready!");
+
+            let tableBody = document.getElementById("orderTableBody");
+            $('#orderTableBody').empty();
+
+
+            if (!tableBody.hasChildNodes()) {
+                console.log("tableBody does not have child nodes.");
+                $('#Savebtn').prop("disabled", true); 
+            } else {
+                console.log("tableBody has child nodes.");
+            }
+
+            const targetNode = document.getElementById('orderTableBody');
+
+            const config = { childList: true };
+
+            const callback = function (mutationsList, observer) {
+                if (targetNode.children.length === 0) {
+                    $('#Savebtn').prop('disabled', true); 
+                } else {
+                    $('#Savebtn').prop('disabled', false);
+                }
+            };
+
+            const observer = new MutationObserver(callback);
+            observer.observe(targetNode, config);
         });
+
+
+
 
     </script>
 
