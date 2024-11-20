@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
 using System.Reflection.Emit;
+using System.Security.Cryptography;
 using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -56,10 +57,22 @@ namespace AinAlfahd.Areas.Admin.Controllers
         [HttpGet("/Admin/Order/SearchAboutOrderByDate/{datee}")]
         public async Task<IActionResult> SearchAboutOrderByDate(DateOnly datee)
         {
-            var orders = await dbContext.OrderDetails.Include(o => o.Item).Include(od => od.Order).Where(o => o.Order.OrderDt >= datee & o.Item.WebUrl != null).ToListAsync();
-            var ord = orders.Where(o => Regex.IsMatch(o.Item.PCode, @"^\d")).OrderBy(o => o.Order.OrderDt).Take(50)
-                .ToList();
-            return Ok(ord);
+            try
+            {
+                var orders = await dbContext.OrderDetails.Include(o => o.Item).Include(od => od.Order)
+                    .Where(o => o.Order.OrderDt >= datee & o.Item.WebUrl != null)
+                    .ToListAsync();
+
+                var ord = orders.Where(o => Regex.IsMatch(o.Item.PCode, @"^\d")).OrderBy(o => o.Order.OrderDt).Take(100)
+                    .ToList();
+                return Ok(ord);
+            }
+            catch(Exception ex)
+            {
+                ex.ToString();
+                return Ok();
+            }
+
         }
 
 

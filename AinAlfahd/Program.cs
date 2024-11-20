@@ -1,5 +1,6 @@
 ﻿using AinAlfahd.BL;
 using AinAlfahd.Data;
+using AinAlfahd.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -24,8 +25,6 @@ builder.Services.AddDbContext<MasterDBContext>(options =>
 builder.Services.AddScoped<ICustomer, CutomerRepo> ();
 builder.Services.AddScoped<ICustomerServices, CustomerServices> ();
 builder.Services.AddRazorPages();
-
-
 
 
 

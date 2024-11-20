@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace AinAlfahd.Models;
 
@@ -153,5 +154,6 @@ public partial class Order
     public int? CenrtralBankPrice { get; set; }
     //public bool CurrentState { get; set; }
 
+    [JsonIgnore]
     public List<OrderDetail> OrderDetails { get; set; }
 }
