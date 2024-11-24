@@ -133,6 +133,11 @@
 @section Scripts{
 
     <script>
+        function getCloseTenUp(value) {
+            const magnitude = Math.pow(10, Math.floor(Math.log10(value) - 1));
+            return Math.ceil(value / magnitude) * magnitude;
+        }
+
         $(document).ready(function () {
             console.log("dfgedhdf");
         })
@@ -187,8 +192,8 @@
                         
                         });
 
-                        $('#totalCost').text('Cost :' + co);
-                        $('#totalProfits').text(pro);
+                        $('#totalCost').text('Cost :' + co.toLocaleString())
+                        $('#totalProfits').text(getCloseTenUp(pro).toLocaleString());
                         $('#totalLines').text(li);
 
 
