@@ -164,7 +164,9 @@ namespace AinAlfahd.Areas.Admin.Controllers
         [HttpGet("/Admin/Recipt/SerachByDate/{from}/{to}")]
         public async Task<IActionResult> SerachByDate(string from, string to)
         {
-            var recipts = await dBContext.Reciepts.Where(c => c.CurrentState == true & c.RecieptDate > DateTime.Parse(from) & c.RecieptDate < DateTime.Parse(to))
+            var recipts = await dBContext.Reciepts
+                .Where(c => c.CurrentState == true & c.RecieptDate > DateTime.Parse(from) & c.RecieptDate < DateTime.Parse(to))
+                .OrderBy(r => r.RecieptDate)
                 .Include(r => r.Customer).ToListAsync();
 
             return Ok(recipts);
