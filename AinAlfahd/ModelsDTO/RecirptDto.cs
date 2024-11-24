@@ -16,6 +16,6 @@ namespace AinAlfahd.ModelsDTO
         public decimal? SellingDisCount { get; set; }
         public bool IsFinanced { get; set; }
         public bool CurrentState { get; set; }
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
     }
 }
