@@ -18,7 +18,7 @@
         public bool IsFinanced { get; set; }
         public bool CurrentState { get; set; }
 
-
+        public string Notes { get; set; }
         public int CustomerId { get; set; }
         public Customer Customer { get; set; }
     }

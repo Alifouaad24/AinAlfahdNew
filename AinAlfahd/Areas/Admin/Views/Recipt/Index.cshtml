@@ -53,12 +53,12 @@
     <div class="mb-3 col-10">
         <div class="mb-3 d-flex align-items-end flex-column">
             <label for="fromDate" class="form-label pe-1 text-dark fw-bold text-st">من تاريخ</label>
-            <input id="FromDate" type="date" id="fromDate" value="@DateTime.Now.ToString("yyyy-dd-MM")" class="form-control" />
+            <input id="FromDate" type="date" id="fromDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" />
         </div>
 
         <div class="mb-3 d-flex align-items-end flex-column">
             <label for="to" class="form-label pe-1 text-dark  fw-bold text-st">الى تاريخ</label>
-            <input id="ToDate" type="date" id="fromDate" value="@DateTime.Now.ToString("yyyy-dd-MM")" class="form-control" />
+            <input id="ToDate" type="date" id="fromDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" />
         </div>
         <div class="d-flex justify-content-center">
             <button class="btn btn-info col-4" onclick="SearchByDate()">بحث</button>
@@ -120,13 +120,13 @@
 <br />
 <div class="info-card row col-12">
     <div class="value col-4">
-        <span class="currency text-danger">Cost :</span> @cost.ToString("N0") <span class="currency text-success">$</span>
+        <span class="currency text-danger">Cost :</span> <span id="totalCost">@cost.ToString("N0")</span> <span class="currency text-success">$</span>
     </div>
     <div class="value col-4">
-        <span class="currency text-danger">Profits :</span> @f.ToString("N0") <span class="currency text-success">IQ</span>
+        <span  class="currency text-danger">Profits :</span> <span id="totalProfits">@f.ToString("N0")</span> <span class="currency text-success">IQ</span>
     </div>
     <div class="value col-4">
-        <span class="currency text-danger">Lines: @countOfLines</span>
+        <span class="currency text-danger">Lines: <span id="totalLines">@countOfLines</span></span>
     </div>
 </div>
 
@@ -150,8 +150,17 @@
                     console.log(data);
                     const tbody = $('.foooor');
                     tbody.empty();
+                    var co = 0;
+                    var pro = 0;
+                    var li = 0;
+
+                    $('#totalCost').text('');
+                    $('#totalProfits').text('');
+                    $('#totalLines').text('');
+
 
                     if (Array.isArray(data) && data.length > 0) {
+
                         data.forEach(rec => {
                             tbody.append(`
                                         <tr>
@@ -170,7 +179,19 @@
                                                             <td class="text-end m-1">${rec.recieptId}</td>
                                         </tr>
                                      `);
+
+                            co += rec.cost;
+                            pro += rec.totalPriceFromCust;
+                            li++;
+
+                        
                         });
+
+                        $('#totalCost').text('Cost :' + co);
+                        $('#totalProfits').text(pro);
+                        $('#totalLines').text(li);
+
+
                     } 
                 },
                 error: function (xhr, status, error) {

@@ -21,7 +21,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var recipts = await dBContext.Reciepts.Where(c => c.CurrentState == true).Include(r => r.Customer).ToListAsync();
+            var recipts = await dBContext.Reciepts.Where(c => c.CurrentState == true).Include(r => r.Customer).OrderBy(r => r.RecieptDate).ToListAsync();
             return View(recipts);
         }
 
@@ -54,6 +54,11 @@ namespace AinAlfahd.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveRe(RecirptDto model)
         {
+            if(model.RecieptDate > DateTime.Now)
+            {
+                TempData["error"] = "يرجى التحقق من التاريخ المدخل!";
+                return RedirectToAction("AddReciept");
+            }
 
             if (!ModelState.IsValid)
             {
@@ -84,6 +89,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
                     Weight = model.Weight,
                     TotalPriceFromCust = Math.Ceiling(model.TotalPriceFromCust),
                     CurrentState = model.CurrentState,
+                    Notes = model.Notes,
                 };
 
                 await dBContext.Reciepts.AddAsync(re);

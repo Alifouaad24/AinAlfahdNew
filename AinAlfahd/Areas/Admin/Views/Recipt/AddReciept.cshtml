@@ -36,9 +36,17 @@
                 <div class="form-group mb-1 col-md-3">
                     <label class="form-label text-end">تكلفة الواحدة</label>
                     <div class="d-flex justify-content-start">
-                        <input readonly value="$5" class="border-1 form-control text-center ms-1" style="width:80px" />
+                        <select id="costSelect" class="border-1 form-control text-center ms-1" style="width:80px">
+                            <option selected value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
                     </div>
                 </div>
+
 
                 <div class="form-group mb-3 col-md-2">
                     <label asp-for="@Model.Cost" class="form-label text-end">الكلفة</label>
@@ -86,8 +94,20 @@
                 </div>
                 <div class="form-group mb-3 col-md-3">
                     <label class="form-label text-start">تكلفة الواحدة</label>
-                    <input readonly value="$8" style="width:100px" class="form-control text-center" />
+                    <div class="d-flex justify-content-start">
+                        <select id="proSelect" class="form-control text-center" style="width:100px">
+                            <option value="8" selected>8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                        </select>
+                    </div>
                 </div>
+
 
                 <div class="form-group mb-3 col-md-2">
                     <label asp-for="@Model.SellingPrice" class="form-label text-start">سعر المبيع</label>
@@ -119,6 +139,11 @@
                     <label asp-for="@Model.CurrentState" class="form-check-label">الحالة</label>
                     <span asp-validation-for="CurrentState" class="text-danger ms-2"></span>
                 </div>
+            </div>
+            <div class="form-group mb-3 col-md-10">
+                <label asp-for="@Model.Notes" class="form-label text-end">ملاحظات</label>
+                <input asp-for="@Model.Notes" class="form-control" />
+                <span asp-validation-for="@Model.Notes" class="text-danger"></span>
             </div>
             <div class="row m-3">
             </div>
@@ -182,10 +207,32 @@
 
             const Weight = $('#Weight1').val();
             const exch = $('#exch').val();
+            const selectedcost = $('#costSelect').val();
+            $('#Cost1').val(+Weight * selectedcost).trigger('change');
 
-            $('#Cost1').val(+Weight * 5).trigger('change');
-            $('#SellingPrice1').val(+Weight * 8 * exch).trigger('change');
-            var x = +Weight * 8 * exch;
+
+            const selectedprofit = $('#proSelect').val();
+            $('#SellingPrice1').val(+Weight * selectedprofit * exch).trigger('change');
+            var x = +Weight * selectedprofit * exch;
+            $('#costtocust').val(getCloseTenUp(x)).trigger('change');
+
+        });
+
+
+
+        $('#costSelect').on('input change', function () {
+            $('#Cost1').val(0);
+            $('#DisCount').val(0);
+            $('#SellingPrice1').val(0);
+
+            const Weight = $('#Weight1').val();
+            const exch = $('#exch').val();
+            const selectedcost = $('#costSelect').val();
+            $('#Cost1').val(+Weight * selectedcost).trigger('change');
+
+            const selectedprofit = $('#proSelect').val();
+            $('#SellingPrice1').val(+Weight * selectedprofit * exch).trigger('change');
+            var x = +Weight * selectedprofit * exch;
             $('#costtocust').val(getCloseTenUp(x)).trigger('change');
 
         });
@@ -195,21 +242,47 @@
         $('#DisCount').on('input change', function () {
             const Weight = $('#Weight1').val();
             const DisCount = $('#DisCount').val();
+            const selectedcost = $('#costSelect').val();
             $('#Cost1').val(0);
-            $('#Cost1').val(+Weight * 5 - DisCount).trigger('change');
+            $('#Cost1').val(+Weight * selectedcost - DisCount).trigger('change');
         });
+
 
         $('#costtocust').on('input change', function () {
             $('#SellingPrice1').val(0);
             const Weight = $('#Weight1').val();
+            const selectedprofit = $('#proSelect').val();
             const exch = $('#exch').val();
-            $('#SellingPrice1').val(+Weight * 8 * exch).trigger('change');
+            $('#SellingPrice1').val(+Weight * selectedprofit * exch).trigger('change');
 
             const sell = $('#SellingPrice1').val();
             const total = $('#costtocust').val();
 
             $('#SellingDisCount').val(total - sell).trigger('change');
         });
+
+
+
+
+        /////////////////////////////////////////
+
+        $('#proSelect').on('input change', function () {
+            $('#SellingPrice1').val(0);
+            const Weight = $('#Weight1').val();
+            const selectedprofit = $('#proSelect').val();
+            const exch = $('#exch').val();
+            $('#SellingPrice1').val(+Weight * selectedprofit * exch).trigger('change');
+            var x = +Weight * selectedprofit * exch;
+            $('#costtocust').val(getCloseTenUp(x)).trigger('change');
+
+            const sell = $('#SellingPrice1').val();
+            const total = $('#costtocust').val();
+
+            $('#SellingDisCount').val(total - sell).trigger('change');
+        });
+
+        /////////////////////////////////////////////////////////
+
 
         $('#costtocust').on('input blur', function () {
             const total = parseFloat($('#costtocust').val());
