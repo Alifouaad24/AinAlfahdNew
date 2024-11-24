@@ -169,6 +169,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
                 .OrderBy(r => r.RecieptDate)
                 .Include(r => r.Customer).ToListAsync();
 
+
             return Ok(recipts);
         }
     }
