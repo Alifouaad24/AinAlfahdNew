@@ -72,7 +72,7 @@
                     <label asp-for="RecieptDate" class="form-label text-end">تاريخ الوصل</label>
                     <input asp-for="RecieptDate"
                            class="form-control"
-                           type="date"
+                           type="text"
                            value="@(Model.RecieptId == 0 ? DateTime.Now.ToString("yyyy-MM-dd") : Model.RecieptDate.ToString("yyyy-MM-dd"))" />
                     <span asp-validation-for="RecieptDate" class="text-danger"></span>
                 </div>
