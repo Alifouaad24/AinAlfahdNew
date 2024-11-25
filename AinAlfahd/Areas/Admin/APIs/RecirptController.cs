@@ -25,6 +25,20 @@ namespace AinAlfahd.Areas.Admin.APIs
             return Ok(reciepts);
         }
 
+        [HttpGet("GetLastFiveRecords")]
+        public async Task<IActionResult> GetLastFiveRecords()
+        {
+            var reciepts = await _db.Reciepts.ToListAsync();
+
+            if (reciepts.Count > 5)
+            {
+                var actualRec = reciepts.Skip(reciepts.Count - 5).Take(5).ToList();
+                return Ok(actualRec);
+            }
+
+            return Ok(reciepts);
+        }
+
         [HttpGet("GetByCustomerIdOrCost")]
         public async Task<IActionResult> GetByCustomerIdOrCost(string word)
         {
