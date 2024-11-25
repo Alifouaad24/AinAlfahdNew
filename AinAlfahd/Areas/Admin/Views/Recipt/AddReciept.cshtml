@@ -221,19 +221,38 @@
 
 
         $('#costSelect').on('input change', function () {
-            $('#Cost1').val(0);
-            $('#DisCount').val(0);
-            $('#SellingPrice1').val(0);
 
-            const Weight = $('#Weight1').val();
-            const exch = $('#exch').val();
-            const selectedcost = $('#costSelect').val();
-            $('#Cost1').val(+Weight * selectedcost).trigger('change');
+            if (!$('#Weight1').val(0)) {
+                $('#Cost1').val(0);
+                $('#DisCount').val(0);
+                $('#SellingPrice1').val(0);
 
-            const selectedprofit = $('#proSelect').val();
-            $('#SellingPrice1').val(+Weight * selectedprofit * exch).trigger('change');
-            var x = +Weight * selectedprofit * exch;
-            $('#costtocust').val(getCloseTenUp(x)).trigger('change');
+                const Weight = $('#Weight1').val();
+                const exch = $('#exch').val();
+                const selectedcost = $('#costSelect').val();
+                $('#Cost1').val(+Weight * selectedcost).trigger('change');
+
+                const selectedprofit = $('#proSelect').val();
+                $('#SellingPrice1').val(+Weight * selectedprofit * exch).trigger('change');
+                var x = +Weight * selectedprofit * exch;
+                $('#costtocust').val(getCloseTenUp(x)).trigger('change');
+            }
+            else {
+                $('#Cost1').val(0);
+                $('#DisCount').val(0);
+                $('#SellingPrice1').val(0);
+
+                const Weight = $('#Weight1').val();
+                const exch = $('#exch').val();
+                const selectedcost = $('#costSelect').val();
+                $('#Cost1').val(+Weight * selectedcost).trigger('change');
+
+                const selectedprofit = $('#proSelect').val();
+                $('#SellingPrice1').val(+Weight * selectedprofit * exch).trigger('change');
+                var x = +Weight * selectedprofit * exch;
+                $('#costtocust').val(0).trigger('change');
+            }
+            
 
         });
 
