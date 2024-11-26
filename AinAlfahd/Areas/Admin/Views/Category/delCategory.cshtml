@@ -7,8 +7,10 @@
 
 }
 
+<h3 class="bg-light p-2 text-center">جدول الفئات</h3>
+<h3 class="bg-light p-3 text-center">@TempData["message"]</h3>
 
-<div class="border border-dark" style="max-height: 38vh; overflow-y: auto;">
+<div class="border border-dark col-md-11" style="max-height: 38vh; overflow-y: auto;">
     <table class="table table-bordered table-striped">
         <thead class="thead-light" style="position: sticky; top: 0; background-color: gray; z-index: 999;">
             <tr>
@@ -22,11 +24,18 @@
 
                 <tr>
                     <td class="d-flex justify-content-center">
-                        <a class="btn btn-danger" asp-action="deleteCategory" asp-route-iidd="@category.Id"><i class="fas fa-trash"></i></a>
+                        <a class="btn btn-danger m-1" asp-action="deleteCategory" asp-route-iidd="@category.Id"><i class="fas fa-trash"></i></a>
+                        @if(category.CategoryId != null)
+                        {
+                            <a class="btn btn-info  m-1" asp-action="AddSubCategory" asp-route-id="@category.Id"><i class="fas fa-edit"></i></a>
+                        }else{
+                            <a class="btn btn-info  m-1" asp-action="AddCategory" asp-route-id="@category.Id"><i class="fas fa-edit"></i></a>
+                        }
+                        
                     </td>
 
 
-                    <td class="text-end m-1">@category.CategoryName</td>
+                    <td class="text-end m-1 p-2">@category.CategoryName</td>
 
                 </tr>
             }

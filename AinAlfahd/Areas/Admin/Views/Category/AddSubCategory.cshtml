@@ -9,6 +9,7 @@
 <h2 class="bg-light p-3 text-center">إضافة فئة جديدة</h2>
 <h3>@TempData["message"]</h3>
 <form asp-action="SaveCategory" asp-controller="Category" method="post">
+    <input hidden asp-for="@Model.Id" class="form-control" />
         <div class="col-md-4 row text-md-end">
             <div class="mb-3 col-md-6">
                 <label asp-for="CategoryName" class="form-label">اسم الفئة الفرعية</label>

@@ -54,7 +54,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
         }
 
 
-        public async Task<IActionResult> SaveCategory(CategoryDto model)
+        public async Task<IActionResult> SaveCategory(Category model)
         {
             if (!ModelState.IsValid)
             {
@@ -68,17 +68,36 @@ namespace AinAlfahd.Areas.Admin.Controllers
                 return RedirectToAction("AddCategory");
             }
 
-            var catego = new Category
+            if (model.Id == 0)
             {
-                CategoryId = model.CategoryId,
-                CategoryName = model.CategoryName,
-            };
+                var catego = new Category
+                {
+                    CategoryId = model.CategoryId,
+                    CategoryName = model.CategoryName,
+                };
 
-            await dBContext.Categories.AddAsync(catego);    
-            await dBContext.SaveChangesAsync();
+                await dBContext.Categories.AddAsync(catego);
+                await dBContext.SaveChangesAsync();
 
-            TempData["message"] = "تم حفظ البيانات بنجاح";
-            return RedirectToAction("Index");
+                TempData["message"] = "تم حفظ البيانات بنجاح";
+                return RedirectToAction("Index");
+            }
+
+            else
+            {
+                var cate = await dBContext.Categories.FindAsync(model.Id);
+
+                cate.CategoryId = model.CategoryId;
+                cate.CategoryName = model.CategoryName;
+
+                dBContext.Categories.Update(cate);
+                await dBContext.SaveChangesAsync();
+
+                TempData["message"] = "تم تعديل البيانات بنجاح";
+                return RedirectToAction("delCategory");
+                
+
+            }
         }
 
 
@@ -91,11 +110,11 @@ namespace AinAlfahd.Areas.Admin.Controllers
                 dBContext.Categories.Remove(category);
                 await dBContext.SaveChangesAsync();
                 TempData["message"] = "تم حذف الفئة بنجاح";
-                return RedirectToAction("Index");
+                return RedirectToAction("delCategory");
             }
 
             TempData["message"] = "حدث خطأ اثناء حذف الفئة يرجى المحاولة مجددا ";
-            return RedirectToAction("Index");
+            return RedirectToAction("delCategory");
         }
     }
 
