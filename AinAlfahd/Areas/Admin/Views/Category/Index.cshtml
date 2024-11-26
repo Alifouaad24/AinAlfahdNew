@@ -1,0 +1,57 @@
+﻿@using AinAlfahd.Models
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<Category>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+
+    var subCate = ViewBag.Categories as List<Category>;
+}
+
+<div class="col-12 p-2">
+    <a class="btn btn-dark mb-3" asp-area="Admin" asp-controller="Category" asp-action="AddCategory">إضافة فئة</a>
+    <a class="btn btn-dark mb-3" asp-area="Admin" asp-controller="Category" asp-action="AddSubCategory">إضافة فئة فرعية</a>
+</div>
+<hr />
+<h3>@TempData["message"]</h3>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="accordion" id="categoriesAccordion">
+            @foreach (var category in Model.Where(c => c.CategoryId == null))
+            {
+                <div class="row bg-transparent col-md-12">
+                    <h2 class="accordion-header bg-transparent col-md-9" id="heading-@category.Id">
+                        <button class="accordion-button bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@category.Id" aria-expanded="false" aria-controls="collapse-@category.Id">
+                            <i class="fas fa-cogs"></i>   @category.CategoryName
+                        </button>
+                    </h2>
+                </div>
+
+                <div id="collapse-@category.Id" class="accordion-collapse collapse" aria-labelledby="heading-@category.Id" data-bs-parent="#categoriesAccordion">
+                    <div class="accordion-body">
+                        <div class="accordion" id="sub-accordion-@category.Id">
+                            @foreach (var subCategory in subCate.Where(s => s.CategoryId == category.Id))
+                            {
+                                <div class="accordion-item mb-2 p-0 bg-transparent border-0" style="width: 70%;">
+                                    <h5 class="p-1 mb-1">
+                                            @subCategory.CategoryName
+                                    </h5>
+
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+
+    <div class="col-md-9">
+
+    </div>
+

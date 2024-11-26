@@ -1,0 +1,39 @@
+﻿@using AinAlfahd.Models
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model Category
+@{
+    ViewData["Title"] = "AddSubCategory";
+    Layout = "_Layout";
+}
+
+<h2 class="bg-light p-3 text-center">إضافة فئة جديدة</h2>
+<h3>@TempData["message"]</h3>
+<form asp-action="SaveCategory" asp-controller="Category" method="post">
+        <div class="col-md-4 row text-md-end">
+            <div class="mb-3 col-md-6">
+                <label asp-for="CategoryName" class="form-label">اسم الفئة الفرعية</label>
+                <input asp-for="CategoryName" class="form-control" />
+                <span asp-validation-for="CategoryName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3 col-md-6">
+                <label asp-for="@Model.CategoryId" class="form-label">الفئة الاساسية</label>
+                <select asp-for="@Model.CategoryId" class="form-select">
+                    @foreach (var category in (List<Category>)ViewBag.Categories)
+                    {
+                        <option value="@category.Id">@category.CategoryName</option>
+                    }
+                </select>
+                <span asp-validation-for="@Model.CategoryId" class="text-danger"></span>
+            </div>
+
+        <div class="col-md-12">
+            <button type="submit" class="btn col-md-6  btn-primary">إضافة</button>
+</div>
+        </div>
+    </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
