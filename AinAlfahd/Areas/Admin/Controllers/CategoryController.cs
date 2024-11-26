@@ -46,6 +46,13 @@ namespace AinAlfahd.Areas.Admin.Controllers
             return View(new Category());
         }
 
+        public async Task<IActionResult>delCategory()
+        {
+            var Categories = await dBContext.Categories.ToListAsync();
+       
+            return View(Categories);
+        }
+
 
         public async Task<IActionResult> SaveCategory(CategoryDto model)
         {
