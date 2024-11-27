@@ -10,11 +10,11 @@
 <h3>@TempData["message"]</h3>
 <div class="col-md-4 text-md-end">
     <form class="col-md-6 " asp-action="SaveCategory" asp-controller="Category" method="post">
-        <input hidden asp-for="@Model.Id" class="form-control" />
+        <input hidden asp-for="@Model.CategoryId" class="form-control" />
         <div class="mb-3">
-            <label asp-for="CategoryName" class="form-label">اسم الفئة</label>
-            <input asp-for="CategoryName" class="form-control" />
-            <span asp-validation-for="CategoryName" class="text-danger"></span>
+            <label asp-for="@Model.CategoryName" class="form-label">اسم الفئة</label>
+            <input asp-for="@Model.CategoryName" class="form-control" />
+            <span asp-validation-for="@Model.CategoryName" class="text-danger"></span>
         </div>
 
         <button type="submit" class="btn btn-primary">إضافة</button>

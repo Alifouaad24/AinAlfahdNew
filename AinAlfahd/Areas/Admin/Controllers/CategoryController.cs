@@ -16,8 +16,8 @@ namespace AinAlfahd.Areas.Admin.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var Categories = await dBContext.Categories.Where(c => c.CategoryId == null).ToListAsync();
-            ViewBag.Categories = await dBContext.Categories.Where(c => c.CategoryId != null).ToListAsync();
+            var Categories = await dBContext.Categories.Where(c => c.MainCategoryId == null).ToListAsync();
+            ViewBag.Categories = await dBContext.Categories.Where(c => c.MainCategoryId != null).ToListAsync();
 
             return View(Categories);
         }
@@ -35,7 +35,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
 
         public async Task<IActionResult> AddSubCategory(int? id)
         {
-            ViewBag.Categories = await dBContext.Categories.Where(c => c.CategoryId == null).ToListAsync();
+            ViewBag.Categories = await dBContext.Categories.Where(c => c.MainCategoryId == null).ToListAsync();
 
             if (id != null)
             {
@@ -46,10 +46,10 @@ namespace AinAlfahd.Areas.Admin.Controllers
             return View(new Category());
         }
 
-        public async Task<IActionResult>delCategory()
+        public async Task<IActionResult> delCategory()
         {
             var Categories = await dBContext.Categories.ToListAsync();
-       
+
             return View(Categories);
         }
 
@@ -58,7 +58,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                if(model.CategoryId == null)
+                if (model.MainCategoryId == null)
                 {
                     TempData["message"] = "حدث خطأ اثناء حفظ البيانات يرجى المحاولة مجددا";
                     return RedirectToAction("AddSubCategory");
@@ -68,11 +68,11 @@ namespace AinAlfahd.Areas.Admin.Controllers
                 return RedirectToAction("AddCategory");
             }
 
-            if (model.Id == 0)
+            if (model.CategoryId == 0)
             {
                 var catego = new Category
                 {
-                    CategoryId = model.CategoryId,
+                    MainCategoryId = model.MainCategoryId,
                     CategoryName = model.CategoryName,
                 };
 
@@ -85,9 +85,9 @@ namespace AinAlfahd.Areas.Admin.Controllers
 
             else
             {
-                var cate = await dBContext.Categories.FindAsync(model.Id);
+                var cate = await dBContext.Categories.FindAsync(model.CategoryId);
 
-                cate.CategoryId = model.CategoryId;
+                cate.MainCategoryId = model.MainCategoryId;
                 cate.CategoryName = model.CategoryName;
 
                 dBContext.Categories.Update(cate);
@@ -95,7 +95,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
 
                 TempData["message"] = "تم تعديل البيانات بنجاح";
                 return RedirectToAction("delCategory");
-                
+
 
             }
         }
@@ -105,7 +105,8 @@ namespace AinAlfahd.Areas.Admin.Controllers
         {
             var category = await dBContext.Categories.FindAsync(iidd);
 
-            if (category != null) {
+            if (category != null)
+            {
 
                 dBContext.Categories.Remove(category);
                 await dBContext.SaveChangesAsync();
@@ -117,11 +118,4 @@ namespace AinAlfahd.Areas.Admin.Controllers
             return RedirectToAction("delCategory");
         }
     }
-
-    public class CategoryDto
-    {
-        public string CategoryName { get; set; }
-        public int? CategoryId { get; set; }
-    }
-
 }

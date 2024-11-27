@@ -2,6 +2,7 @@
 using AinAlfahd.Models;
 using Azure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using OpenQA.Selenium;
@@ -34,6 +35,31 @@ namespace AinAlfahd.Areas.Admin.Controllers
         {
             return View();
         }
+
+        public IActionResult InsertItemToSys()
+        {
+            return View();
+        }
+
+
+
+
+        [HttpPost]
+        public async Task<Item> GetItemData([FromBody] string sku)
+        {
+            var item = await dbContext.Items.FirstOrDefaultAsync(i => i.PCode == sku);
+            return item;
+        }
+
+        [HttpPost("/Admin/Order/GetSizes")]
+        public async Task<List<TblSize>> GetSizes([FromBody] int id)
+        {
+            var size = await dbContext.TblSizes.Where(s => s.CategoryId == id).ToListAsync();
+            return size;
+        }
+
+
+
 
         public async Task<IActionResult> OrderTable()
         {

@@ -9,7 +9,7 @@
 <h2 class="bg-light p-3 text-center">إضافة فئة جديدة</h2>
 <h3>@TempData["message"]</h3>
 <form asp-action="SaveCategory" asp-controller="Category" method="post">
-    <input hidden asp-for="@Model.Id" class="form-control" />
+    <input hidden asp-for="@Model.CategoryId" class="form-control" />
         <div class="col-md-4 row text-md-end">
             <div class="mb-3 col-md-6">
                 <label asp-for="CategoryName" class="form-label">اسم الفئة الفرعية</label>
@@ -18,14 +18,14 @@
             </div>
 
             <div class="mb-3 col-md-6">
-                <label asp-for="@Model.CategoryId" class="form-label">الفئة الاساسية</label>
-                <select asp-for="@Model.CategoryId" class="form-select">
+            <label asp-for="@Model.MainCategoryId" class="form-label">الفئة الاساسية</label>
+            <select asp-for="@Model.MainCategoryId" class="form-select">
                     @foreach (var category in (List<Category>)ViewBag.Categories)
                     {
-                        <option value="@category.Id">@category.CategoryName</option>
+                    <option value="@category.CategoryId">@category.CategoryName</option>
                     }
                 </select>
-                <span asp-validation-for="@Model.CategoryId" class="text-danger"></span>
+                <span asp-validation-for="@Model.MainCategoryId" class="text-danger"></span>
             </div>
 
         <div class="col-md-12">

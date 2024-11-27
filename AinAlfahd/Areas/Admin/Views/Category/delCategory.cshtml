@@ -24,12 +24,12 @@
 
                 <tr>
                     <td class="d-flex justify-content-center">
-                        <a class="btn btn-danger m-1" asp-action="deleteCategory" asp-route-iidd="@category.Id"><i class="fas fa-trash"></i></a>
+                        <a class="btn btn-danger m-1" asp-action="deleteCategory" asp-route-iidd="@category.CategoryId"><i class="fas fa-trash"></i></a>
                         @if(category.CategoryId != null)
                         {
-                            <a class="btn btn-info  m-1" asp-action="AddSubCategory" asp-route-id="@category.Id"><i class="fas fa-edit"></i></a>
+                            <a class="btn btn-info  m-1" asp-action="AddSubCategory" asp-route-id="@category.CategoryId"><i class="fas fa-edit"></i></a>
                         }else{
-                            <a class="btn btn-info  m-1" asp-action="AddCategory" asp-route-id="@category.Id"><i class="fas fa-edit"></i></a>
+                            <a class="btn btn-info  m-1" asp-action="AddCategory" asp-route-id="@category.CategoryId"><i class="fas fa-edit"></i></a>
                         }
                         
                     </td>

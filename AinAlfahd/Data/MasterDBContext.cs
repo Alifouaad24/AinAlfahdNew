@@ -319,6 +319,7 @@ public partial class MasterDBContext : DbContext
         modelBuilder.Entity<Category>(entity =>
         {
             entity.Property(e => e.CategoryName).HasMaxLength(50);
+
         });
 
         modelBuilder.Entity<City>(entity =>
