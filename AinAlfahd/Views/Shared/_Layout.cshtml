@@ -56,7 +56,7 @@
 
                 }
                 <div class="navbar-brand bg-danger p-3 fon text-white rounded-5" asp-area="" asp-controller="" asp-action="">Enviroment Work: @env.Db_env</div>
-                <a class="navbar-brand p-3 text-light rounded-3" style="background-color:darkslategray" asp-area="Admin" asp-controller="Category" asp-action="Index">الفئات</a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -70,6 +70,13 @@
         <button class="btn btn-primary d-md-none bootoo" onclick="toggleSlide()">
             >>
         </button>
+        <div class="main-content position-relative  main-contentss">
+            <div class="containers">
+                <main role="main" class="pb-1">
+                    @RenderBody()
+                </main>
+            </div>
+        </div>
         <div class="sidebar">
             <ul class="navbar-nav flex-column">
                 <li class="nav-item">
@@ -105,15 +112,10 @@
                 <li class="nav-item">
                     <a class="nav-link text-end fs-6 bg-gradient p-3 m-1 table-bordered rounded-5" asp-area="Admin" asp-controller="Order" asp-action="OrderTable">الطلبات</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link text-end fs-6 bg-gradient p-3 m-1 table-bordered rounded-5" asp-area="Admin" asp-controller="Category" asp-action="Index">الفئات</a>
+                </li>
             </ul>
-        </div>
-
-        <div class="main-content position-relative  main-contentss">
-            <div class="containers">
-                <main role="main" class="pb-1">
-                    @RenderBody()
-                </main>
-            </div>
         </div>
 
     </div>

@@ -14,7 +14,7 @@ html {
         background-color: #343a40;
         padding-top: 10px;
         position: absolute;
-        left: 0;
+        left: 85%;
         top: 0;
         z-index: 9999;
     }
@@ -23,7 +23,7 @@ html {
         padding: 10px;
         flex-grow: 1;
         height: 89vh;
-        margin-left: 18%;
+        margin-right: 18%;
         overflow-y: auto;
         white-space: nowrap;
     }
