@@ -21,7 +21,7 @@ namespace AinAlfahd.Areas.Admin.APIs
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var reciepts = await _db.Reciepts.ToListAsync();
+            var reciepts = await _db.Reciepts.Include(r => r.Customer).ToListAsync();
             return Ok(reciepts);
         }
 
