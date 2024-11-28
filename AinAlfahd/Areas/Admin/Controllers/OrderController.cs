@@ -41,9 +41,6 @@ namespace AinAlfahd.Areas.Admin.Controllers
             return View();
         }
 
-
-
-
         [HttpPost]
         public async Task<Item> GetItemData([FromBody] string sku)
         {
@@ -58,6 +55,49 @@ namespace AinAlfahd.Areas.Admin.Controllers
             return size;
         }
 
+
+        public async Task<IActionResult> SaveOrderDetails(OrderDetail model)
+        {
+            if (ModelState.IsValid)
+            {
+                TempData["message"] = "حدث خطأ اثناء ادخال الطلب يرجى التحقق من الحقول";
+                return RedirectToAction("InsertItemToSys");
+            }
+
+            if(model.Id == 0)
+            {
+
+                var OrderDetail = new OrderDetail
+                {
+                    ItemCode = model.ItemCode,
+                    Size = model.Size,
+                    OrderNo = model.OrderNo,
+                };
+
+                await dbContext.OrderDetails.AddAsync(OrderDetail);
+                await dbContext.SaveChangesAsync();
+                TempData["message"] = "تم حفظ الطلب بنجاح";
+                return RedirectToAction("InsertItemToSys");
+            }
+            else
+            {
+                var OrderDetail = await dbContext.OrderDetails.FindAsync(model.Id);
+                if(OrderDetail != null)
+                {
+                    OrderDetail.ItemCode = model.ItemCode;
+                    OrderDetail.Size = model.Size;
+                    OrderDetail.OrderNo = model.OrderNo;
+
+                    dbContext.OrderDetails.Update(OrderDetail);
+                    await dbContext.SaveChangesAsync();
+                    TempData["message"] = "تم تعديل الطلب بنجاح";
+                    return RedirectToAction("InsertItemToSys");
+                }
+
+                TempData["message"] = "حدث خطأ اثناء تعديل الطلب يرجى التحقق من الحقول";
+                return RedirectToAction("InsertItemToSys");
+            }
+        }
 
 
 
