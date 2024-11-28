@@ -26,10 +26,19 @@ builder.Services.AddScoped<ICustomer, CutomerRepo> ();
 builder.Services.AddScoped<ICustomerServices, CustomerServices> ();
 builder.Services.AddRazorPages();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
+
 
 
 var app = builder.Build();
 
+app.UseCors("AllowAll");
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
