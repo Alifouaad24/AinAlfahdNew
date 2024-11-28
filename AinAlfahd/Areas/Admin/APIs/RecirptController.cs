@@ -28,7 +28,7 @@ namespace AinAlfahd.Areas.Admin.APIs
         [HttpGet("GetLastFiveRecords")]
         public async Task<IActionResult> GetLastFiveRecords()
         {
-            var reciepts = await _db.Reciepts.ToListAsync();
+            var reciepts = await _db.Reciepts.Include(r => r.Customer).ToListAsync();
 
             if (reciepts.Count > 5)
             {
