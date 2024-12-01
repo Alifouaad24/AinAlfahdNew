@@ -128,5 +128,13 @@ namespace AinAlfahd.Areas.Admin.APIs
             var customers = await db.Customers.Where(c => c.CustName.Contains(wordSearch) || c.CustMob.Contains(wordSearch)).ToListAsync();
             return Ok(customers);
         }
+
+        [HttpGet("SearchAboutDetectedCustomerApi/{wordSearch}")]
+
+        public async Task<IActionResult> SearchAboutDetectedCustomerApi(string wordSearch)
+        {
+            var customer = await db.Customers.FirstOrDefaultAsync(c => c.CustName.Contains(wordSearch) || c.CustMob.Contains(wordSearch));
+            return Ok(customer);
+        }
     }
 }
