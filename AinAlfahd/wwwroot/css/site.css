@@ -52,7 +52,6 @@ html {
         padding: 10px;
         flex-grow: 1;
         height: 89vh;
-        margin-left: 1%;
         overflow-y: auto;
         white-space: nowrap;
     }

@@ -6,34 +6,41 @@
     Layout = "_Layout";
 }
 
+<style>
+    .hhh{
+        height: 100%;
+    }
+</style>
+
+
 <h1 class="p-2 bg-light text-center mb-5">إضافة منتج الى المخزن</h1>
 
-<div class="d-flex justify-content-center my-3">
-    <div class="col-md-8 d-flex justify-content-center">
-        <div class="input-group w-100 border rounded p-2">
-            <input id="SKUFORSEARCH" type="text" class="form-control me-3" placeholder="أدخل الكود" aria-label="SKU" />
-            <button class="btn btn-primary" onclick="search()">بحث</button>
+
+
+
+
+
+<div class="col-12 d-flex justify-content-center" style="height:100%;">
+
+    <div class="col-md-7 p-1 m-2 mt-5">
+        <div class="d-flex justify-content-start my-3">
+            <div class="col-md-8 d-flex justify-content-center">
+                <div class="input-group w-100 border rounded p-2">
+                    <input id="SKUFORSEARCH" type="text" class="form-control me-3" placeholder="أدخل الكود" aria-label="SKU" />
+                    <button class="btn btn-primary" onclick="search()">بحث</button>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-
-
-
-
-<div class="col-12 d-flex justify-content-center" style="height:80%;">
-
-    <div class="col-md-8 p-1 m-2 mt-5">
-
         <form asp-action="SaveOrderDetails" method="post">
-            <div class="row col-md-12">
+            <div class="row hhh col-md-12">
                 <div class="row col-md-7">
                     <div class="row col-md-10">
-                        <div class="mb-3 col-md-4">
+                        <div class="mb-3 col-md-5">
                             <label asp-for="@Model.ItemCode" class="form-label">رمز القطعة</label>
                             <input id="ItemCode" readonly type="text" asp-for="@Model.ItemCode" class="form-select" required>
                             <span asp-validation-for="ItemCode" class="text-danger"></span>
                         </div>
-                        <div class="mb-3 col-md-5">
+                        <div class="mb-3 col-md-7">
                             <label asp-for="Size" class="form-label">الحجم</label>
                             <select id="Sizeselect" asp-for="@Model.Size" class="form-select" required>
                                 <option value="">اختر الحجم</option>
@@ -42,7 +49,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 col-4">
+                    <div class="mb-3 col-md-10">
                         <label asp-for="@Model.OrderNo" class="form-label">رقم الطلب</label>
                         <input asp-for="@Model.OrderNo" class="form-control" type="text" required placeholder="رقم الطلب">
                         <span asp-validation-for="@Model.OrderNo" class="text-danger"></span>
@@ -55,13 +62,12 @@
                     </div>
                     <input hidden id="Categg" readonly type="text" class="form-select">
                 </div>
-
-                <div class="row col-md-4 p-2">
-                    <img id="imgItem" src="default.jpg" alt="Item Image" style="width:80%; height: 100%" />
-
-                </div>
             </div>
         </form>
+    </div>
+    <div class="row col-md-4 p-2">
+        <img id="imgItem" src="default.jpg" alt="Item Image" style="width:80%; height: 100%" />
+
     </div>
 </div>
 
