@@ -125,7 +125,7 @@ namespace AinAlfahd.Areas.Admin.APIs
 
         public async Task<IActionResult> SearchAboutCustomerApi(string wordSearch)
         {
-            var customers = await db.Customers.Include(c => c.Addresses).Include(c => c.CustomerServices).ThenInclude(cs => cs.Service).Where(c => c.CustName.Contains(wordSearch) || c.CustMob.Contains(wordSearch)).ToListAsync();
+            var customers = await db.Customers.Where(c => c.CustName.Contains(wordSearch) || c.CustMob.Contains(wordSearch)).ToListAsync();
             return Ok(customers);
         }
     }

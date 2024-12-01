@@ -1,6 +1,8 @@
-﻿namespace AinAlfahd.Models
+﻿using System.Text.Json.Serialization;
+
+namespace AinAlfahd.Models
 {
-    public class Address
+    public class Address    
     {
         public int Id { get; set; }
         public int Area { get; set; }
@@ -11,6 +13,7 @@
         public DateTime InsertDate { get; set; }
 
 
+        [JsonIgnore]
         public Customer Customers { get; set; }
         public int CustomerId { get; set; }
     }
