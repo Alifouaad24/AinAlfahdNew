@@ -2,22 +2,12 @@
 using AinAlfahd.Models;
 using Azure;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using OpenQA.Selenium;
-using OpenQA.Selenium.BiDi.Modules.Network;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Net;
-using System.Reflection.Emit;
-using System.Security.Cryptography;
-using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AinAlfahd.Areas.Admin.Controllers
 {

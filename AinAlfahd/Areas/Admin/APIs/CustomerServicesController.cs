@@ -4,6 +4,7 @@ using AinAlfahd.Models;
 using AinAlfahd.ModelsDTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AinAlfahd.Areas.Admin.APIs
 {
@@ -25,6 +26,24 @@ namespace AinAlfahd.Areas.Admin.APIs
             var customersService = await customerServices.GetAll();
             return Ok(customersService);
         }
+
+        [HttpGet("GetAllServices")]
+        public async Task<IActionResult> GetAllServices()
+        {
+            var services = await db.Services.ToListAsync();
+            return Ok(services);
+        }
+
+        [HttpGet("GetCustomerServices/{customerId}")]
+        public async Task<IActionResult> GetCustomerServices(int customerId)
+        {
+
+            var services = await db.CustomerServices.Where(cs => cs.CustomerId == customerId).Include(cs => cs.Service).ToListAsync();
+            var actulSer = services.Select(s => s.Service).ToList();
+            return Ok(actulSer);
+
+        }
+
 
         [HttpGet("GetBySearch/{cusId}/{serId}")]
         public async Task<IActionResult> GetBySearch(int cusId, int serId)

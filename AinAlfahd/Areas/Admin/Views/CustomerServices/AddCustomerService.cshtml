@@ -177,7 +177,6 @@
                 url: apiUrl,
                 type: 'GET',
                 success: function (data) {
-                    console.log(data);
                      $('input[name="ServiceIds"]').prop('checked', false);
 
                      if (Array.isArray(data) && data.length > 0) {
