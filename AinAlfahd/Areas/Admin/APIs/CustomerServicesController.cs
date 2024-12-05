@@ -44,6 +44,28 @@ namespace AinAlfahd.Areas.Admin.APIs
 
         }
 
+        [HttpPost("addServicesForCustomer")]
+        public async Task<IActionResult> addServicesForCustomer(int custId, List<int> servicesIds)
+        {
+            var custServices = await db.CustomerServices.Where(cs => cs.CustomerId == custId).ToListAsync();
+            db.CustomerServices.RemoveRange(custServices);
+            await db.SaveChangesAsync();
+
+            foreach(var serviceId in servicesIds)
+            {
+                var custSer = new CustomerService
+                {
+                    CustomerId = custId,
+                    ServiceId = serviceId
+                };
+
+                await db.CustomerServices.AddAsync(custSer);
+                await db.SaveChangesAsync();
+            }
+
+            return Ok("Services Added Successfully ! ");
+        }
+
 
         [HttpGet("GetBySearch/{cusId}/{serId}")]
         public async Task<IActionResult> GetBySearch(int cusId, int serId)
