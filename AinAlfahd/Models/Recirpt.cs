@@ -1,4 +1,6 @@
-﻿namespace AinAlfahd.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AinAlfahd.Models
 {
     public class Reciept
     {
@@ -21,5 +23,9 @@
         public string? Notes { get; set; }
         public int CustomerId { get; set; }
         public Customer Customer { get; set; }
+
+        [ForeignKey("ShippingBatch")]
+        public int? ShippingBatchId { get; set; }
+        public ShippingBatch? ShippingBatch { get;  set; }
     }
 }
