@@ -23,7 +23,10 @@
     <div class="row col-12 d-flex justify-content-between">
         <div class="col-md-7 ms-5">
             <div class="row">
-
+                <div class="col-md-12 ms-12 m-2">
+                    <label asp-for="@Model.ShippingBatchId" class="form-label text-start">تاريخ الوجبة</label>
+                    <select class="form-control" asp-for="@Model.ShippingBatchId" asp-items="@ViewBag.shippingBatchs"></select>
+                </div>
                 <div class="form-group mb-3 col-md-3">
                     <label asp-for="@Model.Weight" class="form-label text-start">الوزن</label>
                     <div class="d-flex justify-content-start">

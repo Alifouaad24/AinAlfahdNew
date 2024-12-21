@@ -1,0 +1,61 @@
+﻿@using AinAlfahd.Models
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model ShippingBatch
+
+@{
+    ViewData["Title"] = "AddShippingBatch";
+    Layout = "_LayOut";
+}
+
+<div class="container my-5">
+    <h2 class="bg-gradient text-light p-3 text-center rounded" style="background: linear-gradient(90deg, #007BFF, #0056b3);">
+        إضافة بيانات جديدة
+    </h2>
+
+    <div class="row justify-content-center mt-4">
+        <form class="col-md-8 p-4 border rounded shadow-lg" style="background-color: #f9f9f9;" asp-action="SaveShipping" method="post">
+            <input hidden asp-for="@Model.ShippingBatchId" class="form-control border-primary" />
+
+            <div class="mb-3">
+                <label asp-for="@Model.ShippingDate" class="form-label fw-bold">تاريخ الشحن من دبي</label>
+                <input type="text" asp-for="ShippingDate" class="form-control border-primary"
+                       value="@(Model.ShippingDate?.ToString("yyyy-MM-dd") ?? DateTime.Now.ToString(" yyyy-MM-dd"))" />
+
+                <span asp-validation-for="@Model.ShippingDate" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="@Model.ArrivelDate" class="form-label fw-bold">تاريخ وصول الوجبة</label>
+                <input type="text" asp-for="@Model.ArrivelDate" class="form-control border-success"
+                       value="@(Model.ArrivelDate?.ToString("yyyy-MM-dd") ?? DateTime.Now.ToString(" yyyy-MM-dd"))" />
+                <span asp-validation-for="@Model.ArrivelDate" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="@Model.EntryDate" class="form-label fw-bold">تاريخ ادخال الوجبة</label>
+                <input type="text" asp-for="@Model.EntryDate" class="form-control border-warning"
+                       value="@(Model.EntryDate?.ToString("yyyy-MM-dd") ?? DateTime.Now.ToString(" yyyy-MM-dd"))" />
+                <span asp-validation-for="@Model.EntryDate" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="@Model.ShippingTypeId" class="form-label fw-bold">نوع الشحن</label>
+                <select asp-for="@Model.ShippingTypeId" class="form-control border-info" asp-items="@ViewBag.shippingType"></select>
+                <span asp-validation-for="@Model.ShippingTypeId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="@Model.batchCostUS" class="form-label fw-bold">التكلفة بالدولار</label>
+                <input asp-for="@Model.batchCostUS" class="form-control border-danger" />
+                <span asp-validation-for="@Model.batchCostUS" class="text-danger"></span>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary px-5 py-2">
+                    <i class="fas fa-save"></i> حفظ البيانات
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+

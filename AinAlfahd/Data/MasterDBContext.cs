@@ -128,6 +128,8 @@ public partial class MasterDBContext : DbContext
     public DbSet<Reciept> Reciepts { get; set; }
 
     public DbSet<Systemm> Systems { get; set; }
+    public DbSet<ShippingBatch> ShippingBatchs { get; set; }
+    public DbSet<ShippingTypes> ShippingTypes { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

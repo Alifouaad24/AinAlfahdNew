@@ -1,0 +1,41 @@
+﻿@using AinAlfahd.Models
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<ShippingTypes>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_LayOut";
+}
+
+<div class="d-flex justify-content-between flex-row-reverse">
+    <h1 class="text-center my-4" style="color: #4CAF50; font-weight: bold;">أنواع الشحن</h1>
+    <a class="btn btn-warning m-3" asp-area="Admin" asp-controller="ShippingTypes" asp-action="AddShippingType">
+        إضافة
+    </a>
+</div>
+<div>@TempData["msg"]</div>
+<div class="border rounded shadow-lg" style="max-height: 38vh; overflow-y: auto; border-color: #4CAF50;">
+    <table class="table table-hover table-bordered mb-0">
+        <thead style="position: sticky; top: 0; background: linear-gradient(90deg, #4CAF50, #2E7D32); color: #fff; z-index: 999;">
+            <tr>
+                <th class="text-center" style="width: 20%;">تعديلات</th>
+                <th class="text-center">نوع الشحن</th>
+            </tr>
+        </thead>
+        <tbody class="foooor" style="background-color: #F1F8E9;">
+            @foreach (var shipping in Model)
+            {
+                <tr>
+                    <td class="d-flex justify-content-center">
+                        <a class="btn btn-outline-primary btn-sm mx-1" asp-action="AddShippingType" asp-route-iid="@shipping.ShippingTypeId">
+                            <i class="fas fa-edit"></i> تعديل
+                        </a>
+                        <a class="btn btn-outline-danger btn-sm mx-1" asp-action="DeleteData" asp-route-id="@shipping.ShippingTypeId">
+                            <i class="fas fa-trash"></i> حذف
+                        </a>
+                    </td>
+                    <td class="text-end" style="color: #388E3C; font-weight: bold;">@shipping.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

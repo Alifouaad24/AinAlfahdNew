@@ -73,6 +73,7 @@
             <thead class="thead-light" style="position: sticky; top: 0; background-color: gray; z-index: 999;">
                 <tr>
                     <th class="text-end m-1" style="background-color: gray;">تعديلات</th>
+                    <th class="text-end m-1" style="background-color: gray;">تاريخ الوجبة</th>
                     <th class="text-end m-1" style="background-color: gray;">حالة الدفع</th>
                     <th class="text-end m-1 "style="background-color: gray;">المبلغ</th>
                     <th class="text-end m-1" style="background-color: gray;">الكلفة</th>
@@ -94,6 +95,7 @@
                             <a class="btn btn-primary" asp-action="AddReciept" asp-route-id="@receipt.RecieptId"><i class="fas fa-edit"></i></a>
                             <a class="btn ms-1 btn-danger" asp-action="DeleteData" asp-route-id="@receipt.RecieptId"><i class="fas fa-trash"></i></a>
                         </td>
+                        <td class="text-end m-1">@(receipt.ShippingBatch?.ArrivelDate ?? null)</td>
                         @{
                             if (@receipt.IsFinanced)
                             {
@@ -101,11 +103,8 @@
                             }else{
                                         <td class="text-end m-1">غير مدفوعة</td>
                             }
-
                         }
-
                         <td class="text-end m-1">@receipt.TotalPriceFromCust.ToString("N0") IQ</td>
-
                         <td class="text-end m-1">@receipt.Cost $</td>
                         <td class="text-end m-1">@receipt.Weight Kg</td>
                         <td class="text-end m-1">@receipt.Customer.CustName</td>

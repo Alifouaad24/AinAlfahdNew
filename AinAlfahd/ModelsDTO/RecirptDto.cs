@@ -17,5 +17,7 @@ namespace AinAlfahd.ModelsDTO
         public bool IsFinanced { get; set; }
         public bool CurrentState { get; set; }
         public string? Notes { get; set; }
+
+        public int? ShippingBatchId { get; set; }
     }
 }

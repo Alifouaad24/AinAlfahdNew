@@ -21,7 +21,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var recipts = await dBContext.Reciepts.Where(c => c.CurrentState == true).Include(r => r.Customer).OrderBy(r => r.RecieptDate).ToListAsync();
+            var recipts = await dBContext.Reciepts.Where(c => c.CurrentState == true).Include(r => r.Customer).Include(r => r.ShippingBatch).OrderBy(r => r.RecieptDate).ToListAsync();
             return View(recipts);
         }
 
@@ -31,6 +31,15 @@ namespace AinAlfahd.Areas.Admin.Controllers
                 .ThenInclude(cs => cs.Service)
                 .Where(c => c.CustomerServices.Any(cs => cs.Service.Description == "Air Shipping"))
                 .ToListAsync();
+
+            var shippingBatch = await dBContext.ShippingBatchs.ToListAsync();
+ 
+            ViewBag.shippingBatchs = shippingBatch.Select(c => new SelectListItem
+            {
+                Value = c.ShippingBatchId.ToString(),
+                Text = c.ArrivelDate?.ToString("yyyy-MM-dd"),
+            }).ToList();
+
             var excgange = await dBContext.Exchanges.FirstOrDefaultAsync();
 
             ViewBag.ex = excgange.ExchangeRate;
@@ -90,6 +99,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
                     TotalPriceFromCust = Math.Ceiling(model.TotalPriceFromCust),
                     CurrentState = model.CurrentState,
                     Notes = model.Notes,
+                    ShippingBatchId = model.ShippingBatchId,
                 };
 
                 await dBContext.Reciepts.AddAsync(re);

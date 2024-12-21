@@ -1,0 +1,36 @@
+﻿@using AinAlfahd.Models
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model ShippingTypes
+@{
+    ViewData["Title"] = "AddShippingType";
+    Layout = "_LayOut";
+}
+<h2 class="bg-gradient text-light p-3 text-center rounded" style="background: linear-gradient(90deg, #4CAF50, #2E7D32);">
+    إضافة نوع شحن
+</h2>
+
+<div class="text-center my-3">
+    <div class="alert alert-info" role="alert" style="display: @((TempData["msg"] != null) ? "block" : "none");">
+        @TempData["msg"]
+    </div>
+</div>
+
+<div class="d-flex justify-content-center mt-4">
+    <form class="p-4 border rounded shadow" style="width: 100%; max-width: 400px;" asp-action="SaveShipp" asp-controller="ShippingTypes" method="post">
+        <input hidden asp-for="@Model.ShippingTypeId" class="form-control" />
+
+        <div class="mb-3">
+            <label asp-for="@Model.Description" class="form-label fw-bold" style="color: #388E3C;">نوع الشحن</label>
+            <input asp-for="@Model.Description" class="form-control border-success" placeholder="أدخل نوع الشحن" />
+            <span asp-validation-for="@Model.Description" class="text-danger"></span>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-success px-4 py-2">
+                <i class="fas fa-plus"></i> إضافة
+            </button>
+        </div>
+    </form>
+</div>
+
+
