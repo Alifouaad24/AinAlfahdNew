@@ -68,6 +68,7 @@ namespace AinAlfahd.Areas.Admin.APIs
                 SellingPrice = model.Weight * 8,
                 IsFinanced = model.IsFinanced,
                 SellingDisCount = model.SellingDisCount,
+                ShippingBatchId = model.ShippingBatchId,
 
 
             };

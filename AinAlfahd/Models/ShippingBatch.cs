@@ -5,9 +5,9 @@ namespace AinAlfahd.Models
     public class ShippingBatch
     {
         public int ShippingBatchId { get; set; }
-        public DateTime? EntryDate { get; set; }
         public DateTime? ShippingDate { get; set; }
         public DateTime? ArrivelDate { get; set; }
+        public DateTime? EntryDate { get; set; }
         public decimal? batchCostUS { get; set; }    
 
 
