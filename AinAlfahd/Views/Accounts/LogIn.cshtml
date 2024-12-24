@@ -1,0 +1,94 @@
+﻿@using AinAlfahd.Models
+@using AinAlfahd.Models.Helpers
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model LogInModel
+@{
+    ViewData["Title"] = "LogIn";
+}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-gradient-primary text-white text-center py-4">
+                    <h4 class="fw-bold">تسجيل الدخول</h4>
+                </div>
+                <div class="card-body p-5">
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger text-center mb-4">
+                            @TempData["ErrorMessage"]
+                        </div>
+                    }
+                    <form asp-controller="Accounts" asp-action="Login" method="post">
+                        <div class="form-group mb-4">
+                            <label asp-for="@Model.Email" class="form-label fw-semibold">البريد الإلكتروني</label>
+                            <input asp-for="@Model.Email" type="email" class="form-control form-control-lg shadow-sm border-light rounded-3" placeholder="أدخل بريدك الإلكتروني" required>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label asp-for="@Model.Password" for="password" class="form-label fw-semibold">كلمة المرور</label>
+                            <div class="input-group">
+                                <input asp-for="@Model.Password" type="password" id="password" class="form-control form-control-lg shadow-sm border-light rounded-3" placeholder="أدخل كلمة المرور" required>
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Forgot Password and New Account Links -->
+                        @* <div class="d-flex justify-content-between mb-4">
+                            <div>
+                                <a href="#" class="text-primary text-decoration-none">هل نسيت كلمة المرور؟</a>
+                            </div>
+                            <div>
+                                <a href="#" class="text-primary text-decoration-none">إنشاء حساب جديد</a>
+                            </div>
+                        </div> *@
+
+                        <button type="submit" class="btn btn-gradient-primary w-100 py-3 fw-bold">تسجيل الدخول</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add some custom styles for more flair -->
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #1d72b8, #34b8f5);
+    }
+
+    .btn-gradient-primary {
+        background: linear-gradient(135deg, #1d72b8, #34b8f5);
+        border: none;
+        color: white;
+    }
+
+    .btn-gradient-primary:hover {
+        background: linear-gradient(135deg, #34b8f5, #1d72b8);
+        opacity: 0.9;
+    }
+</style>
+
+<script>
+    // Toggle password visibility
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const passwordField = document.getElementById('password');
+        const passwordFieldType = passwordField.type === 'password' ? 'text' : 'password';
+        passwordField.type = passwordFieldType;
+
+        // Toggle the eye icon
+        const eyeIcon = this.querySelector('i');
+        if (passwordField.type === 'password') {
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        } else {
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        }
+    });
+</script>
+
+

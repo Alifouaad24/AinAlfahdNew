@@ -1,14 +1,9 @@
-﻿@using System.Diagnostics.Metrics
-@using AinAlfahd.Data
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@inject MasterDBContext db
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+
+<html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AinAlfahd</title>
-    @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AinAlfahd.styles.css" asp-append-version="true" />
     <!-- Bootstrap CSS -->
@@ -20,125 +15,19 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
-        .bbode {
-            display: flex;
-        }
-
-
-        .bootoo{
-            width:20px;
-            height:20px;
-            padding: 1px;
-        }
-
-
-        .sidebar .nav-link {
-            color: #ffffff;
-        }
-
-        .containering {
-            display: flex;
-            flex-direction: row-reverse;
-        }
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
 
 
 
-    </style>
 </head>
-<body class="">
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 ">
-            <div class="container-fluid containering">
+<body>
+    <div>
+        @RenderBody()
 
-                @{
-                    var env = await db.TblConfigs.FindAsync(2);
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
 
-                }
-                <div class="navbar-brand bg-danger p-3 fon text-white rounded-5" asp-area="" asp-controller="" asp-action="">Enviroment Work: @env.Db_env</div>
-                <a class="navbar-brand bg-danger p-3 fon text-white rounded-5" asp-area="Admin" asp-controller="Order" asp-action="InsertItemToSys">إضافة منتج الى المخزن</a>
-                <a class="navbar-brand bg-danger p-3 fon text-white rounded-5" asp-area="Admin" asp-controller="ShippingTypes" asp-action="Index">أنواع الشحن</a>
-                <a class="navbar-brand bg-danger p-3 fon text-white rounded-5" asp-area="Admin" asp-controller="ShippingBatch" asp-action="Index">الوجبات</a>
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="bbode position-relative bg-light">
-        <button class="btn btn-primary d-md-none bootoo" onclick="toggleSlide()">
-            >>
-        </button>
-        <div class="main-content position-relative  main-contentss">
-            <div class="containers">
-                <main role="main" class="pb-1">
-                    @RenderBody()
-                </main>
-            </div>
-        </div>
-        <div class="sidebar">
-            <ul class="navbar-nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link text-end fs-6 bg-gradient p-3 m-1 table-bordered rounded-5" asp-area="Admin" asp-controller="Customer" asp-action="Search">بحث عن عميل</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-end fs-6 bg-gradient p-3 m-1 table-bordered rounded-5" asp-area="Admin" asp-controller="Service" asp-action="Index">إضافة خدمة جديدة</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-end fs-6 bg-gradient p-3 m-1 table-bordered rounded-1" asp-area="Admin" asp-controller="Customer" asp-action="AddCustomer">إضافة عميل شحن جوي</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-end fs-6 bg-gradient p-3 m-1 table-bordered rounded-5" asp-area="Admin" asp-controller="Customer" asp-action="Index">عرض العملاء ذو خدمة شحن جوي</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-end fs-6 bg-gradient p-3 m-1 table-bordered rounded-5" asp-area="Admin" asp-controller="CustomerServices" asp-action="AddCustomerService">إضافة خدمة لعميل</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-end fs-6 bg-gradient p-3 m-1 table-bordered rounded-5" asp-area="Admin" asp-controller="Order" asp-action="Index">بحث عن طلب</a>
-                </li>  
-                <li class="nav-item">
-                    <a class="nav-link text-end fs-6 bg-gradient p-3 m-1 table-bordered rounded-5" asp-area="Admin" asp-controller="Order" asp-action="Special">طلبات حسب التاريخ</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-end fs-6 bg-gradient p-3 m-1 table-bordered rounded-5" asp-area="Admin" asp-controller="Recipt" asp-action="AddReciept">اجراء عملية دفع</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-end fs-6 bg-gradient p-3 m-1 table-bordered rounded-5" asp-area="Admin" asp-controller="Recipt" asp-action="Index"> عمليات الدفع</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-end fs-6 bg-gradient p-3 m-1 table-bordered rounded-5" asp-area="Admin" asp-controller="Order" asp-action="SeaShipphngScreen">إضافة طلب شحن بحري</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-end fs-6 bg-gradient p-3 m-1 table-bordered rounded-5" asp-area="Admin" asp-controller="Order" asp-action="OrderTable">الطلبات</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-end fs-6 bg-gradient p-3 m-1 table-bordered rounded-5" asp-area="Admin" asp-controller="Category" asp-action="Index">الفئات</a>
-                </li>
-            </ul>
-        </div>
-
+        @await RenderSectionAsync("Scripts", required: false)
     </div>
-
-
-
-
-    @* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-
-    @await RenderSectionAsync("Scripts", required: false)
-
-    <script>
-
-            function toggleSlide() {
-                const sidebar = document.querySelector('.sidebar');
-                sidebar.classList.toggle('active');
-            }
-
-    </script>
 </body>
 </html>

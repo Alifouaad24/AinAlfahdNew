@@ -1,6 +1,5 @@
 ﻿using AinAlfahd.BL;
 using AinAlfahd.Data;
-using AinAlfahd.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -53,13 +52,14 @@ app.UseSession();
 
 app.UseAuthorization();
 
+
 app.MapControllerRoute(
-    name: "areas",
+    name: "admin",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Accounts}/{action=LogIn}/{id?}");
 
 
 app.UseSwagger();

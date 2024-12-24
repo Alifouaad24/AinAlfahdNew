@@ -3,7 +3,7 @@
 @model List<Category>
 @{
     ViewData["Title"] = "Index";
-    Layout = "_Layout";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 
     var subCate = ViewBag.Categories as List<Category>;
 }
