@@ -73,13 +73,11 @@
 </style>
 
 <script>
-    // Toggle password visibility
     document.getElementById('togglePassword').addEventListener('click', function () {
         const passwordField = document.getElementById('password');
         const passwordFieldType = passwordField.type === 'password' ? 'text' : 'password';
         passwordField.type = passwordFieldType;
 
-        // Toggle the eye icon
         const eyeIcon = this.querySelector('i');
         if (passwordField.type === 'password') {
             eyeIcon.classList.remove('fa-eye-slash');

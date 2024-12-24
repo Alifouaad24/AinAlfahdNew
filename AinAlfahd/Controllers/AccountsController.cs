@@ -14,7 +14,7 @@ namespace AinAlfahd.Controllers
         public IActionResult Login(LogInModel model)
         {
 
-            if (model.Email == "Saif@Gmail.com" && model.Password == "123456")
+            if (model.Email == "Saif@saif.com" && model.Password == "123456")
             {
                 return RedirectToAction("Index", "Home", new { area = "Admin" });
             }
