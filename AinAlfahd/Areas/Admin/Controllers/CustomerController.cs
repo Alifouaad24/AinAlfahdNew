@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AinAlfahd.Areas.Admin.Controllers
 {
-
+    [Area("Admin")]
     public class CustomerController : Controller
     {
         private readonly ICustomer _customerService;
