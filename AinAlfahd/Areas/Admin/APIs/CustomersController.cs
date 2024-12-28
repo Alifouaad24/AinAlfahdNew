@@ -74,7 +74,7 @@ namespace AinAlfahd.Areas.Admin.APIs
             return Ok(customer.Id);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateData(int id, [FromBody] CustomerDto model)
         {
             var existingCustomer = await db.Customers.FindAsync(id);
@@ -106,7 +106,7 @@ namespace AinAlfahd.Areas.Admin.APIs
         }
 
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteData(int id)
         {
             var cus = await icustomer.GetByID(id);
