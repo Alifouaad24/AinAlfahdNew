@@ -31,10 +31,10 @@
                 <tr>
                     <td class="d-flex justify-content-center">
                         <a class="btn btn-outline-primary btn-sm mx-1" asp-action="AddShippingBatch" asp-route-iid="@shipping.ShippingBatchId">
-                            <i class="fas fa-edit"></i> تعديل
+                            <i class="fas fa-edit"></i>
                         </a>
-                        <a class="btn btn-outline-danger btn-sm mx-1" asp-action="DeleteData" asp-route-id="@shipping.ShippingBatchId">
-                            <i class="fas fa-trash"></i> حذف
+                        <a class="btn btn-outline-danger btn-sm mx-1" asp-action="DeleteData" asp-route-iiid="@shipping.ShippingBatchId">
+                            <i class="fas fa-trash"></i>
                         </a>
                     </td>
                     @if(@shipping.batchCostUS != null)

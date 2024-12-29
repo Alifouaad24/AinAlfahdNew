@@ -81,14 +81,23 @@ namespace AinAlfahd.Areas.Admin.Controllers
 
         }
 
-        public async Task<IActionResult> DeleteData(int id)
+        public async Task<IActionResult> DeleteData(int iiid)
         {
-            var shipp = await dBContext.ShippingBatchs.FindAsync(id);
+            var shipp = await dBContext.ShippingBatchs.FindAsync(iiid);
+
             if (shipp == null)
             {
                 TempData["msg"] = "حدث خطأ ما يرجى المحاولة مجددا !";
                 return RedirectToAction("Index");
             }
+
+            var receipts = dBContext.Reciepts.Where(r => r.ShippingBatchId == iiid).ToList();
+            foreach (var receipt in receipts)
+            {
+                receipt.ShippingBatchId = null;
+            }
+            await dBContext.SaveChangesAsync();
+
             dBContext.ShippingBatchs.Remove(shipp);
             await dBContext.SaveChangesAsync();
             TempData["msg"] = "تم الحذف بنجاح !";
