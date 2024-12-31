@@ -21,7 +21,7 @@ namespace AinAlfahd.Areas.Admin.APIs
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var reciepts = await _db.Reciepts.Include(r => r.Customer).ToListAsync();
+            var reciepts = await _db.Reciepts.Include(r => r.Customer).Include(r => r.ShippingBatch).ToListAsync();
             return Ok(reciepts);
         }
 
@@ -49,7 +49,7 @@ namespace AinAlfahd.Areas.Admin.APIs
         [HttpPost]
         public async Task<IActionResult> AddData(RecirptDto model)
         {
-            var user = HttpContext?.User?.Identity?.Name;
+            var user = HttpContext?.User?.Identity?.Name ?? "Not Found";
             var userId = HttpContext.Session.GetInt32("UserId");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -69,6 +69,7 @@ namespace AinAlfahd.Areas.Admin.APIs
                 IsFinanced = model.IsFinanced,
                 SellingDisCount = model.SellingDisCount,
                 ShippingBatchId = model.ShippingBatchId,
+                Notes = model.Notes,
 
 
             };

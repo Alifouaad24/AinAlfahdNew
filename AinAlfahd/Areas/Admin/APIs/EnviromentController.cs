@@ -1,6 +1,7 @@
 ﻿using AinAlfahd.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AinAlfahd.Areas.Admin.APIs
 {
@@ -19,6 +20,13 @@ namespace AinAlfahd.Areas.Admin.APIs
         {
             var env = await dBContext.TblConfigs.FindAsync(2);
             return Ok(env);
+        }
+
+        [HttpGet("GetExChg")]
+        public async Task<IActionResult> GetExChg()
+        {
+            var ex = await dBContext.Exchanges.FirstOrDefaultAsync();
+            return Ok(ex);
         }
     }
 }
