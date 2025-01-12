@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace AinAlfahd.Models
 {
@@ -8,11 +9,16 @@ namespace AinAlfahd.Models
         public DateTime? ShippingDate { get; set; }
         public DateTime? ArrivelDate { get; set; }
         public DateTime? EntryDate { get; set; }
-        public decimal? batchCostUS { get; set; }    
-
-
+        public decimal? batchCostUS { get; set; }   
+        public string? Notes { get; set; }
+        public decimal? SellingIQ { get; set; }
+        public int? ReciptsNu { get; set; }
+        
         [ForeignKey("ShippingTypes")]
         public int? ShippingTypeId { get; set; }
+        [JsonIgnore]
         public ShippingTypes? ShippingTypes { get; set; }
+        [JsonIgnore]
+        public List<Reciept>? Recipts { get; set; }
     }
 }

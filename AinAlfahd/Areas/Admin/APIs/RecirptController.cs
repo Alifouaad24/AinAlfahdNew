@@ -25,6 +25,15 @@ namespace AinAlfahd.Areas.Admin.APIs
             return Ok(reciepts);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var reciept = await _db.Reciepts.Include(r => r.Customer).Include(r => r.ShippingBatch)
+                .FirstOrDefaultAsync(r => r.RecieptId == id);
+            return Ok(reciept);
+        }
+
+
         [HttpGet("GetLastFiveRecords")]
         public async Task<IActionResult> GetLastFiveRecords()
         {
@@ -56,20 +65,24 @@ namespace AinAlfahd.Areas.Admin.APIs
 
             var recipt = new Reciept
             {
-                Cost = model.Weight * 5,
+                Cost = model.Cost,
                 Currency = "$",
                 CustomerId = model.CustomerId,
-                InsertBy = user ?? userId.ToString(),
-                InsertDate = DateTime.Now,
-                Weight = model.Weight,
                 DisCount = model.DisCount,
+                InsertBy = "Anyy one",
+                IsFinanced = model.IsFinanced,
+                InsertDate = DateTime.Now,
                 SellingCurrency = "IQ",
                 RecieptDate = model.RecieptDate,
-                SellingPrice = model.Weight * 8,
-                IsFinanced = model.IsFinanced,
                 SellingDisCount = model.SellingDisCount,
-                ShippingBatchId = model.ShippingBatchId,
+                SellingPrice = model.SellingPrice,
+                Weight = model.Weight,
+                TotalPriceFromCust = Math.Ceiling(model.TotalPriceFromCust),
+                CurrentState = model.CurrentState,
                 Notes = model.Notes,
+                ShippingBatchId = model.ShippingBatchId,
+                CostIQ = model.CostIQ,
+                SellingUSD = model.SellingUSD,
 
 
             };
@@ -88,8 +101,23 @@ namespace AinAlfahd.Areas.Admin.APIs
             if (rec == null)
                 return BadRequest(ModelState);
 
-            rec.Cost = model.Weight * 5;
-            rec.SellingPrice = model.Weight * 8;
+            rec.Cost = model.Cost;
+            rec.Currency = "$";
+            rec.CustomerId = model.CustomerId;
+            rec.DisCount = model.DisCount;
+            rec.InsertBy = "Anyy one";
+            rec.IsFinanced = model.IsFinanced;
+            rec.InsertDate = DateTime.Now;
+            rec.SellingCurrency = "IQ";
+            rec.RecieptDate = model.RecieptDate;
+            rec.SellingDisCount = model.SellingDisCount;
+            rec.SellingPrice = model.SellingPrice;
+            rec.Weight = model.Weight;
+            rec.TotalPriceFromCust = Math.Ceiling(model.TotalPriceFromCust);
+            rec.CurrentState = true;
+            rec.CostIQ = model.CostIQ;
+            rec.SellingUSD = model.SellingUSD;
+
             _db.Entry(rec).CurrentValues.SetValues(model);
             await _db.SaveChangesAsync();
 
@@ -97,7 +125,7 @@ namespace AinAlfahd.Areas.Admin.APIs
         }
 
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Deletedata(int id)
         {
             var rec = await _db.Reciepts.FindAsync(id);
@@ -108,6 +136,18 @@ namespace AinAlfahd.Areas.Admin.APIs
             await _db.SaveChangesAsync();
             return Ok($"Reciept {rec.RecieptId} deleted successfuly");
 
+        }
+
+        [HttpGet("SerachByDateApi/{from}/{to}")]
+        public async Task<IActionResult> SerachByDateApi(string from, string to)
+        {
+            var recipts = await _db.Reciepts
+                .Where(c => c.CurrentState == true & c.RecieptDate >= DateTime.Parse(from) & c.RecieptDate <= DateTime.Parse(to))
+                .OrderBy(r => r.RecieptDate)
+                .Include(r => r.Customer).ToListAsync();
+
+
+            return Ok(recipts);
         }
     }
 }

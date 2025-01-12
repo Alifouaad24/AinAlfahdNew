@@ -15,13 +15,30 @@ namespace AinAlfahd.Areas.Admin.APIs
         {
             this.dBContext = dBContext;
         }
-
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var shippingBatch = await dBContext.ShippingBatchs.Include(s => s.ShippingTypes).ToListAsync();
+            var shippingBatch = await dBContext.ShippingBatchs
+                .Include(s => s.ShippingTypes)
+                .Select(s => new
+                {
+                    s.ShippingBatchId,
+                    s.ShippingDate,
+                    s.EntryDate,
+                    s.ShippingTypeId,
+                    s.ArrivelDate,
+                    BatchCostUS = s.Recipts.Sum(r => r.Cost),
+                    s.ShippingTypes,
+                    ReciptsNu = s.Recipts != null ? s.Recipts.Count() : 0,
+                    s.Notes,
+                    SellingIQ = s.Recipts.Sum(r => r.TotalPriceFromCust)
+
+                }).OrderByDescending(s => s.ArrivelDate)
+                .ToListAsync();
+
             return Ok(shippingBatch);
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -49,9 +66,10 @@ namespace AinAlfahd.Areas.Admin.APIs
             {
                 shippingBatch.ShippingDate = model.ShippingDate;
                 shippingBatch.ArrivelDate = model.ArrivelDate;
-                shippingBatch.EntryDate = model.EntryDate;
+                shippingBatch.EntryDate = DateTime.Now;
                 shippingBatch.batchCostUS = model.batchCostUS;
                 shippingBatch.ShippingTypeId = model.ShippingTypeId;
+                shippingBatch.Notes = model.Notes;
 
                 dBContext.ShippingBatchs.Update(shippingBatch);
                 await dBContext.SaveChangesAsync();
@@ -68,6 +86,10 @@ namespace AinAlfahd.Areas.Admin.APIs
             var shippingBatchs = await dBContext.ShippingBatchs.FindAsync(id);
             if (shippingBatchs != null)
             {
+                if (shippingBatchs.Recipts.Any())
+                {
+                    return BadRequest("Recipts related with this batch");
+                }
                 dBContext.ShippingBatchs.Remove(shippingBatchs);
                 await dBContext.SaveChangesAsync();
 

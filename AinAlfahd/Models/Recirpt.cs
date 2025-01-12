@@ -14,6 +14,11 @@ namespace AinAlfahd.Models
         public decimal? DisCount { get; set; }
 
         public decimal SellingPrice { get; set; }
+
+        public decimal CostIQ { get; set; }
+        public decimal SellingUSD { get; set; }
+
+
         public decimal TotalPriceFromCust { get; set; }
         public string SellingCurrency { get; set; }
         public decimal? SellingDisCount { get; set; }
