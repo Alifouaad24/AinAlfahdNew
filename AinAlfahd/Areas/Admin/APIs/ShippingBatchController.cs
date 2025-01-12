@@ -83,20 +83,23 @@ namespace AinAlfahd.Areas.Admin.APIs
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteData(int id)
         {
-            var shippingBatchs = await dBContext.ShippingBatchs.FindAsync(id);
+            var shippingBatchs = await dBContext.ShippingBatchs.Include(sh => sh.Recipts).FirstOrDefaultAsync(sh => sh.ShippingBatchId == id);
             if (shippingBatchs != null)
             {
-                if (shippingBatchs.Recipts.Any())
+                if (shippingBatchs.Recipts != null && shippingBatchs.Recipts.Any())
                 {
-                    return BadRequest("Recipts related with this batch");
+                    var ship = shippingBatchs.ArrivelDate?.ToString("yyyy-MM-dd");
+                    return BadRequest($"One or more Recipts related with ({ship}) batch");
                 }
+
                 dBContext.ShippingBatchs.Remove(shippingBatchs);
                 await dBContext.SaveChangesAsync();
 
-                return Ok("model deleted successfully !");
+                return Ok("Model deleted successfully!");
             }
 
             return NotFound();
         }
+
     }
 }
