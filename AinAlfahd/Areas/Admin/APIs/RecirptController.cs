@@ -33,8 +33,16 @@ namespace AinAlfahd.Areas.Admin.APIs
             return Ok(reciept);
         }
 
+		[HttpGet("GetBySomeProperities/{weight}")]
+		public async Task<IActionResult> GetBySomeProperities(decimal weight)
+		{
+			var reciept = await _db.Reciepts.Include(r => r.Customer).Include(r => r.ShippingBatch)
+				.Where(r => r.Weight == weight).ToListAsync();
+			return Ok(reciept);
+		}
 
-        [HttpGet("GetLastFiveRecords")]
+
+		[HttpGet("GetLastFiveRecords")]
         public async Task<IActionResult> GetLastFiveRecords()
         {
             var reciepts = await _db.Reciepts.Include(r => r.Customer).ToListAsync();
@@ -62,6 +70,13 @@ namespace AinAlfahd.Areas.Admin.APIs
             var userId = HttpContext.Session.GetInt32("UserId");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var rec = await _db.Reciepts.FirstOrDefaultAsync(a => a.Weight == model.Weight && a.RecieptDate == model.RecieptDate && a.CustomerId == model.CustomerId);
+
+            if (rec != null)
+            {
+                return BadRequest("الإيصال موجود مسبقا");
+            }
 
             var recipt = new Reciept
             {
