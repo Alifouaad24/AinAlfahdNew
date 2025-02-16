@@ -19,6 +19,10 @@ public partial class Item
     public string? PCode { get; set; }
     public string? OldCode { get; set; }
 
+    [ForeignKey("MakeId")]
+    public int? MakeId { get; set; }
+    public Make? Make { get; set; }
+
     public string? ArDesc { get; set; }
 
     public int? H { get; set; }

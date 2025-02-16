@@ -3,7 +3,11 @@ using HtmlAgilityPack;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
+using OpenQA.Selenium;
 using System.Security.Policy;
+using AinAlfahd.Models;
 
 namespace AinAlfahd.Areas.Admin.APIs
 {
@@ -34,23 +38,70 @@ namespace AinAlfahd.Areas.Admin.APIs
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> AddItem([FromBody] Item model)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var item = new Item {
+
+                PCode = model.PCode,
+                ImgUrl = model.ImgUrl,
+                CategoryId = model.CategoryId,
+                MakeId = model.MakeId,  
+ 
+            };
+
+            await dBContext.Items.AddAsync(item);
+            await dBContext.SaveChangesAsync();
+            return Ok(item);
+        }
+
+
         // get image url from scrape
         private async Task<string> GetImgUrlFromScraping(string itemSKU)
         {
-            string baseURL = "https://ar.shein.com/pdsearch/";
+            string baseURL = "https://us.shein.com/pdsearch/";
             string url = baseURL + itemSKU;
-            using HttpClient client = new HttpClient();
-            string html = await client.GetStringAsync(url);
 
-            HtmlDocument doc = new HtmlDocument();
-            doc.LoadHtml(html);
+            var options = new ChromeOptions();
+            options.AddArgument("start-maximized");
 
-            var imgNode = doc.DocumentNode
-                             .SelectNodes("//img")
-                             ?.FirstOrDefault();
+            using (var driver = new ChromeDriver(options))
+            {
+                try
+                {
+                    driver.Navigate().GoToUrl(url);
+                    await Task.Delay(3000);
 
-            return imgNode?.GetAttributeValue("src", "لا يوجد صورة");
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+                    wait.Until(driver => driver.FindElement(By.XPath("//div[contains(@class, 'crop-image-container')]//img")));
+
+                    var imgElement = driver.FindElements(By.XPath("//div[contains(@class, 'crop-image-container')]//img")).FirstOrDefault();
+
+                    if (imgElement != null)
+                    {
+                        var imgSrc = imgElement.GetAttribute("src");
+                        return imgSrc;
+                    }
+                    else
+                    {
+                        return "Image not found";
+                    }
+
+
+                }
+
+
+                catch (Exception ex)
+                {
+                    return "Error during Get SKU";
+                }
+            }
         }
-
     }
 }

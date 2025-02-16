@@ -126,6 +126,7 @@ public partial class MasterDBContext : DbContext
     public DbSet<CustomerService> CustomerServices { get; set; }
     public DbSet<Address> Addresses { get; set; }
     public DbSet<Reciept> Reciepts { get; set; }
+    public DbSet<Make> Makes { get; set; }
 
     public DbSet<Systemm> Systems { get; set; }
     public DbSet<ShippingBatch> ShippingBatchs { get; set; }
