@@ -18,14 +18,14 @@ namespace AinAlfahd.Areas.Admin.APIs
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
-            var cateories = await dBContext.Categories.Where(c => c.MainCategoryId == null).ToListAsync();
+            var cateories = await dBContext.Categories.ToListAsync();
             return Ok(cateories);
         }
 
         [HttpGet("GetSubCategoriesForDetectedCategory/{id}")]
         public async Task<IActionResult> GetSubCategoriesForDetectedCategory(int id)
         {
-            var cateories = await dBContext.Categories.Where(c => c.CategoryId == id && c.MainCategoryId != null).ToListAsync();
+            var cateories = await dBContext.Categories.Where(c => c.MainCategoryId == id && c.MainCategoryId != null).ToListAsync();
             return Ok(cateories);
         }
     }
