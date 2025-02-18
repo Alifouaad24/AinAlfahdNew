@@ -64,44 +64,32 @@ namespace AinAlfahd.Areas.Admin.APIs
         // get image url from scrape
         private async Task<string> GetImgUrlFromScraping(string itemSKU)
         {
-            string baseURL = "https://us.shein.com/pdsearch/";
-            string url = baseURL + itemSKU;
+            string url = $"https://ar.shein.com/pdsearch/{itemSKU}";
 
             var options = new ChromeOptions();
-            options.AddArgument("start-maximized");
+            options.AddArgument("--headless"); 
+            options.AddArgument("--disable-gpu");
+            options.AddArgument("--no-sandbox");
+            options.AddArgument("--disable-dev-shm-usage");
 
             using (var driver = new ChromeDriver(options))
             {
                 try
                 {
+                    driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
                     driver.Navigate().GoToUrl(url);
-                    await Task.Delay(3000);
 
-                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                    var imgElement = wait.Until(d => d.FindElement(By.XPath("//div[contains(@class, 'crop-image-container')]//img")));
 
-                    wait.Until(driver => driver.FindElement(By.XPath("//div[contains(@class, 'crop-image-container')]//img")));
-
-                    var imgElement = driver.FindElements(By.XPath("//div[contains(@class, 'crop-image-container')]//img")).FirstOrDefault();
-
-                    if (imgElement != null)
-                    {
-                        var imgSrc = imgElement.GetAttribute("src");
-                        return imgSrc;
-                    }
-                    else
-                    {
-                        return "Image not found";
-                    }
-
-
+                    return imgElement?.GetAttribute("src") ?? "Image not found";
                 }
-
-
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    return "Error during Get SKU";
+                    return "Error during Get image url";
                 }
             }
         }
+
     }
 }

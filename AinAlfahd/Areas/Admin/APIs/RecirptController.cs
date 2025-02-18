@@ -25,6 +25,15 @@ namespace AinAlfahd.Areas.Admin.APIs
             return Ok(reciepts);
         }
 
+        [HttpGet("GetAllShippingNull")]
+        public async Task<IActionResult> GetAllShippingNull()
+        {
+            var reciepts = await _db.Reciepts.Include(r => r.Customer)
+                .Where(r => r.ShippingBatchId == null)
+                .ToListAsync();
+            return Ok(reciepts);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
