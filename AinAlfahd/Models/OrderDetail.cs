@@ -13,9 +13,10 @@ public partial class OrderDetail
     public int? OrderNo { get; set; }
     public Order Order { get; set; }
 
+
     [ForeignKey("MerchantId")]
-    public int? MerchantId { get; set;}
     public Merchant? Merchant { get; set; }
+    public int? MerchantId { get; set;}
 
 
     [ForeignKey("Item")]

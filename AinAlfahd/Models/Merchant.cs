@@ -7,7 +7,7 @@ namespace AinAlfahd.Models;
 public partial class Merchant
 {
     [Key]
-    public int MerchantId { get; set; }
+    public int Id { get; set; }
 
     public string? MerchantName { get; set; }
 
