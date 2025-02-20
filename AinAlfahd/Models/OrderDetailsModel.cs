@@ -7,5 +7,6 @@
         public int? MakeId { get; set; }
         public int? CategoryId { get; set; }
         public int? Size { get; set; }
+        public decimal WebsitePrice { get; set; }
     }
 }

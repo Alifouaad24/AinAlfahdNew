@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace AinAlfahd.Models;
 
 public partial class Merchant
 {
-    public int Id { get; set; }
+    [Key]
+    public int MerchantId { get; set; }
 
     public string? MerchantName { get; set; }
 

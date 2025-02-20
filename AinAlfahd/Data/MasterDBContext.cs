@@ -488,9 +488,6 @@ public partial class MasterDBContext : DbContext
 
         modelBuilder.Entity<Merchant>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_patient");
-
-            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Bgw).HasColumnName("bgw");
             entity.Property(e => e.Branch).HasColumnName("branch");
             entity.Property(e => e.Bypass).HasColumnName("bypass");

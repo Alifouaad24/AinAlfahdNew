@@ -41,6 +41,7 @@ namespace AinAlfahd.Areas.Admin.APIs
                     ItemCode = i.Id,
                     Size = model.Size,
                     Returned = 1,
+                    WebsitePrice = model.WebsitePrice,
                 };
                 await dBContext.OrderDetails.AddAsync(orderDetail);
                 await dBContext.SaveChangesAsync();
@@ -53,6 +54,8 @@ namespace AinAlfahd.Areas.Admin.APIs
                 ItemCode = item.Id,
                 Size = model.Size,
                 Returned = 1,
+                WebsitePrice = model.WebsitePrice,
+
             };
             await dBContext.OrderDetails.AddAsync(orderDetail1);
             await dBContext.SaveChangesAsync();

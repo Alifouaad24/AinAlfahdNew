@@ -13,6 +13,9 @@ public partial class OrderDetail
     public int? OrderNo { get; set; }
     public Order Order { get; set; }
 
+    [ForeignKey("MerchantId")]
+    public int? MerchantId { get; set;}
+    public Merchant? Merchant { get; set; }
 
 
     [ForeignKey("Item")]
@@ -71,7 +74,7 @@ public partial class OrderDetail
 
     public int? SourcePrice { get; set; }
 
-    public decimal? WebsitePrice { get; set; }
+    public decimal WebsitePrice { get; set; }
 
     public int? Adjusted { get; set; }
 
