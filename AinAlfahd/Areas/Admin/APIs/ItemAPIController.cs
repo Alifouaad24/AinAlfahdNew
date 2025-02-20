@@ -62,7 +62,7 @@ namespace AinAlfahd.Areas.Admin.APIs
 
 
         // get image url from scrape
-        private async Task<string> GetImgUrlFromScraping(string itemSKU)
+        private async Task<Object> GetImgUrlFromScraping(string itemSKU)
         {
             string url = $"https://ar.shein.com/pdsearch/{itemSKU}";
 
@@ -76,19 +76,30 @@ namespace AinAlfahd.Areas.Admin.APIs
             {
                 try
                 {
-                    driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
+                    driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1);
                     driver.Navigate().GoToUrl(url);
 
                     WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                    var imgElement = wait.Until(d => d.FindElement(By.XPath("//div[contains(@class, 'crop-image-container')]//img")));
 
-                    return imgElement?.GetAttribute("src") ?? "Image not found";
+                    var imgElement = wait.Until(d => d.FindElement(By.XPath("//div[contains(@class, 'crop-image-container')]//img")));
+                    var imgUrl = imgElement?.GetAttribute("src") ?? "Image not found";
+
+                    var priceElement = wait.Until(d => d.FindElement(By.XPath("//p[contains(@class, 'product-item__camecase-wrap')]//span")));
+     
+                    var price = priceElement?.Text ?? "Price not found $";
+                    var currentPrice = price.Replace("$", "").Trim();
+
+                    return new {
+                        Image = imgUrl,
+                        Price = currentPrice
+                    };
                 }
                 catch (Exception)
                 {
-                    return "Error during Get image url";
+                    return "Error during Get image url and price";
                 }
             }
+
         }
 
     }
