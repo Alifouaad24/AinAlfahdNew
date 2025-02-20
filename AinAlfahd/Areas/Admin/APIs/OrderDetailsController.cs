@@ -42,6 +42,7 @@ namespace AinAlfahd.Areas.Admin.APIs
                     Size = model.Size,
                     Returned = 1,
                     WebsitePrice = model.WebsitePrice,
+                    MerchantId = model.MerchantId,
                 };
                 await dBContext.OrderDetails.AddAsync(orderDetail);
                 await dBContext.SaveChangesAsync();
@@ -55,6 +56,8 @@ namespace AinAlfahd.Areas.Admin.APIs
                 Size = model.Size,
                 Returned = 1,
                 WebsitePrice = model.WebsitePrice,
+                MerchantId = model.MerchantId,
+
 
             };
             await dBContext.OrderDetails.AddAsync(orderDetail1);
