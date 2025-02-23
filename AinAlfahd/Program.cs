@@ -2,6 +2,7 @@
 using AinAlfahd.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddSwaggerGen(c =>
         Description = "A sample ASP.NET Core API"
     });
 });
+
 
 builder.Services.AddDbContext<MasterDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FirstConnect")));
@@ -33,7 +35,7 @@ builder.Services.AddCors(options =>
                           .AllowAnyHeader());
 });
 
-
+QuestPDF.Settings.License = LicenseType.Community;
 
 var app = builder.Build();
 

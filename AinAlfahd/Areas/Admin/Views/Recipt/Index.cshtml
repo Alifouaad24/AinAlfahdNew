@@ -49,6 +49,9 @@
         <h4 class="text-center text-danger">@TempData["msg"]</h4>
         <hr />
     </div>
+    <div>
+@*         <button onclick="print()">print</button>
+ *@    </div>
 
     <div class="mb-3 col-10">
         <div class="mb-3 d-flex align-items-end flex-column">
@@ -99,9 +102,9 @@
                         @{
                             if (@receipt.IsFinanced)
                             {
-                                        <td class="text-end m-1">مدفوعة</td>
+                                            <td class="text-end m-1">مدفوعة</td>
                             }else{
-                                        <td class="text-end m-1">غير مدفوعة</td>
+                                            <td class="text-end m-1">غير مدفوعة</td>
                             }
                         }
                         <td class="text-end m-1">@receipt.TotalPriceFromCust.ToString("N0") IQ</td>
@@ -202,6 +205,20 @@
                 }
             });
         }
+
+        function print() {
+
+            let x = 60;
+
+            var url = `${window.origin}/api/Reciept/GeneratePdf`;
+
+            if (x !== undefined && x !== null) {
+                url += `/${x}`;
+            }
+
+            window.location.href = url;
+        }
+
 
     </script>
 }
