@@ -263,8 +263,8 @@ namespace AinAlfahd.Areas.Admin.APIs
                             foreach (var recipt in recipts)
                             {
                                 table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.RecieptDate.ToString("yyyy-MM-dd"));
-                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.SellingPrice + "IQ");
-                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Cost + "$");
+                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.SellingPrice.ToString("N0") + "IQ");
+                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Cost.ToString("N0") + "$");
                                 table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Weight + "KG");
                                 table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Customer.CustName);
                                 count++;
@@ -289,7 +289,7 @@ namespace AinAlfahd.Areas.Admin.APIs
                                 header.Cell().AlignCenter().Padding(3).Text("عدد الإيصالات").FontSize(12).Bold();
                             });
 
-                            table.Cell().Border(1).AlignCenter().Padding(3).Text($"{totalCostInDollar}").FontSize(12);
+                            table.Cell().Border(1).AlignCenter().Padding(3).Text($"${totalCostInDollar}").FontSize(12);
                             table.Cell().Border(1).AlignCenter().Padding(3).Text($"IQ{totalSellingPrice}").FontSize(12);
                             table.Cell().Border(1).AlignCenter().Padding(3).Text($"{count}").FontSize(12);
                         });
