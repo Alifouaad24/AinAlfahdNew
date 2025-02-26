@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
+
 using QuestPDF.Infrastructure;
 using static OpenQA.Selenium.PrintOptions;
 
@@ -205,10 +206,16 @@ namespace AinAlfahd.Areas.Admin.APIs
             }
             var shipping = await _db.ShippingBatchs.Where(s => s.ShippingBatchId == shippingBatchId).FirstOrDefaultAsync();
             var shippingDate = shipping?.ArrivelDate?.ToString("yyyy/MM/dd");
+            var excgange = await _db.Exchanges.FirstOrDefaultAsync();
 
+            var exRate = Convert.ToDecimal(excgange.ExchangeRate);
 
             var totalCostInDollar = recipts.Sum(p => p.Cost);
             var totalSellingPrice = recipts.Sum(p => p.SellingPrice);
+
+            var totalSellingPriceInDollar = totalSellingPrice / exRate;
+            var accpur = totalSellingPriceInDollar - totalCostInDollar;
+
             int count = 0;
 
             var pdfDocument = Document.Create(async container =>
@@ -262,9 +269,9 @@ namespace AinAlfahd.Areas.Admin.APIs
 
                             foreach (var recipt in recipts)
                             {
-                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.RecieptDate.ToString("yyyy-MM-dd"));
-                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.SellingPrice.ToString("N0") + "IQ");
-                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Cost.ToString("N0") + "$");
+                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.ShippingBatch.ArrivelDate?.ToString("yyyy-MM-dd"));
+                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.SellingPrice.ToString("N3") + "IQ");
+                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Cost.ToString("N3") + "$");
                                 table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Weight + "KG");
                                 table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Customer.CustName);
                                 count++;
@@ -280,18 +287,34 @@ namespace AinAlfahd.Areas.Admin.APIs
                                 columns.RelativeColumn(); // العمود الأول: مجموع الكمية
                                 columns.RelativeColumn(); // العمود الثاني: المجموع العام
                                 columns.RelativeColumn(); // العمود الثالث: عدد الإيصالات
+                                columns.RelativeColumn(); // العمود الثالث: عدد الإيصالات
+                                columns.RelativeColumn(); // العمود الثالث: عدد الإيصالات
+                                columns.RelativeColumn(); // العمود الثالث: عدد الإيصالات
                             });
 
                             table.Header(header =>
                             {
-                                header.Cell().AlignCenter().Padding(3).Text("مجموع التكلفة").FontSize(12).Bold();
-                                header.Cell().AlignCenter().Padding(3).Text("المجموع البيع").FontSize(12).Bold();
                                 header.Cell().AlignCenter().Padding(3).Text("عدد الإيصالات").FontSize(12).Bold();
+                                header.Cell().AlignCenter().Padding(3).Text("المجموع البيع").FontSize(12).Bold();
+                                header.Cell().AlignCenter().Padding(3).Text("سعر الصرف").FontSize(12).Bold();
+                                header.Cell().AlignCenter().Padding(3).Text("صافي الحساب").FontSize(12).Bold();
+                                header.Cell().AlignCenter().Padding(3).Text("البيع بالدولار").FontSize(12).Bold();
+                                header.Cell().AlignCenter().Padding(3).Text("مجموع التكلفة").FontSize(12).Bold();
                             });
 
-                            table.Cell().Border(1).AlignCenter().Padding(3).Text($"${totalCostInDollar}").FontSize(12);
-                            table.Cell().Border(1).AlignCenter().Padding(3).Text($"IQ{totalSellingPrice}").FontSize(12);
                             table.Cell().Border(1).AlignCenter().Padding(3).Text($"{count}").FontSize(12);
+                            table.Cell().Border(1).AlignCenter().Padding(3).Text($"IQ{totalSellingPrice.ToString("N3")}").FontSize(12);
+                            table.Cell().Border(1).AlignCenter().Padding(3).Text($"IQ{exRate}").FontSize(12);
+                            table.Cell()
+                                .Border(1)
+                                .AlignCenter()
+                                .Padding(3)
+                                .Text($"${accpur.ToString("N3")}")
+                                .FontSize(12)
+                                .FontColor(accpur < 0 ? Color.FromHex("#FF0000") : Color.FromHex("#000000"));
+
+                            table.Cell().Border(1).AlignCenter().Padding(3).Text($"${totalSellingPriceInDollar.ToString("N3")}").FontSize(12);
+                            table.Cell().Border(1).AlignCenter().Padding(3).Text($"${totalCostInDollar.ToString("N3")}").FontSize(12);
                         });
 
                         content.Item().PaddingTop(20).Table(table =>
