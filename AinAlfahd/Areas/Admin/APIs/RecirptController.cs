@@ -188,7 +188,7 @@ namespace AinAlfahd.Areas.Admin.APIs
             return pdf;
         }
 
-        public async Task<IActionResult> CreatePDF(int? shippingBatchId)
+        private async Task<IActionResult> CreatePDF(int? shippingBatchId)
         {
             var recipts = new List<Reciept>();
             if (shippingBatchId == null)

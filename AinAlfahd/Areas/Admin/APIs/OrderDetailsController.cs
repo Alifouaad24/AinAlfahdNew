@@ -3,6 +3,7 @@ using AinAlfahd.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace AinAlfahd.Areas.Admin.APIs
 {
@@ -14,6 +15,17 @@ namespace AinAlfahd.Areas.Admin.APIs
         public OrderDetailsController(MasterDBContext dBContext)
         {
             this.dBContext = dBContext;
+        }
+
+
+        [HttpGet("")]
+        [HttpGet("{start?}/{end?}")]
+        public async Task<IActionResult> GetAllOrderDetails(int? start, int? end)
+        {
+            int s = start ?? 0;
+            int e = end ?? int.MinValue;
+            var order_Details = await dBContext.OrderDetails.Include(o => o.Item).Skip(s).Take(e).ToListAsync();
+            return Ok(order_Details);
         }
 
         [HttpPost]
@@ -63,6 +75,36 @@ namespace AinAlfahd.Areas.Admin.APIs
             await dBContext.OrderDetails.AddAsync(orderDetail1);
             await dBContext.SaveChangesAsync();
             return Ok(orderDetail1);
+
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditOrderDetail(int id, [FromBody] OrderDetail model)
+        {
+            var orderDetail1 = await dBContext.OrderDetails.FindAsync(id);
+            if (orderDetail1 == null)
+                return NotFound();
+
+            orderDetail1.Size = model.Size;
+            orderDetail1.WebsitePrice = model.WebsitePrice;
+            orderDetail1.ItemCode = model.ItemCode;
+
+            dBContext.Update(orderDetail1);
+            await dBContext.SaveChangesAsync();
+            return Ok(orderDetail1);
+
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteOrderDetail(int id)
+        {
+            var orderDetail1 = await dBContext.OrderDetails.FindAsync(id);
+            if (orderDetail1 == null)
+                return NotFound();
+            
+            dBContext.Remove(orderDetail1);
+            await dBContext.SaveChangesAsync();
+            return Ok();
 
         }
 
