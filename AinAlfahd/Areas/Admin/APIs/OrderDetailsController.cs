@@ -24,8 +24,16 @@ namespace AinAlfahd.Areas.Admin.APIs
         {
             int s = start ?? 0;
             int e = end ?? int.MinValue;
-            var order_Details = await dBContext.OrderDetails.Include(o => o.Item).Skip(s).Take(e).ToListAsync();
+            var order_Details = await dBContext.OrderDetails.Include(o => o.Item).Include(o => o.Size).Skip(s).Take(e).ToListAsync();
             return Ok(order_Details);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetOrderDetailsById(int id)
+        {
+
+            var order_Detail = await dBContext.OrderDetails.Include(o => o.Item).Include(o => o.Size).Where(o => o.Id == id).FirstOrDefaultAsync();
+            return Ok(order_Detail);
         }
 
         [HttpPost]
