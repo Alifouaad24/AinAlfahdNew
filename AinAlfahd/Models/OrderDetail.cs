@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Drawing;
 using System.Text.Json.Serialization;
 
 namespace AinAlfahd.Models;
@@ -12,7 +13,6 @@ public partial class OrderDetail
     [ForeignKey("Order")]
     public int? OrderNo { get; set; }
     public Order Order { get; set; }
-
 
     [ForeignKey("MerchantId")]
     public Merchant? Merchant { get; set; }
@@ -28,8 +28,10 @@ public partial class OrderDetail
     public int? Qty { get; set; }
 
     public int? OriginalAmount { get; set; }
-
+    public TblSize SizeTB { get; set; }
+    [ForeignKey("SizeTB")]
     public int? Size { get; set; }
+
 
     public int? OnlineOrder { get; set; }
 
