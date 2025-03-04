@@ -8,6 +8,7 @@ using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium;
 using System.Security.Policy;
 using AinAlfahd.Models;
+using System.Net;
 
 namespace AinAlfahd.Areas.Admin.APIs
 {
@@ -100,6 +101,51 @@ namespace AinAlfahd.Areas.Admin.APIs
                 }
             }
 
+        }
+
+        // get from final url
+        [HttpPost("GetPhotoAndPrise")]
+        public async Task<IActionResult> GetPhotoAndPrise(string url)
+        {
+
+            var options = new ChromeOptions();
+            options.AddArgument("start-maximized");
+
+            using (var driver = new ChromeDriver(options))
+            {
+                try
+                {
+                    driver.Navigate().GoToUrl(url);
+
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
+                    wait.Until(driver => driver.FindElement(By.XPath("//img")));
+
+                    var imageElement = driver.FindElements(By.XPath("//img[contains(@class, 'crop-image-container__img')]")).FirstOrDefault();
+                    var priceElement = driver.FindElements(By.XPath("//span[contains(@class, 'product-price__price')]")).FirstOrDefault();
+
+                    if (imageElement != null && priceElement != null)
+                    {
+                        var imageUrl = imageElement.GetAttribute("src");
+                        var price = priceElement.Text.Replace("$", "").Trim();
+
+                        return Ok(new { ImageURL = imageUrl, Price = price });
+                    }
+                    else
+                    {
+                        return Ok(new { ImageURL = "Not Found", Price = "0" });
+                    }
+                }
+
+
+                catch (Exception ex)
+                {
+
+                }
+                return Ok(new
+                {
+
+                });
+            }
         }
 
     }
