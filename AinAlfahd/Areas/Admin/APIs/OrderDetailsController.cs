@@ -26,7 +26,7 @@ namespace AinAlfahd.Areas.Admin.APIs
             if (pageSize < 1) pageSize = 100;
 
             var query = dBContext.OrderDetails
-                .Include(o => o.Item).Include(o => o.SizeTB)
+                .Include(o => o.Item).Include(o => o.SizeTB).Where(o => !o.Item.PCode.Contains(".") && o.Returned == 1 && o.Removed != null)
                 .OrderBy(o => o.OrderId);
 
             var totalRecords = await query.CountAsync();
