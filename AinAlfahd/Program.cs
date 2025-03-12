@@ -1,8 +1,13 @@
-﻿using AinAlfahd.BL;
+﻿using AinAlfahd.Authontocation;
+using AinAlfahd.BL;
 using AinAlfahd.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using QuestPDF.Infrastructure;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,9 +23,14 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddScoped<CreateJWT>();
 
 builder.Services.AddDbContext<MasterDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FirstConnect")));
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<MasterDBContext>()
+    .AddDefaultTokenProviders();
 
 
 builder.Services.AddScoped<ICustomer, CutomerRepo> ();
@@ -37,6 +47,26 @@ builder.Services.AddCors(options =>
 
 QuestPDF.Settings.License = LicenseType.Community;
 
+var configuration = builder.Configuration;
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = configuration["Jwt:Issuer"],
+            ValidAudience = configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 app.UseCors("AllowAll");
@@ -52,8 +82,8 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
 
+app.UseAuthentication();
 app.UseAuthorization();
-
 
 app.MapControllerRoute(
     name: "admin",

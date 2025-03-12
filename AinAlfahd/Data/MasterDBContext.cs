@@ -1,20 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using AinAlfahd.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.General;
 
 namespace AinAlfahd.Data;
 
-public partial class MasterDBContext : DbContext
+public partial class MasterDBContext : IdentityDbContext<IdentityUser>
 {
-    public MasterDBContext()
-    {
-    }
 
     public MasterDBContext(DbContextOptions<MasterDBContext> options)
         : base(options)
     {
     }
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+    }
+
 
     public virtual DbSet<Account> Accounts { get; set; }
 
@@ -136,6 +142,7 @@ public partial class MasterDBContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
+        base.OnModelCreating(modelBuilder);
         // /////////////////////////////////////////////////////////////////////////////////
         modelBuilder.Entity<CustomerService>()
             .HasKey(cs => new { cs.CustomerId, cs.ServiceId });

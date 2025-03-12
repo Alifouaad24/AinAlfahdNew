@@ -195,12 +195,12 @@ namespace AinAlfahd.Areas.Admin.APIs
             {
                 recipts = await _db.Reciepts
                     .Include(o => o.ShippingBatch).Include(o => o.Customer)
-                    .OrderByDescending(o => o.ShippingBatch.ArrivelDate)
+                    .OrderBy(o => o.RecieptDate)
                     .ToListAsync();
             }
             else
             {
-                recipts = await _db.Reciepts.Include(o => o.Customer).Include(o => o.ShippingBatch).OrderByDescending(o => o)
+                recipts = await _db.Reciepts.Include(o => o.Customer).Include(o => o.ShippingBatch).OrderBy(o => o.RecieptDate)
                 .Where(o => o.ShippingBatchId == shippingBatchId).ToListAsync();
 
             }
@@ -269,7 +269,7 @@ namespace AinAlfahd.Areas.Admin.APIs
 
                             foreach (var recipt in recipts)
                             {
-                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.ShippingBatch.ArrivelDate?.ToString("yyyy-MM-dd"));
+                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.RecieptDate.ToString("yyyy-MM-dd"));
                                 table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.SellingPrice.ToString("N3") + "IQ");
                                 table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Cost.ToString("N3") + "$");
                                 table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Weight + "KG");
