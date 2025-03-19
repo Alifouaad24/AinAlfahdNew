@@ -48,4 +48,14 @@ public partial class Item
     public decimal? SitePrice { get; set; }
 
     public string? WebUrl { get; set; }
+
+    public string? Model { get; set; }
+
+    public string? Sku { get; set; }
+
+    public string? Upc { get; set; }
+
+    public string? InternetId { get; set; }
+
+
 }

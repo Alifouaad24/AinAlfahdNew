@@ -7,11 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Admin\Data\**" />
+    <Content Remove="Areas\Admin\Data\**" />
+    <EmbeddedResource Remove="Areas\Admin\Data\**" />
+    <None Remove="Areas\Admin\Data\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\css\StyleSheet.css" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Data\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\images\" />

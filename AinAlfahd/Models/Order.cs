@@ -156,4 +156,9 @@ public partial class Order
 
     [JsonIgnore]
     public List<OrderDetail> OrderDetails { get; set; }
+
+
+    ///////////////
+    ///
+
 }

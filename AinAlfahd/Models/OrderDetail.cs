@@ -84,6 +84,8 @@ public partial class OrderDetail
     public int? PageReturn { get; set; }
 
     public int? Preorder { get; set; }
+    public decimal Weight { get; set; }
+
 
     public int? TempMissing { get; set; }
 
@@ -92,4 +94,5 @@ public partial class OrderDetail
     public int? Whsid { get; set; }
 
     public decimal weight { get; set; }
+
 }

@@ -18,7 +18,7 @@ namespace AinAlfahd.Areas.Admin.APIs
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
-            var cateories = await dBContext.Categories.ToListAsync();
+            var cateories = await dBContext.Categories.Include(c => c.Platform).ToListAsync();
             return Ok(cateories);
         }
 

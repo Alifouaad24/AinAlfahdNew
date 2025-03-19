@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace AinAlfahd.Models;
 
-public partial class User
+public partial class Siteusers
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
 
     public string? Username { get; set; }
 

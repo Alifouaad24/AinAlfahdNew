@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AinAlfahd.Models;
+using AinAlfahd.Models_New;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,7 @@ public partial class MasterDBContext : IdentityDbContext<IdentityUser>
     public virtual DbSet<Account> Accounts { get; set; }
 
     public virtual DbSet<AccountBox> AccountBoxes { get; set; }
+    public virtual DbSet<Platform> Platforms { get; set; }
 
     public virtual DbSet<Activity> Activities { get; set; }
 
@@ -37,6 +39,8 @@ public partial class MasterDBContext : IdentityDbContext<IdentityUser>
     public virtual DbSet<BatchStatus> BatchStatuses { get; set; }
 
     public virtual DbSet<Business> Businesses { get; set; }
+    public virtual DbSet<ItemCondition> ItemConditions { get; set; }
+    public virtual DbSet<Inventory> Inventory { get; set; }
 
     public virtual DbSet<BusinessArea> BusinessAreas { get; set; }
 
@@ -80,7 +84,7 @@ public partial class MasterDBContext : IdentityDbContext<IdentityUser>
 
     public virtual DbSet<RegistrationLog> RegistrationLogs { get; set; }
 
-    public virtual DbSet<RolesName> RolesNames { get; set; }
+    public virtual DbSet<SiteRolesnames> SiteRolesnames { get; set; }
 
     public virtual DbSet<SampleStatus> SampleStatuses { get; set; }
 
@@ -122,7 +126,7 @@ public partial class MasterDBContext : IdentityDbContext<IdentityUser>
 
     public virtual DbSet<Uscity> Uscities { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<Siteusers> Siteusers { get; set; }
 
     public virtual DbSet<UserMerchant> UserMerchants { get; set; }
 
@@ -157,7 +161,54 @@ public partial class MasterDBContext : IdentityDbContext<IdentityUser>
             .WithMany(s => s.CustomerServices)
             .HasForeignKey(cs => cs.ServiceId);
 
+        modelBuilder.Entity<ShippingBatch>()
+            .Property(e => e.SellingIQ)
+            .HasColumnType("decimal(18,2)");
 
+        modelBuilder.Entity<ShippingBatch>()
+            .Property(e => e.batchCostUS)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<OrderDetail>()
+    .Property(e => e.Weight)
+    .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Reciept>()
+            .Property(e => e.Cost)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Reciept>()
+            .Property(e => e.CostIQ)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Reciept>()
+            .Property(e => e.DisCount)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Reciept>()
+            .Property(e => e.SellingDisCount)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Reciept>()
+            .Property(e => e.SellingPrice)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Reciept>()
+            .Property(e => e.SellingUSD)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Reciept>()
+            .Property(e => e.TotalPriceFromCust)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<OrderDetail>()
+            .Property(e => e.Weight)
+            .HasColumnType("decimal(18,2)");
+
+
+        modelBuilder.Entity<Reciept>()
+            .Property(e => e.Weight)
+            .HasColumnType("decimal(18,2)");
 
 
         modelBuilder.Entity<TblConfig>()
@@ -751,7 +802,7 @@ public partial class MasterDBContext : IdentityDbContext<IdentityUser>
             entity.Property(e => e.RepresentitiveId).HasColumnName("representitive_id");
         });
 
-        modelBuilder.Entity<RolesName>(entity =>
+        modelBuilder.Entity<SiteRolesnames>(entity =>
         {
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.RoleName)
@@ -956,9 +1007,9 @@ public partial class MasterDBContext : IdentityDbContext<IdentityUser>
             entity.Property(e => e.StateId).HasColumnName("StateID");
         });
 
-        modelBuilder.Entity<User>(entity =>
+        modelBuilder.Entity<Siteusers>(entity =>
         {
-            entity.ToTable("users");
+            entity.ToTable("Siteusers");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.AreaId).HasColumnName("area_id");
