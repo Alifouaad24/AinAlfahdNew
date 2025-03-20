@@ -15,9 +15,20 @@ namespace AinAlfahd.Areas.Admin.APIs
     public class HomeDepotController : ControllerBase
     {
         MasterDBContext dBContext;
-        public HomeDepotController(MasterDBContext dBContext)
+        private readonly HttpClient _httpClient;
+
+        public HomeDepotController(MasterDBContext dBContext, HttpClient httpClient)
         {
             this.dBContext = dBContext;
+            _httpClient = httpClient;
+
+        }
+
+        [HttpGet("lookup")]
+        public async Task<IActionResult> Lookup(string upc)
+        {
+            var result = await LookupUPCAsync(upc);
+            return Ok(result);
         }
 
         [HttpPost("{wordSearch}")]
@@ -156,6 +167,23 @@ namespace AinAlfahd.Areas.Admin.APIs
 
             return Ok(new { inventory = inventory, item = itemNew });
 
+        }
+
+        private async Task<string> LookupUPCAsync(string upcCode)
+        {
+            string url = $"https://api.upcitemdb.com/prod/trial/lookup?upc={upcCode}";
+
+            HttpResponseMessage response = await _httpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+                return jsonResponse;
+            }
+            else
+            {
+                return $"Error: {response.StatusCode}";
+            }
         }
     }
 

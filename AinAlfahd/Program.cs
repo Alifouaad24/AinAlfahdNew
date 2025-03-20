@@ -32,6 +32,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<MasterDBContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<ICustomer, CutomerRepo> ();
 builder.Services.AddScoped<ICustomerServices, CustomerServices> ();
