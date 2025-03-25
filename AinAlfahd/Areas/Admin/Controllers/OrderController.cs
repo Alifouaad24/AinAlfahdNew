@@ -333,7 +333,7 @@ namespace AinAlfahd.Areas.Admin.Controllers
                             OrderNo = order.Id,
                             OriginalAmount = (int)o.Amount,
                             ItemCode = 3011,
-                            weight = o.Weight
+                            Weight = o.Weight
                         };
 
 

@@ -52,9 +52,20 @@ namespace AinAlfahd.Areas.Admin.APIs
 				.Where(r => r.Weight == weight).ToListAsync();
 			return Ok(reciept);
 		}
+       
+        [HttpGet("GetBetweenPeriodDate/{sDate}/{eDate}")]
+        public async Task<IActionResult> GetBetweenPeriodDate(string sDate, string eDate)
+        {
+            var sd = Convert.ToDateTime(sDate);
+            var ed = Convert.ToDateTime(eDate);
+
+            var reciept = await _db.Reciepts.Include(r => r.Customer).Include(r => r.ShippingBatch)
+                .Where(r => r.RecieptDate >= sd && r.RecieptDate <= ed).ToListAsync();
+            return Ok(reciept);
+        }
 
 
-		[HttpGet("GetLastFiveRecords")]
+        [HttpGet("GetLastFiveRecords")]
         public async Task<IActionResult> GetLastFiveRecords()
         {
             var reciepts = await _db.Reciepts.Include(r => r.Customer).ToListAsync();
@@ -240,6 +251,154 @@ namespace AinAlfahd.Areas.Admin.APIs
                             {
                                 header.Item().Border(1).AlignCenter().Padding(10).Text($"تقرير الإيصالات لوجبة  {shippingDate} م ").FontSize(20).Bold();
                             }
+                        });
+
+                    page.Content().Column(content =>
+                    {
+                        content.Item().AlignCenter().Text("").FontSize(12).Bold();
+                        content.Item().AlignCenter().Text("").FontSize(12).Bold();
+                        content.Item().Table(table =>
+                        {
+                            // استخدام RelativeColumn لجعل الأعمدة تأخذ عرض الصفحة
+                            table.ColumnsDefinition(columns =>
+                            {
+                                columns.RelativeColumn(); // عمود لتاريخ الإيصال
+                                columns.RelativeColumn(); // عمود للمبيع بالدينار
+                                columns.RelativeColumn(); // عمود للتكلفة بالدولار
+                                columns.RelativeColumn(); // عمود للوزن
+                                columns.RelativeColumn(); // عمود لاسم العميل
+                            });
+
+                            table.Header(header =>
+                            {
+                                header.Cell().Border(1).AlignCenter().Padding(3).Text("تاريخ الإيصال").Bold();
+                                header.Cell().Border(1).AlignCenter().Padding(3).Text("المبيع بالدينار").Bold();
+                                header.Cell().Border(1).AlignCenter().Padding(3).Text("التكلفة بالدولار").Bold();
+                                header.Cell().Border(1).AlignCenter().Padding(3).Text("الوزن").Bold();
+                                header.Cell().Border(1).AlignCenter().Padding(3).Text("اسم العميل").Bold();
+                            });
+
+                            foreach (var recipt in recipts)
+                            {
+                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.RecieptDate.ToString("yyyy-MM-dd"));
+                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.SellingPrice.ToString("N3") + "IQ");
+                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Cost.ToString("N3") + "$");
+                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Weight + "KG");
+                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Customer.CustName);
+                                count++;
+                            }
+                        });
+
+                        content.Item().PaddingTop(10);
+
+                        content.Item().PaddingTop(20).Table(table =>
+                        {
+                            table.ColumnsDefinition(columns =>
+                            {
+                                columns.RelativeColumn(); // العمود الأول: مجموع الكمية
+                                columns.RelativeColumn(); // العمود الثاني: المجموع العام
+                                columns.RelativeColumn(); // العمود الثالث: عدد الإيصالات
+                                columns.RelativeColumn(); // العمود الثالث: عدد الإيصالات
+                                columns.RelativeColumn(); // العمود الثالث: عدد الإيصالات
+                                columns.RelativeColumn(); // العمود الثالث: عدد الإيصالات
+                            });
+
+                            table.Header(header =>
+                            {
+                                header.Cell().AlignCenter().Padding(3).Text("عدد الإيصالات").FontSize(12).Bold();
+                                header.Cell().AlignCenter().Padding(3).Text("المجموع البيع").FontSize(12).Bold();
+                                header.Cell().AlignCenter().Padding(3).Text("سعر الصرف").FontSize(12).Bold();
+                                header.Cell().AlignCenter().Padding(3).Text("صافي الحساب").FontSize(12).Bold();
+                                header.Cell().AlignCenter().Padding(3).Text("البيع بالدولار").FontSize(12).Bold();
+                                header.Cell().AlignCenter().Padding(3).Text("مجموع التكلفة").FontSize(12).Bold();
+                            });
+
+                            table.Cell().Border(1).AlignCenter().Padding(3).Text($"{count}").FontSize(12);
+                            table.Cell().Border(1).AlignCenter().Padding(3).Text($"IQ{totalSellingPrice.ToString("N3")}").FontSize(12);
+                            table.Cell().Border(1).AlignCenter().Padding(3).Text($"IQ{exRate}").FontSize(12);
+                            table.Cell()
+                                .Border(1)
+                                .AlignCenter()
+                                .Padding(3)
+                                .Text($"${accpur.ToString("N3")}")
+                                .FontSize(12)
+                                .FontColor(accpur < 0 ? Color.FromHex("#FF0000") : Color.FromHex("#000000"));
+
+                            table.Cell().Border(1).AlignCenter().Padding(3).Text($"${totalSellingPriceInDollar.ToString("N3")}").FontSize(12);
+                            table.Cell().Border(1).AlignCenter().Padding(3).Text($"${totalCostInDollar.ToString("N3")}").FontSize(12);
+                        });
+
+                        content.Item().PaddingTop(20).Table(table =>
+                        {
+                            table.ColumnsDefinition(columns =>
+                            {
+                                columns.RelativeColumn(); // عمود الفاصل
+                                columns.RelativeColumn(); // عمود الفاصل الثاني
+                            });
+
+                            table.Cell().Border(0).PaddingTop(10).AlignCenter().Text($"----------------------------------------------------------------------------")
+                                .FontSize(12);
+                        });
+                    });
+                });
+
+            });
+            var pdfData = pdfDocument.GeneratePdf();
+            return File(pdfData, "application/pdf", "Report.pdf");
+        }
+
+
+        /// ///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        [HttpGet("GeneratePdfByDate/{sdate}/{edate}")]
+        public async Task<IActionResult> GeneratePdfByDate(string sdate, string edate)
+        {
+            var pdf = await CreatePDFByDate(sdate, edate);
+            return pdf;
+        }
+
+        private async Task<IActionResult> CreatePDFByDate(string sdate, string edate)
+        {
+            var sd = Convert.ToDateTime(sdate);
+            var ed = Convert.ToDateTime(edate);
+
+            var recipts = new List<Reciept>();
+
+            recipts = await _db.Reciepts.Include(r => r.Customer).Include(r => r.ShippingBatch)
+                .Where(r => r.RecieptDate >= sd && r.RecieptDate <= ed).OrderByDescending(r => r.RecieptDate).ToListAsync();
+
+
+            var excgange = await _db.Exchanges.FirstOrDefaultAsync();
+
+            var exRate = Convert.ToDecimal(excgange.ExchangeRate);
+
+            var totalCostInDollar = recipts.Sum(p => p.Cost);
+            var totalSellingPrice = recipts.Sum(p => p.SellingPrice);
+
+            var totalSellingPriceInDollar = totalSellingPrice / exRate;
+            var accpur = totalSellingPriceInDollar - totalCostInDollar;
+
+            int count = 0;
+
+            var pdfDocument = Document.Create(async container =>
+            {
+
+                container.Page(page =>
+                {
+                    page.Size(PageSizes.A4.Landscape());
+                    page.Margin(2, Unit.Centimetre);
+                    page.DefaultTextStyle(x => x.FontSize(12));
+
+                    page.Header()
+                        .Column(header =>
+                        {
+                            header.Item().AlignRight().PaddingBottom(20)
+                                .Text($"({DateTime.Now:yyyy-MM-dd hh:mm tt}): تاريخ الطباعة").FontSize(10).Bold();
+
+
+                         header.Item().Border(1).AlignCenter().Text($"تقرير الإيصالات بين تاريخ {sdate} وتاريخ {edate}").FontSize(20).Bold();
+
                         });
 
                     page.Content().Column(content =>

@@ -32,6 +32,23 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<MasterDBContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = false; // يجب أن تحتوي على رقم
+    options.Password.RequiredLength = 3;  // الحد الأدنى للطول
+    options.Password.RequireNonAlphanumeric = false; // يجب أن تحتوي على رمز خاص
+    options.Password.RequireUppercase = false; // يجب أن تحتوي على حرف كبير
+    options.Password.RequireLowercase = false; // يجب أن تحتوي على حرف صغير
+
+    options.Lockout.MaxFailedAccessAttempts = 5; // عدد المحاولات الفاشلة قبل القفل
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(15); // مدة القفل
+    options.Lockout.AllowedForNewUsers = true; // تفعيل القفل للمستخدمين الجدد
+
+    options.User.RequireUniqueEmail = true; // منع تكرار البريد الإلكتروني
+
+});
+
+
 builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<ICustomer, CutomerRepo> ();

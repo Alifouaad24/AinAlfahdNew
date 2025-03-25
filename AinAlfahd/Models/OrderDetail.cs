@@ -93,6 +93,4 @@ public partial class OrderDetail
 
     public int? Whsid { get; set; }
 
-    public decimal weight { get; set; }
-
 }

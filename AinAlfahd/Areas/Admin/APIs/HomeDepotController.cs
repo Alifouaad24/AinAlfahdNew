@@ -174,17 +174,18 @@ namespace AinAlfahd.Areas.Admin.APIs
             string url = $"https://api.upcitemdb.com/prod/trial/lookup?upc={upcCode}";
 
             HttpResponseMessage response = await _httpClient.GetAsync(url);
+            string responseContent = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
             {
-                string jsonResponse = await response.Content.ReadAsStringAsync();
-                return jsonResponse;
+                return responseContent;
             }
             else
             {
-                return $"Error: {response.StatusCode}";
+                return responseContent;
             }
         }
+
     }
 
     public class ItemDto {
