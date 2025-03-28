@@ -284,8 +284,8 @@ namespace AinAlfahd.Areas.Admin.APIs
                             foreach (var recipt in recipts)
                             {
                                 table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Weight + "KG");
-                                table.Cell().Border(1).AlignCenter().Padding(3).Text((recipt.SellingPrice / exRate).ToString("N0") + "$");
-                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.SellingPrice.ToString("N0") + "IQ");
+                                table.Cell().Border(1).AlignCenter().Padding(3).Text((recipt.TotalPriceFromCust / exRate).ToString("N0") + "$");
+                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.TotalPriceFromCust.ToString("N0") + "IQ");
                                 table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Cost.ToString("N0") + "$");
 
                                 table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Customer.CustName);
@@ -371,7 +371,7 @@ namespace AinAlfahd.Areas.Admin.APIs
             var recipts = new List<Reciept>();
 
             recipts = await _db.Reciepts.Include(r => r.Customer).Include(r => r.ShippingBatch)
-                .Where(r => r.RecieptDate >= sd && r.RecieptDate <= ed).OrderByDescending(r => r.RecieptDate).ToListAsync();
+                .Where(r => r.RecieptDate >= sd && r.RecieptDate <= ed).OrderBy(r => r.RecieptDate).ToListAsync();
 
 
             var excgange = await _db.Exchanges.FirstOrDefaultAsync();
@@ -437,8 +437,8 @@ namespace AinAlfahd.Areas.Admin.APIs
                             foreach (var recipt in recipts)
                             {
                                 table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Weight + "KG");
-                                table.Cell().Border(1).AlignCenter().Padding(3).Text((recipt.SellingPrice / exRate).ToString("N0") + "$");
-                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.SellingPrice.ToString("N0") + "IQ");
+                                table.Cell().Border(1).AlignCenter().Padding(3).Text((recipt.TotalPriceFromCust / exRate).ToString("N0") + "$");
+                                table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.TotalPriceFromCust.ToString("N0") + "IQ");
                                 table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Cost.ToString("N0") + "$");
 
                                 table.Cell().Border(1).AlignCenter().Padding(3).Text(recipt.Customer.CustName);
