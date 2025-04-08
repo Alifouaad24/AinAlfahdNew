@@ -5,8 +5,10 @@ using HtmlAgilityPack;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using System.Reflection.Emit;
 
 namespace AinAlfahd.Areas.Admin.APIs
 {
@@ -42,78 +44,126 @@ namespace AinAlfahd.Areas.Admin.APIs
             string model = string.Empty;
             string storeSku = string.Empty;
             string productTitle = string.Empty;
+            string source = string.Empty;
 
-            var itemExcst = await dBContext.Items.Where(i => i.Sku == storeSku || i.Model == storeSku || i.InternetId == storeSku).FirstOrDefaultAsync();
+            var itemExcst = await dBContext.Items.Where(i => i.Sku == wordSearch || i.Model == wordSearch || i.InternetId == wordSearch).FirstOrDefaultAsync();
 
             if (itemExcst != null)
             {
-                return Ok(new { images = itemExcst.ImgUrl, price = itemExcst.SitePrice, Model = itemExcst.Model, Internet = itemExcst.InternetId, SKU = itemExcst.Sku, Brand = itemExcst.Make.MakeDescription });
+                return Ok(new { images = itemExcst.ImgUrl, price = itemExcst.SitePrice, Model = itemExcst.Model, Internet = itemExcst.InternetId, SKU = itemExcst.Sku, Brand = itemExcst.Make.MakeDescription, Source = "Ain Alfahd DB" });
             }
-            else
+
+            bool foundInHomeDepot = false;
+
+            try
             {
-                try
+                HtmlWeb web = new HtmlWeb();
+                var document = web.Load($"https://www.homedepot.com/s/{wordSearch}");
+
+                // var imageNodes = document.DocumentNode.SelectNodes("//div[contains(@class,'mediagallery')]//img");
+                var imageNodes = document.DocumentNode.SelectNodes("//img[contains(@src, 'images.thdstatic.com/productImages/')]");
+
+                if (imageNodes != null)
                 {
-                    HtmlWeb web = new HtmlWeb();
-                    var document = web.Load($"https://www.homedepot.com/s/{wordSearch}");
+                        imgs = imageNodes
+                        .Select(node => node.GetAttributeValue("src", ""))
+                        .ToList();
 
-                    // var imageNodes = document.DocumentNode.SelectNodes("//div[contains(@class,'mediagallery')]//img");
-                    var imageNodes = document.DocumentNode.SelectNodes("//img[contains(@src, 'images.thdstatic.com/productImages/')]");
+                }
 
-                    if (imageNodes != null)
-                    {
-                         imgs = imageNodes
-                            .Select(node => node.GetAttributeValue("src", ""))
-                            .ToList();
+                var imageNodesSmall = document.DocumentNode.SelectNodes("//div[contains(@class,'mediagallery__thumbnailImageFit')]//img");
+                if (imageNodesSmall != null)
+                {
+                    var final = imageNodesSmall.Select(img => img.GetAttributeValue("src", "")).ToList();
 
-                    }
+                    imgs.AddRange(final);
 
-                    var imageNodesSmall = document.DocumentNode.SelectNodes("//div[contains(@class,'mediagallery__thumbnailImageFit')]//img");
-                    if (imageNodesSmall != null)
-                    {
-                        var final = imageNodesSmall.Select(img => img.GetAttributeValue("src", "")).ToList();
+                }
+                // استخراج Store SKU #
+                var skuNode = document.DocumentNode.SelectSingleNode("//h2[contains(text(), 'Store SKU #')]/span");
+                storeSku = skuNode != null ? skuNode.InnerText.Trim() : "لم يتم العثور على Store SKU";
+                var titleNode = document.DocumentNode.SelectSingleNode("//div[contains(@class, 'product-details__badge-title--wrapper')]//h1");
 
-                        imgs.AddRange(final);
-
-                    }
-                    // استخراج Store SKU #
-                    var skuNode = document.DocumentNode.SelectSingleNode("//h2[contains(text(), 'Store SKU #')]/span");
-                    storeSku = skuNode != null ? skuNode.InnerText.Trim() : "لم يتم العثور على Store SKU";
-                    var titleNode = document.DocumentNode.SelectSingleNode("//div[contains(@class, 'product-details__badge-title--wrapper')]//h1");
-
-                    productTitle = titleNode != null ? titleNode.InnerText.Trim() : "لم يتم العثور على العنوان";
+                productTitle = titleNode != null ? titleNode.InnerText.Trim() : "لم يتم العثور على العنوان";
 
                     
 
-                    var brandNode = document.DocumentNode.SelectSingleNode("//div[@data-component='product-details:ProductDetailsBrandCollection:v9.13.3']//h2");
-                    brand = brandNode != null ? brandNode.InnerText.Trim() : "لم يتم العثور على اسم الشركة";
+                var brandNode = document.DocumentNode.SelectSingleNode("//div[@data-component='product-details:ProductDetailsBrandCollection:v9.13.3']//h2");
+                brand = brandNode != null ? brandNode.InnerText.Trim() : "لم يتم العثور على اسم الشركة";
 
-                    var internetNode = document.DocumentNode.SelectSingleNode("//h2[contains(text(), 'Internet #')]/span");
-                    internet = internetNode != null ? internetNode.InnerText.Trim() : "لم يتم العثور على Internet";
+                var internetNode = document.DocumentNode.SelectSingleNode("//h2[contains(text(), 'Internet #')]/span");
+                internet = internetNode != null ? internetNode.InnerText.Trim() : "لم يتم العثور على Internet";
 
-                    // استخراج Model #
-                    var modelNode = document.DocumentNode.SelectSingleNode("//h2[contains(text(), 'Model #')]/span");
-                    model = modelNode != null ? modelNode.InnerText.Trim() : "لم يتم العثور على Model";
+                // استخراج Model #
+                var modelNode = document.DocumentNode.SelectSingleNode("//h2[contains(text(), 'Model #')]/span");
+                model = modelNode != null ? modelNode.InnerText.Trim() : "لم يتم العثور على Model";
 
-                    var priceNode = document.DocumentNode.SelectSingleNode("//div[@data-fusion-component='@thd-olt-component-react/price']//span[contains(@class, 'sui-text-9xl')]");
-                    if (priceNode != null)
+                var priceNode = document.DocumentNode.SelectSingleNode("//div[@data-fusion-component='@thd-olt-component-react/price']//span[contains(@class, 'sui-text-9xl')]");
+                if (priceNode != null)
+                {
+                    var priceText = priceNode.InnerText.Trim();
+                    if (decimal.TryParse(priceText.Replace("$", "").Replace(",", ""), out decimal parsedPrice))
                     {
-                        var priceText = priceNode.InnerText.Trim();
-                        if (decimal.TryParse(priceText.Replace("$", "").Replace(",", ""), out decimal parsedPrice))
-                        {
-                            price = parsedPrice;
-                        }
+                        price = parsedPrice;
                     }
                 }
-                catch (Exception ex)
+                if (imgs.Count == 0 &&
+                    price == 0 &&
+                    model.Contains("لم يتم العثور") &&
+                    internet.Contains("لم يتم العثور") &&
+                    storeSku.Contains("لم يتم العثور") &&
+                    brand.Contains("لم يتم العثور") &&
+                    productTitle.Contains("لم يتم العثور"))
                 {
-                    return BadRequest(new { error = "حدث خطأ أثناء جلب البيانات.", details = ex.Message });
+                    string url = $"https://api.upcitemdb.com/prod/trial/lookup?upc={wordSearch}";
+
+                    HttpResponseMessage response = await _httpClient.GetAsync(url);
+                    string responseContent = await response.Content.ReadAsStringAsync();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var json = JObject.Parse(responseContent);
+                        var item = json["items"]?.FirstOrDefault();
+
+                        if (item != null)
+                        {
+                            var imgs1 = item["images"]?.ToObject<List<string>>();
+                            var offers = item["offers"]?.FirstOrDefault();
+                            var price1 = offers?["price"]?.ToObject<decimal?>() ?? 0;
+                            var model1 = item["model"]?.ToString();
+                            var internet1 = item["asin"]?.ToString(); // Internet = ASIN
+                            var storeSku1 = item["sku"]?.ToString(); // غير موجود بشكل صريح، ممكن يكون null
+                            var brand1 = item["brand"]?.ToString();
+                            var productTitle1 = item["title"]?.ToString();
+
+                            return Ok(new
+                            {
+                                images = imgs1,
+                                price = price1,
+                                Model = model1,
+                                Internet = internet1,
+                                SKU = storeSku1,
+                                Brand = brand1,
+                                Title = productTitle1,
+                                Source = "UPC Items DB"
+                            });
+                        }
+
+                        return NotFound(new { msg = "Item not found in response" });
+                    }
+                    else
+                    {
+                        return NotFound(new { msg = "Item Not Found" });
+                    }
                 }
+
+                    return Ok(new { images = imgs, price = price, Model = model, Internet = internet, SKU = storeSku, Brand = brand, Title = productTitle, Source = "Home Depot DB" });
+
             }
-
-          
-
-            return Ok(new { images = imgs, price = price, Model = model, Internet = internet, SKU = storeSku, Brand = brand, Title = productTitle });
+            catch (Exception ex){}
+            return Ok();
         }
+
 
         [HttpPost]
         public async Task<IActionResult> SaveItemFromHomeDepot([FromBody] ItemDto item)
