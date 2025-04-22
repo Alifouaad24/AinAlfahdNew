@@ -45,12 +45,13 @@ namespace AinAlfahd.Areas.Admin.APIs
             string storeSku = string.Empty;
             string productTitle = string.Empty;
             string source = string.Empty;
+            List<string> description = new List<string>();
 
             var itemExcst = await dBContext.Items.Where(i => i.Sku == wordSearch || i.Model == wordSearch || i.InternetId == wordSearch).FirstOrDefaultAsync();
 
             if (itemExcst != null)
             {
-                return Ok(new { images = itemExcst.ImgUrl, price = itemExcst.SitePrice, Model = itemExcst.Model, Internet = itemExcst.InternetId, SKU = itemExcst.Sku, Brand = itemExcst.Make.MakeDescription, Source = "Ain Alfahd DB" });
+                return Ok(new { images = itemExcst.ImgUrl, price = itemExcst.SitePrice, Model = itemExcst.Model, Internet = itemExcst.InternetId, SKU = itemExcst.Sku, Brand = itemExcst.Make.MakeDescription, Source = "Ain Alfahd DB", desc = "" });
             }
 
             bool foundInHomeDepot = false;
@@ -81,22 +82,30 @@ namespace AinAlfahd.Areas.Admin.APIs
                 }
                 // استخراج Store SKU #
                 var skuNode = document.DocumentNode.SelectSingleNode("//h2[contains(text(), 'Store SKU #')]/span");
-                storeSku = skuNode != null ? skuNode.InnerText.Trim() : "لم يتم العثور على Store SKU";
+                storeSku = skuNode != null ? skuNode.InnerText.Trim() : "Store SKU not found";
                 var titleNode = document.DocumentNode.SelectSingleNode("//div[contains(@class, 'product-details__badge-title--wrapper')]//h1");
 
-                productTitle = titleNode != null ? titleNode.InnerText.Trim() : "لم يتم العثور على العنوان";
+                productTitle = titleNode != null ? titleNode.InnerText.Trim() : " not found";
 
-                    
+                var descNode = document.DocumentNode.SelectNodes("//div[@data-fusion-slot='slotF8']//ul//li");
+
+                foreach(var i in descNode)
+                {
+                    description.Add(descNode != null ? i.InnerText.Trim() : "not found");
+
+                }
+
+
 
                 var brandNode = document.DocumentNode.SelectSingleNode("//div[@data-component='product-details:ProductDetailsBrandCollection:v9.13.3']//h2");
-                brand = brandNode != null ? brandNode.InnerText.Trim() : "لم يتم العثور على اسم الشركة";
+                brand = brandNode != null ? brandNode.InnerText.Trim() : " not found";
 
                 var internetNode = document.DocumentNode.SelectSingleNode("//h2[contains(text(), 'Internet #')]/span");
-                internet = internetNode != null ? internetNode.InnerText.Trim() : "لم يتم العثور على Internet";
+                internet = internetNode != null ? internetNode.InnerText.Trim() : " not found";
 
                 // استخراج Model #
                 var modelNode = document.DocumentNode.SelectSingleNode("//h2[contains(text(), 'Model #')]/span");
-                model = modelNode != null ? modelNode.InnerText.Trim() : "لم يتم العثور على Model";
+                model = modelNode != null ? modelNode.InnerText.Trim() : " not found";
 
                 var priceNode = document.DocumentNode.SelectSingleNode("//div[@data-fusion-component='@thd-olt-component-react/price']//span[contains(@class, 'sui-text-9xl')]");
                 if (priceNode != null)
@@ -109,11 +118,11 @@ namespace AinAlfahd.Areas.Admin.APIs
                 }
                 if (imgs.Count == 0 &&
                     price == 0 &&
-                    model.Contains("لم يتم العثور") &&
-                    internet.Contains("لم يتم العثور") &&
-                    storeSku.Contains("لم يتم العثور") &&
-                    brand.Contains("لم يتم العثور") &&
-                    productTitle.Contains("لم يتم العثور"))
+                    model.Contains(" not found") &&
+                    internet.Contains(" not found") &&
+                    storeSku.Contains(" not found") &&
+                    brand.Contains(" not found") &&
+                    productTitle.Contains(" not found"))
                 {
                     string url = $"https://api.upcitemdb.com/prod/trial/lookup?upc={wordSearch}";
 
@@ -135,6 +144,7 @@ namespace AinAlfahd.Areas.Admin.APIs
                             var storeSku1 = item["sku"]?.ToString(); // غير موجود بشكل صريح، ممكن يكون null
                             var brand1 = item["brand"]?.ToString();
                             var productTitle1 = item["title"]?.ToString();
+                            var description2 = item["description"]?.ToString();
 
                             return Ok(new
                             {
@@ -145,7 +155,8 @@ namespace AinAlfahd.Areas.Admin.APIs
                                 SKU = storeSku1,
                                 Brand = brand1,
                                 Title = productTitle1,
-                                Source = "UPC Items DB"
+                                Source = "UPC Items DB",
+                                desc = description2
                             });
                         }
 
@@ -157,7 +168,7 @@ namespace AinAlfahd.Areas.Admin.APIs
                     }
                 }
 
-                    return Ok(new { images = imgs, price = price, Model = model, Internet = internet, SKU = storeSku, Brand = brand, Title = productTitle, Source = "Home Depot DB" });
+                    return Ok(new { images = imgs, price = price, Model = model, Internet = internet, SKU = storeSku, Brand = brand, Title = productTitle, Source = "Home Depot DB", desc = description });
 
             }
             catch (Exception ex){}

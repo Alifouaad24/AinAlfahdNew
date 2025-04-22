@@ -125,7 +125,10 @@ namespace AinAlfahd.Areas.Admin.APIs
 
         public async Task<IActionResult> SearchAboutCustomerApi(string wordSearch)
         {
-            var customers = await db.Customers.Where(c => c.CustName.Contains(wordSearch) || c.CustMob.Contains(wordSearch)).ToListAsync();
+            var customers = await db.Customers
+                .Where(c => c.CustName.Contains(wordSearch) || c.CustMob.Contains(wordSearch))
+                .Where(c => c.CustomerServices.Any(s => s.Service.Description.Contains("شحن جوي")))
+                .ToListAsync();
             return Ok(customers);
         }
 
@@ -133,7 +136,9 @@ namespace AinAlfahd.Areas.Admin.APIs
 
         public async Task<IActionResult> SearchAboutDetectedCustomerApi(string wordSearch)
         {
-            var customer = await db.Customers.FirstOrDefaultAsync(c => c.CustName.Contains(wordSearch) || c.CustMob.Contains(wordSearch));
+            var customer = await db.Customers.Where(c => c.CustName.Contains(wordSearch) || c.CustMob.Contains(wordSearch))
+                                .Where(c => c.CustomerServices.Any(s => s.Service.Description.Contains("شحن جوي"))).FirstOrDefaultAsync();
+;
             return Ok(customer);
         }
     }

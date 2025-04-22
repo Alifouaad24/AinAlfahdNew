@@ -101,6 +101,16 @@ namespace AinAlfahd.Areas.Admin.APIs
                 return BadRequest("الإيصال موجود مسبقا");
             }
 
+            var amendment = await _db.Amendment_Logs.Where(a => a.CustomerIdId == model.CustomerId && a.IsCompleted == false).FirstOrDefaultAsync();
+
+            if (amendment != null)
+            {
+                return Ok(new
+                {
+                    msg = "العميل يحتاج الى دمج الطلب"
+                });
+            }
+
             var recipt = new Reciept
             {
                 Cost = model.Cost,

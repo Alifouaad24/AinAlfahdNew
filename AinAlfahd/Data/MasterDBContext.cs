@@ -141,6 +141,8 @@ public partial class MasterDBContext : IdentityDbContext<IdentityUser>
     public DbSet<Systemm> Systems { get; set; }
     public DbSet<ShippingBatch> ShippingBatchs { get; set; }
     public DbSet<ShippingTypes> ShippingTypes { get; set; }
+    public DbSet<Amendment_Log> Amendment_Logs { get; set; }
+    public DbSet<Amendment> Amendments { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

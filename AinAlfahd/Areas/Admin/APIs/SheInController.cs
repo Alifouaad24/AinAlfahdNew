@@ -18,7 +18,7 @@ namespace AinAlfahd.Areas.Admin.APIs
         }
 
         [HttpPost]
-        [DisableRequestSizeLimit] // في حال الملف كبير
+        [DisableRequestSizeLimit]
         public async Task<IActionResult> GetInfoFromSheIn(IFormFile htmlFile)
         {
             if (htmlFile == null || htmlFile.Length == 0)
