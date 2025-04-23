@@ -125,9 +125,9 @@ namespace AinAlfahd.Areas.Admin.APIs
 
         public async Task<IActionResult> SearchAboutCustomerApi(string wordSearch)
         {
-            var customers = await db.Customers
+            var customers = await db.Customers.Include(c => c.CustomerServices).ThenInclude(cs => cs.Service)
                 .Where(c => c.CustName.Contains(wordSearch) || c.CustMob.Contains(wordSearch))
-                .Where(c => c.CustomerServices.Any(s => s.Service.Description.Contains("شحن جوي")))
+                //.Where(c => c.CustomerServices.Any(s => s.Service.Description.Contains("جوي")))
                 .ToListAsync();
             return Ok(customers);
         }
@@ -136,8 +136,11 @@ namespace AinAlfahd.Areas.Admin.APIs
 
         public async Task<IActionResult> SearchAboutDetectedCustomerApi(string wordSearch)
         {
-            var customer = await db.Customers.Where(c => c.CustName.Contains(wordSearch) || c.CustMob.Contains(wordSearch))
-                                .Where(c => c.CustomerServices.Any(s => s.Service.Description.Contains("شحن جوي"))).FirstOrDefaultAsync();
+            var customer = await db.Customers
+                .Include(c => c.CustomerServices).ThenInclude(cs => cs.Service)
+                .Where(c => c.CustName.Contains(wordSearch) || c.CustMob.Contains(wordSearch))
+                //.Where(c => c.CustomerServices.Any(s => s.Service.Description.Contains("جوي")))
+                .FirstOrDefaultAsync();
 ;
             return Ok(customer);
         }

@@ -22,6 +22,6 @@ namespace AinAlfahd.Models
 
         [ForeignKey("Service")]
         public int ServiceId { get; set; }
-        public Service Service { get; set; }
+        public ShippingTypes Service { get; set; }
     }
 }
