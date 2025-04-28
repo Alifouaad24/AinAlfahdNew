@@ -134,6 +134,7 @@ public partial class MasterDBContext : IdentityDbContext<IdentityUser>
 
     // Add CustomerService Table
     public DbSet<CustomerService> CustomerServices { get; set; }
+    public DbSet<CustomerShipping> CustomerShipping { get; set; }
     public DbSet<Address> Addresses { get; set; }
     public DbSet<Reciept> Reciepts { get; set; }
     public DbSet<Make> Makes { get; set; }

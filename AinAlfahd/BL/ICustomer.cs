@@ -7,6 +7,7 @@ namespace AinAlfahd.BL
     public interface ICustomer
     {
         Task<List<Customer>> GetAll();
+        Task<List<Customer>> GetAllByShippingType(int shippingTypeId);
         Task<List<Customer>> GetByWord(string word);
         Task<Customer> GetByID(int id);
         Task<bool> AddData(Customer model);
@@ -89,6 +90,16 @@ namespace AinAlfahd.BL
             {
                 return false;
             }
+        }
+
+        public async Task<List<Customer>> GetAllByShippingType(int shippingTypeId)
+        {
+            var data = await db.Customers.Include(sh => sh.CustomerShipping)
+                .Where(c => c.CustomerShipping.Any(sh => sh.ShippingTypeId == shippingTypeId))
+                .ToListAsync();
+
+            return (data);
+
         }
     }
 }

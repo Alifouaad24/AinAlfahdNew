@@ -12,7 +12,18 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddSession();
+
+builder.Services.AddDistributedMemoryCache(); // لتخزين الجلسة في الذاكرة
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // مدة انتهاء الجلسة
+    options.Cookie.HttpOnly = true; // الكوكي لا يمكن الوصول لها عبر JavaScript
+    options.Cookie.IsEssential = true; // الكوكي ضرورية (للموافقة حسب GDPR)
+    options.Cookie.Name = ".MyApp.Session"; // اسم الكوكي
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // ارسل فقط عبر HTTPS
+    options.Cookie.SameSite = SameSiteMode.Strict; // سياسة SameSite
+});
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -21,7 +32,34 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Description = "A sample ASP.NET Core API"
     });
+
+    // هنا نضيف السيكيورتي
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "ضع التوكن هنا مباشرة مع كلمة Bearer مثال: Bearer eyJhbGciOiJIUzI1..."
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {} // لا تحتاج صلاحيات إضافية هنا
+        }
+    });
 });
+
 
 builder.Services.AddScoped<CreateJWT>();
 
@@ -34,17 +72,17 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
-    options.Password.RequireDigit = false; // يجب أن تحتوي على رقم
-    options.Password.RequiredLength = 3;  // الحد الأدنى للطول
-    options.Password.RequireNonAlphanumeric = false; // يجب أن تحتوي على رمز خاص
-    options.Password.RequireUppercase = false; // يجب أن تحتوي على حرف كبير
-    options.Password.RequireLowercase = false; // يجب أن تحتوي على حرف صغير
+    options.Password.RequireDigit = false; 
+    options.Password.RequiredLength = 3;  
+    options.Password.RequireNonAlphanumeric = false; 
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false; 
 
-    options.Lockout.MaxFailedAccessAttempts = 5; // عدد المحاولات الفاشلة قبل القفل
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(15); // مدة القفل
-    options.Lockout.AllowedForNewUsers = true; // تفعيل القفل للمستخدمين الجدد
+    options.Lockout.MaxFailedAccessAttempts = 5; 
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(15); 
+    options.Lockout.AllowedForNewUsers = true; 
 
-    options.User.RequireUniqueEmail = true; // منع تكرار البريد الإلكتروني
+    options.User.RequireUniqueEmail = true; 
 
 });
 
@@ -82,6 +120,7 @@ builder.Services
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
         };
     });
+
 
 builder.Services.AddAuthorization();
 

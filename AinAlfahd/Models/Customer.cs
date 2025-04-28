@@ -37,6 +37,7 @@ public partial class Customer
 
     public string? CustProfile { get; set; }
 
-    public ICollection<CustomerService> CustomerServices { get; set; }
+    public ICollection<CustomerService>? CustomerServices { get; set; }
+    public ICollection<CustomerShipping>? CustomerShipping { get; set; }
     public ICollection<Address> Addresses { get; set; }
 }

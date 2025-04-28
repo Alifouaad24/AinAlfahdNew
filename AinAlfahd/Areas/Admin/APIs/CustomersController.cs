@@ -28,6 +28,22 @@ namespace AinAlfahd.Areas.Admin.APIs
             return Ok(customers);
         }
 
+        [HttpGet("GetAllByShippingType/{shippingTypeId}")]
+        public async Task<IActionResult> GetAllByShippingType(int shippingTypeId)
+        {
+            var customers = await icustomer.GetAllByShippingType(shippingTypeId);
+            return Ok(customers);
+        }
+
+        [HttpPost("AddShippingTypeForCustomer")]
+        public async Task<IActionResult> AddShippingTypeForCustomer([FromBody] CustomerShipping model)
+        {
+            await db.CustomerShipping.AddAsync(model);
+            await db.SaveChangesAsync();
+            return Ok(model);
+        }
+
+
         [HttpGet("GetBySearch/{wordSearch}")]
         public async Task<IActionResult> GetBySearch(string wordSearch)
         {
