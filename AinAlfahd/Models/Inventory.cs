@@ -22,7 +22,17 @@ public partial class Inventory
     public int? ItemConditionId { get; set; }
     public ItemCondition? ItemCondetion { get; set; }
 
+    [ForeignKey(nameof(Merchant))]
+    public int? MerchantId { get; set; }
+    public Merchant? Merchant { get; set; }
 
+
+
+    public decimal? SellingPrice { get; set; }
+
+    [ForeignKey(nameof(Size))]
+    public int? SizeId { get; set; }
+    public TblSize? Size { get; set; }
     public int? IsRemoved { get; set; }
 
     public DateOnly? InsertDate { get; set; }

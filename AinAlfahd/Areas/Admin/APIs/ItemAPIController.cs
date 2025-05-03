@@ -9,6 +9,7 @@ using OpenQA.Selenium;
 using System.Security.Policy;
 using AinAlfahd.Models;
 using System.Net;
+using AinAlfahd.Models_New;
 
 namespace AinAlfahd.Areas.Admin.APIs
 {
@@ -33,8 +34,8 @@ namespace AinAlfahd.Areas.Admin.APIs
 
             else
             {
-               var imgUrl = await GetImgUrlFromScraping(sku);
-               return Ok(imgUrl);
+                var imgUrl = await GetImgUrlFromScraping(sku);
+                return Ok(imgUrl);
             }
         }
 
@@ -42,7 +43,7 @@ namespace AinAlfahd.Areas.Admin.APIs
         [HttpPost]
         public async Task<IActionResult> AddItem([FromBody] Item model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -52,13 +53,50 @@ namespace AinAlfahd.Areas.Admin.APIs
                 PCode = model.PCode,
                 ImgUrl = model.ImgUrl,
                 CategoryId = model.CategoryId,
-                MakeId = model.MakeId,  
- 
+                MakeId = model.MakeId,
+
             };
 
             await dBContext.Items.AddAsync(item);
             await dBContext.SaveChangesAsync();
             return Ok(item);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateItem(int id, [FromBody] DtoForAdd model)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var item = await dBContext.Items.FindAsync(id);
+            if(item != null)
+            {
+                item.CategoryId = model.CategoryId;
+                item.Upc = model.Upc;
+
+                dBContext.Items.Update(item);
+
+
+                var inventory = new Inventory
+                {
+                    ItemId = item.Id,
+                    SellingPrice = model.Price,
+                    SizeId = model.SizeId,
+                    MerchantId = model.MerchantId
+                };
+
+                await dBContext.Inventory.AddAsync(inventory);
+                await dBContext.SaveChangesAsync();
+
+
+                return Ok(inventory);
+            }
+            return NotFound(new
+            {
+                msg = "Item not found"
+            });
         }
 
 
@@ -149,4 +187,16 @@ namespace AinAlfahd.Areas.Admin.APIs
         }
 
     }
+
+    public class DtoForAdd { 
+    
+          public string Upc {  get; set; }
+          public int CategoryId {  get; set; }
+          public int SizeId {  get; set; }
+          public int MerchantId {  get; set; }
+          public decimal Price {  get; set; }
+
+
+    }
+
 }

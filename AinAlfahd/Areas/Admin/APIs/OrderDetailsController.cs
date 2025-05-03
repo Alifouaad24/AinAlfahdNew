@@ -131,6 +131,34 @@ namespace AinAlfahd.Areas.Admin.APIs
 
         }
 
+        /////////////////////////////////////
+        ///
+        [HttpGet("GetOrderDetailsByLastFourDigits/{lastFourDigits}")]
+        public async Task<IActionResult> GetOrderDetailsByLastFourDigits(string lastFourDigits)
+        {
+            var order_Details = await dBContext.OrderDetails
+                .Include(o => o.Item)
+                .Include(o => o.SizeTB)
+                .Where(o =>
+                       !o.Item.PCode.Contains(".") &&
+                        o.Removed == null &&               
+                        o.Whs == null &&             
+                        o.Returned == 1 &&
+                        o.Item.PCode.EndsWith(lastFourDigits)
+                )
+                .ToListAsync();
+
+            if (order_Details != null && order_Details.Count > 1)
+            {
+                return Ok(new
+                {
+                    msg = "Result more than one item"
+                }); ;
+
+            }
+            return Ok(order_Details);
+        }
+
     }
 
     public class OrderDetailDto
