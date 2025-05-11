@@ -48,6 +48,72 @@ namespace AinAlfahd.Areas.Admin.APIs
             return Ok(result);
         }
 
+        [HttpPost("RegisterAdmin")]
+        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = new IdentityUser
+            {
+                Email = model.Email,
+                UserName = model.FirstName + "-" + model.LastName
+            };
+
+            var existAdmin = await _userManager.FindByEmailAsync(user.Email);
+            if (existAdmin == null)
+            {
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (!result.Succeeded)
+                    return BadRequest(result.Errors);
+
+                // تأكد من وجود الدور Admin
+                if (!await roleManager.RoleExistsAsync("Admin"))
+                    await roleManager.CreateAsync(new IdentityRole("Admin"));
+
+                await _userManager.AddToRoleAsync(user, "Admin");
+
+                return Ok(new { message = "تم إنشاء الأدمن بنجاح" });
+            }
+
+            return Conflict(new { message = "الأدمن موجود مسبقًا" });
+
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                return NotFound();
+
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                return Ok(new
+                {
+                    message = "user deleted successfuly"
+                });
+            }
+            else
+            {
+                return Ok(new
+                {
+                    message = "Some error happend please try again"
+                });
+            }
+
+        }
+
+
+        [HttpGet("GetAdmins")]
+        public async Task<IActionResult> GetAdmins()
+        {
+            var admins = await _userManager.GetUsersInRoleAsync("Admin");
+            return Ok(admins);
+        }
+
+
         [HttpPost("LogIn")]
         public async Task<IActionResult> LogIn([FromBody] LogInModelNew model)
         {
