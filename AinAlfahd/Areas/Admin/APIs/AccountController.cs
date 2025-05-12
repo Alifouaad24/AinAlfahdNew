@@ -37,6 +37,9 @@ namespace AinAlfahd.Areas.Admin.APIs
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
+
+                if (!await roleManager.RoleExistsAsync("User"))
+                    await roleManager.CreateAsync(new IdentityRole("User"));
                 await _userManager.AddToRoleAsync(user, "User");
                 var role = await _userManager.GetRolesAsync(user);
 
@@ -111,6 +114,13 @@ namespace AinAlfahd.Areas.Admin.APIs
         {
             var admins = await _userManager.GetUsersInRoleAsync("Admin");
             return Ok(admins);
+        }
+
+        [HttpGet("{name}")]
+        public async Task<IActionResult> GetCurrentUser(string name)
+        {
+            var user = await _userManager.FindByNameAsync(name);
+            return Ok(user);
         }
 
 
