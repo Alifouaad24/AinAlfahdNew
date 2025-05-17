@@ -4,6 +4,8 @@ using AinAlfahd.Models.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging;
 
 namespace AinAlfahd.Areas.Admin.APIs
 {
@@ -112,9 +114,33 @@ namespace AinAlfahd.Areas.Admin.APIs
         [HttpGet("GetAdmins")]
         public async Task<IActionResult> GetAdmins()
         {
-            var admins = await _userManager.GetUsersInRoleAsync("Admin");
-            return Ok(admins);
+            var roles = new[] { "Admin", "AinAlFhd_Center", "Sub_Admin" };
+            var allAdmins = new List<(IdentityUser User, string Role)>();
+
+            foreach (var role in roles)
+            {
+                var usersInRole = await _userManager.GetUsersInRoleAsync(role);
+                foreach (var user in usersInRole)
+                {
+                    allAdmins.Add((user, role));
+                }
+            }
+
+            var uniqueAdmins = allAdmins
+                .GroupBy(x => x.User.Id)
+                .Select(g => new
+                {
+                    Id = g.Key,
+                    Email = g.First().User.Email,
+                    UserName = g.First().User.UserName,
+                    Role = string.Join(", ", g.Select(x => x.Role).Distinct())
+                })
+                .ToList();
+
+            return Ok(uniqueAdmins);
         }
+
+
 
         [HttpGet("{name}")]
         public async Task<IActionResult> GetCurrentUser(string name)
@@ -123,6 +149,65 @@ namespace AinAlfahd.Areas.Admin.APIs
             return Ok(user);
         }
 
+        [HttpGet("GetAllRoles")]
+        public async Task<IActionResult> GetAllRoles()
+        {
+            var roles = await roleManager.Roles.ToListAsync();
+            return Ok(roles);
+        }
+
+        [HttpPost("AddRoleForSys")]
+        public async Task<IActionResult> AddRoleForSys([FromBody] string roleName)
+        {
+            if (string.IsNullOrWhiteSpace(roleName))
+                return BadRequest("اسم الرول لا يمكن أن يكون فارغًا.");
+
+            var roleExists = await roleManager.RoleExistsAsync(roleName);
+            if (roleExists)
+                return BadRequest("الرول موجود بالفعل.");
+
+            var result = await roleManager.CreateAsync(new IdentityRole(roleName));
+
+            if (result.Succeeded)
+                return Ok("تمت إضافة الرول بنجاح.");
+            else
+                return BadRequest(result.Errors);
+        }
+
+        [HttpPost("RegisterUserWithRole")]
+        public async Task<IActionResult> RegisterUserWithRole([FromBody] RegisterModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = new IdentityUser
+            {
+                Email = model.Email,
+                UserName = model.FirstName + '-' + model.LastName,
+            };
+
+            var createResult = await _userManager.CreateAsync(user, model.Password);
+
+            if (!createResult.Succeeded)
+                return BadRequest(createResult.Errors);
+
+            var roleExists = await roleManager.RoleExistsAsync(model.Role);
+            if (!roleExists)
+                return BadRequest($"الرول '{model.Role}' غير موجود.");
+
+            var addToRoleResult = await _userManager.AddToRoleAsync(user, model.Role);
+
+            if (!addToRoleResult.Succeeded)
+                return BadRequest(addToRoleResult.Errors);
+
+            return Ok(new
+            {
+                message = "تم إنشاء المستخدم وإسناد الصلاحية بنجاح."
+            });
+        }
+
+
+
 
         [HttpPost("LogIn")]
         public async Task<IActionResult> LogIn([FromBody] LogInModelNew model)
@@ -130,7 +215,9 @@ namespace AinAlfahd.Areas.Admin.APIs
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var normalizedEmail = _userManager.NormalizeEmail(model.Email);
+
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
             if (user != null)
             {
                 var result = await _userManager.CheckPasswordAsync(user, model.Password);
