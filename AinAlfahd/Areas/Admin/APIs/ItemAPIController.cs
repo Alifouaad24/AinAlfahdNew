@@ -10,6 +10,7 @@ using System.Security.Policy;
 using AinAlfahd.Models;
 using System.Net;
 using AinAlfahd.Models_New;
+using OpenQA.Selenium.Edge;
 
 namespace AinAlfahd.Areas.Admin.APIs
 {
@@ -101,44 +102,53 @@ namespace AinAlfahd.Areas.Admin.APIs
 
 
         // get image url from scrape
-        private async Task<Object> GetImgUrlFromScraping(string itemSKU)
+        private async Task<object> GetImgUrlFromScraping(string itemSKU)
         {
-            string url = $"https://ar.shein.com/pdsearch/{itemSKU}";
+            string url = $"https://us.shein.com/pdsearch/{itemSKU}";
 
-            var options = new ChromeOptions();
-            options.AddArgument("--headless"); 
-            options.AddArgument("--disable-gpu");
-            options.AddArgument("--no-sandbox");
-            options.AddArgument("--disable-dev-shm-usage");
+            var options = new EdgeOptions();
+            options.AddArgument("disable-gpu");
+            options.AddArgument("no-sandbox");
+            options.AddArgument("disable-dev-shm-usage");
 
-            using (var driver = new ChromeDriver(options))
+            using (var driver = new EdgeDriver(options))
             {
                 try
                 {
-                    driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1);
+                    driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(30);
                     driver.Navigate().GoToUrl(url);
 
                     WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 
-                    var imgElement = wait.Until(d => d.FindElement(By.XPath("//div[contains(@class, 'crop-image-container')]//img")));
-                    var imgUrl = imgElement?.GetAttribute("src") ?? "Image not found";
+                    // الصورة الأساسية – نحاول جلب الصورة من مكانها الفعلي وليس من الـ thumbnail
+                    var imgElement = wait.Until(d =>
+                        d.FindElement(By.XPath("//div[contains(@class, 'product-main-image')]//img")) // غيّر هذا حسب الموقع الفعلي
+                        ?? d.FindElement(By.XPath("//img[contains(@class, 'main-image')]")) // بديل إضافي
+                    );
 
-                    var priceElement = wait.Until(d => d.FindElement(By.XPath("//p[contains(@class, 'product-item__camecase-wrap')]//span")));
-     
-                    var price = priceElement?.Text ?? "Price not found $";
-                    var currentPrice = price.Replace("$", "").Trim();
+                    string imgUrl = imgElement?.GetAttribute("src") ?? "Image not found";
 
-                    return new {
+                    // السعر
+                    var priceElement = wait.Until(d =>
+                        d.FindElement(By.XPath("//span[contains(@class, 'price')]"))
+                        ?? d.FindElement(By.XPath("//p[contains(@class, 'product-item__camecase-wrap')]//span"))
+                    );
+
+                    string priceText = priceElement?.Text ?? "$0";
+                    string currentPrice = priceText.Replace("$", "").Trim();
+
+                    return new
+                    {
                         Image = imgUrl,
                         Price = currentPrice
                     };
                 }
+
                 catch (Exception)
                 {
                     return "Error during Get image url and price";
                 }
             }
-
         }
 
         // get from final url
