@@ -1,6 +1,7 @@
 ﻿using AinAlfahd.Authontocation;
 using AinAlfahd.HelpModels;
 using AinAlfahd.Models.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -266,6 +267,12 @@ namespace AinAlfahd.Areas.Admin.APIs
 
             return BadRequest();
 
+        }
+        [Authorize]
+        [HttpGet("check-token")]
+        public IActionResult CheckToken()
+        {
+            return Ok(new { message = "Token is valid", user = User.Identity.Name });
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace AinAlfahd.Areas.Admin.APIs
 {
@@ -25,6 +26,10 @@ namespace AinAlfahd.Areas.Admin.APIs
                 return BadRequest("الملف غير موجود أو فارغ");
 
             string htmlContent;
+            string imageUrl = string.Empty;
+            string price = string.Empty;
+
+
             using (var reader = new StreamReader(htmlFile.OpenReadStream(), Encoding.UTF8))
             {
                 htmlContent = await reader.ReadToEndAsync();
@@ -38,23 +43,27 @@ namespace AinAlfahd.Areas.Admin.APIs
             document.LoadHtml(htmlContent);
 
             // استخراج السعر
-            var priceNode = document.DocumentNode.SelectSingleNode("//div[contains(@class,'ProductIntroHeadPrice__head-mainprice')]//div[contains(@class, 'original')]/span");
-            string price = priceNode?.InnerText?.Trim().Replace("$", "") ?? "لم يتم العثور على السعر";
+            var priceNode = document.DocumentNode.SelectSingleNode("//div[@id='productMainPriceId']//span[contains(text(), 'SR')]");
+            if (priceNode != null)
+            {
+                price = priceNode.InnerText.Trim() ?? "Not found";
+            }
 
             // استخراج SKU
             var skuNode = document.DocumentNode.SelectSingleNode("//span[contains(@class,'product-intro__head-sku-text')]");
             string sku = skuNode?.InnerText?.Replace("SKU:", "").Trim() ?? "لم يتم العثور على SKU";
 
-            // استخراج رابط الصورة
-            var imgNode = document.DocumentNode.SelectSingleNode("//div[contains(@style,'background:url')]//img");
-            string imageUrl = imgNode?.GetAttributeValue("src", null);
-            if (!string.IsNullOrEmpty(imageUrl) && imageUrl.StartsWith("//"))
-            {
-                imageUrl = "https:" + imageUrl;
-            }
-            imageUrl ??= "لم يتم العثور على صورة";
+            var imageNode = document.DocumentNode.SelectSingleNode("//div[contains(@class, 'crop-image-container')]");
 
-            // إرجاع النتائج
+            if (imageNode != null)
+            {
+                imageUrl = imageNode.GetAttributeValue("data-before-crop-src", "");
+
+                if (imageUrl.StartsWith("//"))
+                    imageUrl = "https:" + imageUrl;
+
+            }
+
             return Ok(new
             {
                 img = imageUrl,
@@ -63,8 +72,6 @@ namespace AinAlfahd.Areas.Admin.APIs
                 htmlContent = htmlContent
             });
         }
-
-
 
 
 
