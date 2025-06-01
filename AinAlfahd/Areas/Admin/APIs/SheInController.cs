@@ -43,7 +43,7 @@ namespace AinAlfahd.Areas.Admin.APIs
             document.LoadHtml(htmlContent);
 
             // استخراج السعر
-            var priceNode = document.DocumentNode.SelectSingleNode("//div[@id='productMainPriceId']//span[contains(text(), 'SR')]");
+            var priceNode = document.DocumentNode.SelectSingleNode("//div[@id='productMainPriceId']//span[contains(text(), '£')]");
             if (priceNode != null)
             {
                 price = priceNode.InnerText.Trim() ?? "Not found";
