@@ -206,27 +206,33 @@ namespace AinAlfahd.Areas.Admin.APIs
                 Model = item.Model,
                 Sku = item.SKU,
                 ImgUrl = item.ImgUrl,
-                SitePrice = item.Price, 
-                
+                SitePrice = item.Price,
+
             };
-
-            await dBContext.Items.AddAsync(itemNew);
-            await dBContext.SaveChangesAsync();
-
-            var inventory = new Inventory
+            try
             {
-                ItemId = itemNew.Id,
-                ItemConditionId = item.ItemCondetionId,
-                IsRemoved = 0,
-                InsertDate = DateOnly.FromDateTime(DateTime.Now),
-                InsertBy = "No ",
-                ItemNotes = item.Notes,
-            };
+                await dBContext.Items.AddAsync(itemNew);
+                await dBContext.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                ex.ToString();
+            }
 
-            await dBContext.AddAsync<Inventory>(inventory);
-            await dBContext.SaveChangesAsync();
+            //var inventory = new Inventory
+            //{
+            //    ItemId = itemNew.Id,
+            //    ItemConditionId = item.ItemCondetionId,
+            //    IsRemoved = 0,
+            //    InsertDate = DateOnly.FromDateTime(DateTime.Now),
+            //    InsertBy = "No ",
+            //    ItemNotes = item.Notes,
+            //};
 
-            return Ok(new { inventory = inventory, item = itemNew });
+            //await dBContext.AddAsync<Inventory>(inventory);
+            //await dBContext.SaveChangesAsync();
+
+            return Ok(new { item = itemNew });
 
         }
 
@@ -258,7 +264,6 @@ namespace AinAlfahd.Areas.Admin.APIs
         public string? ImgUrl { get; set; }
         public string? Internet { get; set; }
         public string? Notes { get; set; }
-
         public int? CategoryId { get; set; }
         public int? ItemCondetionId { get; set; }
 
