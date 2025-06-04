@@ -3,6 +3,7 @@ using AinAlfahd.Models;
 using AinAlfahd.Models_New;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
@@ -18,12 +19,13 @@ namespace AinAlfahd.Areas.Admin.APIs
     {
         MasterDBContext dBContext;
         private readonly HttpClient _httpClient;
+        UserManager<IdentityUser> _userManeger;
 
-        public HomeDepotController(MasterDBContext dBContext, HttpClient httpClient)
+        public HomeDepotController(MasterDBContext dBContext, HttpClient httpClient, UserManager<IdentityUser> userManeger)
         {
             this.dBContext = dBContext;
             _httpClient = httpClient;
-
+            _userManeger = userManeger;
         }
 
         [HttpGet("lookup")]
@@ -179,6 +181,7 @@ namespace AinAlfahd.Areas.Admin.APIs
         [HttpPost]
         public async Task<IActionResult> SaveItemFromHomeDepot([FromBody] ItemDto item)
         {
+            var user = await _userManeger.GetUserAsync(User);
             int makeIId = 0;
             var brand = await dBContext.Makes.Where(m => m.MakeDescription == item.Brand).FirstOrDefaultAsync();
             
@@ -207,6 +210,7 @@ namespace AinAlfahd.Areas.Admin.APIs
                 Sku = item.SKU,
                 ImgUrl = item.ImgUrl,
                 SitePrice = item.Price,
+                EngName = item.EngName,
 
             };
             try
@@ -218,21 +222,28 @@ namespace AinAlfahd.Areas.Admin.APIs
             {
                 ex.ToString();
             }
+            var inventory = new Inventory
+            {
+                ItemId = itemNew.Id,
+                ItemConditionId = item.ItemCondetionId,
+                IsRemoved = 0,
+                InsertDate = DateOnly.FromDateTime(DateTime.Now),
+                InsertBy = user != null ? user.UserName : "undefiend",
+                ItemNotes = item.Notes,
+            };
+            try
+            {
+                await dBContext.AddAsync(inventory);
+                await dBContext.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
 
-            //var inventory = new Inventory
-            //{
-            //    ItemId = itemNew.Id,
-            //    ItemConditionId = item.ItemCondetionId,
-            //    IsRemoved = 0,
-            //    InsertDate = DateOnly.FromDateTime(DateTime.Now),
-            //    InsertBy = "No ",
-            //    ItemNotes = item.Notes,
-            //};
+            }
 
-            //await dBContext.AddAsync<Inventory>(inventory);
-            //await dBContext.SaveChangesAsync();
 
-            return Ok(new { item = itemNew });
+
+            return Ok(new { item = itemNew, inv = inventory });
 
         }
 
@@ -264,6 +275,7 @@ namespace AinAlfahd.Areas.Admin.APIs
         public string? ImgUrl { get; set; }
         public string? Internet { get; set; }
         public string? Notes { get; set; }
+        public string? EngName { get; set; }
         public int? CategoryId { get; set; }
         public int? ItemCondetionId { get; set; }
 
