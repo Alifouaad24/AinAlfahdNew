@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AinAlfahd.Models_New;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -56,6 +57,10 @@ public partial class Item
     public string? Upc { get; set; }
 
     public string? InternetId { get; set; }
+
+    public int? PlatformId { get; set; }
+    [ForeignKey(nameof(PlatformId))]
+    public Platform? Platform { get; set; }
 
 
 }

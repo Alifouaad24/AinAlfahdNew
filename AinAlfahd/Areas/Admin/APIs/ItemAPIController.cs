@@ -82,9 +82,9 @@ namespace AinAlfahd.Areas.Admin.APIs
 
                 var inventory = new Inventory
                 {
-                    ItemId = item.Id,
-                    SellingPrice = model.Price,
-                    SizeId = model.SizeId,
+                    item_id = item.Id,
+                    sellingprice = model.Price,
+                    sizeId = model.SizeId,
                     MerchantId = model.MerchantId
                 };
 

@@ -211,6 +211,9 @@ namespace AinAlfahd.Areas.Admin.APIs
                 ImgUrl = item.ImgUrl,
                 SitePrice = item.Price,
                 EngName = item.EngName,
+                Upc = item.UPC,
+                PlatformId = item.PlatformId
+
 
             };
             try
@@ -224,12 +227,13 @@ namespace AinAlfahd.Areas.Admin.APIs
             }
             var inventory = new Inventory
             {
-                ItemId = itemNew.Id,
-                ItemConditionId = item.ItemCondetionId,
-                IsRemoved = 0,
-                InsertDate = DateOnly.FromDateTime(DateTime.Now),
-                InsertBy = user != null ? user.UserName : "undefiend",
-                ItemNotes = item.Notes,
+                item_id = itemNew.Id,
+                item_condition_id = item.ItemCondetionId,
+                is_removed = 0,
+                insert_date = DateOnly.FromDateTime(DateTime.Now),
+                insert_by = user != null ? user.UserName : "undefiend",
+                item_notes = item.Notes,
+                SystemId = item.SystemId,
             };
             try
             {
@@ -270,6 +274,8 @@ namespace AinAlfahd.Areas.Admin.APIs
         
         public string? Brand { get; set; }
         public string? SKU { get; set; }
+        public string? UPC { get; set; }
+
         public string? Model { get; set; }
         public decimal? Price { get; set; }
         public string? ImgUrl { get; set; }
@@ -278,6 +284,8 @@ namespace AinAlfahd.Areas.Admin.APIs
         public string? EngName { get; set; }
         public int? CategoryId { get; set; }
         public int? ItemCondetionId { get; set; }
+        public int? PlatformId { get; set; }
+        public int? SystemId { get; set; }
 
     }
 
