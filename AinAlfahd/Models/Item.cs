@@ -42,7 +42,7 @@ public partial class Item
 
     public int? Assymbly { get; set; }
 
-    public string? ImgUrl { get; set; }
+    public List<string>? ImgUrl { get; set; }
 
     public int? Comb { get; set; }
 

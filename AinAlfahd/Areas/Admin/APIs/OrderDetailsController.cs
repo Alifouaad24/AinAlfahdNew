@@ -59,7 +59,7 @@ namespace AinAlfahd.Areas.Admin.APIs
                 var i = new Item
                 {
                     PCode = model.Sku,
-                    ImgUrl = model.ImgUrl,
+                    ImgUrl = new List<string> { model.ImgUrl },
                     MakeId = model.MakeId,
                     CategoryId = model.CategoryId,
                 };
