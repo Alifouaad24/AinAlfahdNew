@@ -91,11 +91,16 @@ namespace AinAlfahd.Areas.Admin.APIs
 
                 var descNode = document.DocumentNode.SelectNodes("//div[@data-fusion-slot='slotF8']//ul//li");
 
-                foreach(var i in descNode)
+                if(descNode != null)
                 {
-                    description.Add(descNode != null ? i.InnerText.Trim() : "not found");
 
+                    foreach (var i in descNode)
+                    {
+                        description.Add(descNode != null ? i.InnerText.Trim() : "not found");
+
+                    }
                 }
+
 
 
 
