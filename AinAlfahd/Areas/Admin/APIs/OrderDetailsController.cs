@@ -1,8 +1,10 @@
 ﻿using AinAlfahd.Data;
 using AinAlfahd.Models;
+using AinAlfahd.Models_New;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System.Linq;
 
 namespace AinAlfahd.Areas.Admin.APIs
@@ -59,41 +61,48 @@ namespace AinAlfahd.Areas.Admin.APIs
                 var i = new Item
                 {
                     PCode = model.Sku,
-                    ImgUrl = new List<string> { model.ImgUrl },
+                    ImgUrl =  model.ImgUrl,
                     MakeId = model.MakeId,
                     CategoryId = model.CategoryId,
+                    sub_category = model.SubCategoryId
                 };
                 await dBContext.Items.AddAsync(i);  
                 await dBContext.SaveChangesAsync();
 
-                var orderDetail = new OrderDetail
+                var inventory = new Inventory
                 {
-                    OrderNo = 3572,
-                    ItemCode = i.Id,
-                    Size = model.Size,
-                    Returned = 1,
-                    WebsitePrice = model.WebsitePrice,
+                    item_id = i.Id,
                     MerchantId = model.MerchantId,
+                    Qty = 1
+                    
                 };
-                await dBContext.OrderDetails.AddAsync(orderDetail);
+                await dBContext.Inventory.AddAsync(inventory);
                 await dBContext.SaveChangesAsync();
-                return Ok(orderDetail);
+                return Ok(inventory);
+            }
+            else
+            {
+                var inv = await dBContext.Inventory.Where(i => i.item_id == item.Id).FirstOrDefaultAsync();
+                inv.Qty++;
+                await dBContext.SaveChangesAsync();
+                return Ok(inv);
+
             }
 
-            var orderDetail1 = new OrderDetail
-            {
-                OrderNo = 3572,
-                ItemCode = item.Id,
-                Size = model.Size,
-                Returned = 1,
-                WebsitePrice = model.WebsitePrice,
-                MerchantId = model.MerchantId,
+            //var orderDetail1 = new OrderDetail
+            //{
+            //    OrderNo = 3572,
+            //    ItemCode = item.Id,
+            //    Size = model.Size,
+            //    Returned = 1,
+            //    WebsitePrice = model.WebsitePrice,
+            //    MerchantId = model.MerchantId,
 
 
-            };
-            await dBContext.OrderDetails.AddAsync(orderDetail1);
-            await dBContext.SaveChangesAsync();
-            return Ok(orderDetail1);
+            //};
+            //await dBContext.OrderDetails.AddAsync(orderDetail1);
+            //await dBContext.SaveChangesAsync();
+            //return Ok(orderDetail1);
 
         }
 
@@ -156,7 +165,14 @@ namespace AinAlfahd.Areas.Admin.APIs
                 }); ;
 
             }
-            return Ok(order_Details);
+            var inv = await dBContext.Inventory.Where(i => i.item_id == order_Details[0].Item.Id).FirstOrDefaultAsync();
+            int count = inv?.Qty ?? 0;
+
+            return Ok(new
+            {
+                orderDetails = order_Details,
+                Count = count
+            });
         }
 
     }

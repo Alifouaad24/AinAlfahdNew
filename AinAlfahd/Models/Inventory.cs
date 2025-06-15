@@ -38,7 +38,7 @@ public partial class Inventory
 
     public int? order_id { get; set; }
 
-
+    public int? Qty { get; set; }
     public int? SystemId { get; set; }
 
     [ForeignKey(nameof(SystemId))]

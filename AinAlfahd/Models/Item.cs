@@ -14,7 +14,7 @@ public partial class Item
     public Category? Category { get; set; }
     [ForeignKey("Category")]
     public int? CategoryId { get; set; }
-
+    public int? sub_category { get; set; }
     public string? EngName { get; set; }
 
     public string? PCode { get; set; }
@@ -42,7 +42,7 @@ public partial class Item
 
     public int? Assymbly { get; set; }
 
-    public List<string>? ImgUrl { get; set; }
+    public string? ImgUrl { get; set; }
 
     public int? Comb { get; set; }
 

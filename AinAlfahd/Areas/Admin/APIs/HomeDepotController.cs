@@ -283,7 +283,7 @@ namespace AinAlfahd.Areas.Admin.APIs
 
         public string? Model { get; set; }
         public decimal? Price { get; set; }
-        public List<string>? ImgUrl { get; set; }
+        public string? ImgUrl { get; set; }
         public string? Internet { get; set; }
         public string? Notes { get; set; }
         public string? EngName { get; set; }

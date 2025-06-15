@@ -6,6 +6,8 @@
         public string? ImgUrl { get; set; }
         public int? MakeId { get; set; }
         public int? CategoryId { get; set; }
+        public int? SubCategoryId { get; set; }
+
         public int? Size { get; set; }
         public decimal WebsitePrice { get; set; }
         public int? MerchantId { get; set; }
