@@ -3,6 +3,7 @@
     public class CustomerDto
     {
         public int Id { get; set; }
+        public int? MerchantId { get; set; }
         public string? CustName { get; set; }
 
         public string? CustMob { get; set; }

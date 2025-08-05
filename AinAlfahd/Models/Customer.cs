@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace AinAlfahd.Models;
 
@@ -13,9 +15,13 @@ public partial class Customer
 
     public string? CustMob2 { get; set; }
 
+    [ForeignKey(nameof(City))]
     public int? CustCity { get; set; }
+    public City? City { get; set; }
 
+    [ForeignKey(nameof(Area))]
     public int? CustArea { get; set; }
+    public Area? Area { get; set; }
 
     public string? CustLandmark { get; set; }
 
@@ -37,7 +43,15 @@ public partial class Customer
 
     public string? CustProfile { get; set; }
 
+
+    [ForeignKey(nameof(Merchant))]
+    public int? MerchantId { get; set; }
+    public Merchant? Merchant { get; set; }
+
+
     public ICollection<CustomerService>? CustomerServices { get; set; }
+    [JsonIgnore]
+
     public ICollection<CustomerShipping>? CustomerShipping { get; set; }
     public ICollection<Address> Addresses { get; set; }
 }

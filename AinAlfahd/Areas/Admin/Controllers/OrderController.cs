@@ -116,10 +116,10 @@ namespace AinAlfahd.Areas.Admin.Controllers
             try
             {
                 var orders = await dbContext.OrderDetails.Include(o => o.Item).Include(od => od.Order)
-                    .Where(o => o.Order.OrderDt >= datee & o.Item.WebUrl != null)
+                    .Where(o => o.Order.OrderDt >= datee && o.Item.WebUrl != null)
                     .ToListAsync();
 
-                var ord = orders.Where(o => Regex.IsMatch(o.Item.PCode, @"^\d")).OrderBy(o => o.Order.OrderDt).Take(100)
+                var ord = orders.Where(o => !string.IsNullOrEmpty(o.Item.PCode) && Regex.IsMatch(o.Item.PCode, @"^\d")).OrderBy(o => o.Order.OrderDt).Take(100)
                     .ToList();
                 return Ok(ord);
             }

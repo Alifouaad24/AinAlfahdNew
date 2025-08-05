@@ -37,6 +37,7 @@ public partial class MasterDBContext : IdentityDbContext<IdentityUser>
     public virtual DbSet<Batch> Batches { get; set; }
 
     public virtual DbSet<BatchStatus> BatchStatuses { get; set; }
+    public virtual DbSet<ItemImages> ItemImages { get; set; }
 
     public virtual DbSet<Business> Businesses { get; set; }
     public virtual DbSet<ItemCondition> ItemConditions { get; set; }
@@ -144,6 +145,14 @@ public partial class MasterDBContext : IdentityDbContext<IdentityUser>
     public DbSet<ShippingTypes> ShippingTypes { get; set; }
     public DbSet<Amendment_Log> Amendment_Logs { get; set; }
     public DbSet<Amendment> Amendments { get; set; }
+
+    //////////////////////////////////
+    public DbSet<shipping_pricerole> shipping_pricerole { get; set; }
+    public DbSet<trade_types> trade_types { get; set; }
+    public DbSet<Currency> Currency { get; set; }
+    public DbSet<weight_cat> weight_cat { get; set; }
+    public DbSet<weight_types> weight_types { get; set; }
+    public DbSet<Package> Packages { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

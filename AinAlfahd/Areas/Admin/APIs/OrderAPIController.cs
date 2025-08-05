@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AinAlfahd.Areas.Admin.APIs
 {
@@ -52,6 +53,51 @@ namespace AinAlfahd.Areas.Admin.APIs
             }
 
         }
+
+        [HttpGet("GetOrdersNeedFix")]
+        public async Task<IActionResult> GetOrdersNeedFix()
+        {
+            try
+            {
+                var orders = await dbContext.OrderDetails.Include(o => o.Item).Include(od => od.Order)
+                    .Where(o => o.Item.WebUrl != null && o.Order.OrderDt >= DateOnly.FromDateTime(DateTime.Now.AddMonths(-2)))
+                    .ToListAsync();
+
+                var ord = orders.Where(o => Regex.IsMatch(o.Item.PCode, @"^\d")).Count();
+                    
+                return Ok(new
+                {
+                    Count = ord,
+                });
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+                return Ok();
+            }
+
+        }
+
+        //[HttpGet("/Admin/Order/SearchAboutOrderByDate/{datee}")]
+        //public async Task<IActionResult> SearchAboutOrderByDate(DateOnly datee)
+        //{
+        //    try
+        //    {
+        //        var orders = await dbContext.OrderDetails.Include(o => o.Item).Include(od => od.Order)
+        //            .Where(o => o.Order.OrderDt >= datee & o.Item.WebUrl != null)
+        //            .ToListAsync();
+
+        //        var ord = orders.Where(o => Regex.IsMatch(o.Item.PCode, @"^\d")).OrderBy(o => o.Order.OrderDt).Take(100)
+        //            .ToList();
+        //        return Ok(ord);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ex.ToString();
+        //        return Ok();
+        //    }
+
+        //}
 
         [HttpPost("{id}/{newSKU}")]
         public async Task<IActionResult> UpdateSKU(int id, string newSKU)

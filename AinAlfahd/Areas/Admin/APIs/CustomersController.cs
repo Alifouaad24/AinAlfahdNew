@@ -82,7 +82,8 @@ namespace AinAlfahd.Areas.Admin.APIs
                 Gisurl = model.Gisurl,
                 Hexcode = model.Hexcode,
                 Lon = model.Lon,
-                
+                MerchantId = model.MerchantId
+
 
             };
             await icustomer.AddData(customer);
@@ -115,6 +116,7 @@ namespace AinAlfahd.Areas.Admin.APIs
             existingCustomer.Gisurl = model.Gisurl;
             existingCustomer.Hexcode = model.Hexcode;
             existingCustomer.Lon = model.Lon;
+            existingCustomer.MerchantId = model.MerchantId;
 
             await icustomer.UpdateData(existingCustomer);
 
@@ -148,17 +150,34 @@ namespace AinAlfahd.Areas.Admin.APIs
             return Ok(customers);
         }
 
-        [HttpGet("SearchAboutDetectedCustomerApi/{wordSearch}")]
-
-        public async Task<IActionResult> SearchAboutDetectedCustomerApi(string wordSearch)
+        [HttpGet("SearchAboutDetectedCustomerApi/{wordSearch1}")]
+        public async Task<IActionResult> SearchAboutDetectedCustomerApi(string wordSearch1)
         {
+            var wordSearch = Uri.UnescapeDataString(wordSearch1);
+
             var customer = await db.Customers
                 .Include(c => c.CustomerServices).ThenInclude(cs => cs.Service)
                 .Where(c => c.CustName.Contains(wordSearch) || c.CustMob.Contains(wordSearch))
                 //.Where(c => c.CustomerServices.Any(s => s.Service.Description.Contains("جوي")))
                 .FirstOrDefaultAsync();
-;
+
             return Ok(customer);
+        }
+
+        [HttpGet("GetAllOrders/{wordSearch}")]
+        public async Task<IActionResult> GetAllOrders(string wordSearch)
+        {
+            var customer = await db.Customers.Where(c => c.CustName.Contains(wordSearch) || c.CustMob.Contains(wordSearch)).FirstOrDefaultAsync();
+            var orders = await db.Orders.Include(o => o.Customer).Where(o => o.OrderOwner == customer.Id).OrderBy(o => o.OrderDt).ToListAsync();
+            var count = orders.Count();
+            var orderLastDt = orders.Last().OrderDt;
+
+            return Ok(new
+            {
+                Orders = orders,
+                Count = count,
+                lastOrder = orderLastDt
+            });
         }
     }
 }

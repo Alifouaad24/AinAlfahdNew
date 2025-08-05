@@ -24,7 +24,8 @@ namespace AinAlfahd.Areas.Admin.APIs
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var reciepts = await _db.Reciepts.Include(r => r.Customer).Include(r => r.ShippingBatch).ToListAsync();
+            var reciepts = await _db.Reciepts.Include(r => r.Customer).ThenInclude(c => c.City).Include(r => r.Customer).ThenInclude(c => c.Area)
+                .Include(r => r.ShippingBatch).ThenInclude(r => r.ShippingTypes).ToListAsync();
             return Ok(reciepts);
         }
 
@@ -131,9 +132,8 @@ namespace AinAlfahd.Areas.Admin.APIs
                 ShippingBatchId = model.ShippingBatchId,
                 CostIQ = model.CostIQ,
                 SellingUSD = model.SellingUSD,
-
-
             };
+
             await _db.Reciepts.AddAsync(recipt);
             await _db.SaveChangesAsync();
 

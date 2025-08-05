@@ -49,11 +49,13 @@ namespace AinAlfahd.Areas.Admin.APIs
             string source = string.Empty;
             List<string> description = new List<string>();
 
-            var itemExcst = await dBContext.Items.Where(i => i.Sku == wordSearch || i.Model == wordSearch || i.InternetId == wordSearch).FirstOrDefaultAsync();
+            var itemExcst = await dBContext.Items.Include(i => i.Make)
+                .Where(i => i.Sku.Contains(wordSearch) || i.Model.Contains(wordSearch) || i.InternetId.Contains(wordSearch))
+                .FirstOrDefaultAsync();
 
             if (itemExcst != null)
             {
-                return Ok(new { images = itemExcst.ImgUrl, price = itemExcst.SitePrice, Model = itemExcst.Model, Internet = itemExcst.InternetId, SKU = itemExcst.Sku, Brand = itemExcst.Make.MakeDescription, Source = "Ain Alfahd DB", desc = "" });
+                return Ok(new { images = itemExcst.ImgUrl, price = itemExcst.SitePrice, Model = itemExcst.Model, Internet = itemExcst.InternetId, SKU = itemExcst.Sku, Brand = itemExcst.Make?.MakeDescription, Source = "Ain Alfahd DB", desc = "" });
             }
 
             bool foundInHomeDepot = false;
@@ -175,7 +177,7 @@ namespace AinAlfahd.Areas.Admin.APIs
                     }
                 }
 
-                    return Ok(new { images = imgs, price = price, Model = model, Internet = internet, SKU = storeSku, Brand = brand, Title = productTitle, Source = "Home Depot DB", desc = description });
+                    return Ok(new { images = imgs.Distinct(), price = price, Model = model, Internet = internet, SKU = storeSku, Brand = brand, Title = productTitle, Source = "Home Depot DB", desc = description });
 
             }
             catch (Exception ex){}
@@ -206,53 +208,83 @@ namespace AinAlfahd.Areas.Admin.APIs
                 makeIId = brand.MakeId;
             }
 
-            var itemNew = new Item
+            var ittem = await dBContext.Items.Where(i => i.Upc == item.UPC && i.Model == item.Model
+            && i.Sku == item.SKU && i.InternetId == item.Internet && i.EngName == item.EngName).FirstOrDefaultAsync();
+
+            if(ittem == null)
             {
-                CategoryId = item.CategoryId,
-                InternetId = item.Internet,
-                MakeId = makeIId,
-                Model = item.Model,
-                Sku = item.SKU,
-                ImgUrl = item.ImgUrl,
-                SitePrice = item.Price,
-                EngName = item.EngName,
-                Upc = item.UPC,
-                PlatformId = item.PlatformId
+                var itemNew = new Item
+                {
+                    CategoryId = item.CategoryId,
+                    InternetId = item.Internet,
+                    MakeId = makeIId,
+                    Model = item.Model,
+                    Sku = item.SKU,
+                    ImgUrl = item.ImgUrl,
+                    SitePrice = item.Price,
+                    EngName = item.EngName,
+                    Upc = item.UPC,
+                    PlatformId = item.PlatformId
 
 
-            };
-            try
+                };
+                try
+                {
+                    await dBContext.Items.AddAsync(itemNew);
+                    await dBContext.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    ex.ToString();
+                }
+
+                var sys = await dBContext.Systems.Where(s => s.Name.Contains("Tom")).FirstOrDefaultAsync();
+                var inventory = new Inventory
+                {
+                    item_id = itemNew.Id,
+                    item_condition_id = item.ItemCondetionId,
+                    is_removed = 0,
+                    insert_date = DateOnly.FromDateTime(DateTime.Now),
+                    insert_by = user != null ? user.UserName : "undefiend",
+                    item_notes = item.Notes,
+                    SystemId = sys.Id,
+                    Qty = 1
+                };
+
+                var imagesItem = new List<ItemImages>();
+
+                foreach (var img in item.allImages)
+                {
+                    imagesItem.Add(new ItemImages
+                    {
+                        ItemId = itemNew.Id,
+                        ImageLink = img
+                    });
+                }
+
+
+                try
+                {
+                    await dBContext.ItemImages.AddRangeAsync(imagesItem);
+                    await dBContext.AddAsync(inventory);
+                    await dBContext.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+
+                }
+
+
+
+                return Ok(new { item = itemNew, inv = inventory });
+            }
+            else
             {
-                await dBContext.Items.AddAsync(itemNew);
+                var inv = await dBContext.Inventory.Where(i => i.item_id == ittem.Id).FirstOrDefaultAsync();
+                inv.Qty++;
                 await dBContext.SaveChangesAsync();
+                return Ok(inv);
             }
-            catch(Exception ex)
-            {
-                ex.ToString();
-            }
-            var inventory = new Inventory
-            {
-                item_id = itemNew.Id,
-                item_condition_id = item.ItemCondetionId,
-                is_removed = 0,
-                insert_date = DateOnly.FromDateTime(DateTime.Now),
-                insert_by = user != null ? user.UserName : "undefiend",
-                item_notes = item.Notes,
-                SystemId = item.SystemId,
-            };
-            try
-            {
-                await dBContext.AddAsync(inventory);
-                await dBContext.SaveChangesAsync();
-            }
-            catch(Exception ex)
-            {
-
-            }
-
-
-
-            return Ok(new { item = itemNew, inv = inventory });
 
         }
 
@@ -290,7 +322,7 @@ namespace AinAlfahd.Areas.Admin.APIs
         public int? CategoryId { get; set; }
         public int? ItemCondetionId { get; set; }
         public int? PlatformId { get; set; }
-        public int? SystemId { get; set; }
+        public List<string>? allImages { get; set; } 
 
     }
 

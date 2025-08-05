@@ -16,7 +16,6 @@ namespace AinAlfahd.Models
         
         [ForeignKey("ShippingTypes")]
         public int? ShippingTypeId { get; set; }
-        [JsonIgnore]
         public ShippingTypes? ShippingTypes { get; set; }
         [JsonIgnore]
         public List<Reciept>? Recipts { get; set; }

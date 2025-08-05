@@ -61,6 +61,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 
+
 builder.Services.AddScoped<CreateJWT>();
 
 builder.Services.AddDbContext<MasterDBContext>(options =>
@@ -126,17 +127,23 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-app.UseCors("AllowAll");
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseCors("AllowAll");
+
 app.UseSession();
 
 app.UseAuthentication();

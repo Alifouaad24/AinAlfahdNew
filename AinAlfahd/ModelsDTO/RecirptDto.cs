@@ -21,5 +21,6 @@ namespace AinAlfahd.ModelsDTO
         public string? Notes { get; set; }
 
         public int? ShippingBatchId { get; set; }
+        public int? ShippingTypeId { get; set; }
     }
 }

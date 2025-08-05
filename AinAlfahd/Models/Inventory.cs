@@ -34,8 +34,6 @@ public partial class Inventory
 
     public string? insert_by { get; set; }
 
-    public string? test { get; set; }
-
     public int? order_id { get; set; }
 
     public int? Qty { get; set; }

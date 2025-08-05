@@ -61,6 +61,7 @@ public partial class Item
     public int? PlatformId { get; set; }
     [ForeignKey(nameof(PlatformId))]
     public Platform? Platform { get; set; }
+    public List<ItemImages>? ItemImages { get; set; }
 
 
 }

@@ -63,7 +63,10 @@ namespace AinAlfahd.Areas.Admin.APIs
                 await db.SaveChangesAsync();
             }
 
-            return Ok("Services Added Successfully ! ");
+            return Ok(new
+            {
+                msg = "Successfully"
+            });
         }
 
 
