@@ -72,6 +72,21 @@ namespace AinAlfahd.Areas.Admin.APIs
             return Ok(package); 
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePackage(int id)
+        {
+            var pk = await dBContext.Packages.FindAsync(id);
+            if (pk == null) 
+              return BadRequest();
+
+            dBContext.Packages.Remove(pk);
+            await dBContext.SaveChangesAsync(); 
+            return Ok(new
+            {
+                msg = "package deleted successfuly"
+            });
+        }
+
     }
 }
 
