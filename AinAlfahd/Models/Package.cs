@@ -33,9 +33,11 @@ namespace AinAlfahd.Models
 
         public decimal ActualWeightForCustomer { get; set; }
         public decimal SallingPrice { get; set; }
+        public decimal SallingPriceIQ { get; set; }
 
         public string? ModifyBy { get; set; }
         public DateOnly ModifyOn { get; set; }
+        public DateOnly PackageDt { get; set; }
     }
 
 }

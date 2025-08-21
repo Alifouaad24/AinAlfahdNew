@@ -153,6 +153,7 @@ public partial class MasterDBContext : IdentityDbContext<IdentityUser>
     public DbSet<weight_cat> weight_cat { get; set; }
     public DbSet<weight_types> weight_types { get; set; }
     public DbSet<Package> Packages { get; set; }
+    public DbSet<RequestNote> RequestNotes { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

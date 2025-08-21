@@ -161,8 +161,16 @@ namespace AinAlfahd.Areas.Admin.APIs
                 //.Where(c => c.CustomerServices.Any(s => s.Service.Description.Contains("جوي")))
                 .FirstOrDefaultAsync();
 
-            return Ok(customer);
+            var cus_order = await db.Orders.Where(o => o.OrderOwner == customer.Id).FirstOrDefaultAsync();
+            var blocked = cus_order.OrderStatus == 1030 ? true : false;
+
+            return Ok(new
+            {
+                customer = customer,
+                isblocked = blocked
+            });
         }
+
 
         [HttpGet("GetAllOrders/{wordSearch}")]
         public async Task<IActionResult> GetAllOrders(string wordSearch)
@@ -177,6 +185,25 @@ namespace AinAlfahd.Areas.Admin.APIs
                 Orders = orders,
                 Count = count,
                 lastOrder = orderLastDt
+            });
+        }
+
+        [HttpPut("UnBlockCustomer/{id}")]
+        public async Task<IActionResult> UnBlockCustomer(int id)
+        {
+            var orders = await db.Orders.Where(o => o.OrderOwner == id && o.OrderStatus == 1030).ToListAsync();
+            if (orders.Count > 0) 
+            {
+                foreach (var order in orders)
+                {
+                    order.OrderStatus = 6;
+                    await db.SaveChangesAsync();
+                }
+            }
+
+            return Ok(new
+            {
+                msg = "customer unBlocked"
             });
         }
     }

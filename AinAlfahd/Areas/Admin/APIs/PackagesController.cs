@@ -28,6 +28,18 @@ namespace AinAlfahd.Areas.Admin.APIs
             return Ok(packages);
         }
 
+        [HttpGet("GetById/{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var package = await dBContext.Packages
+                .Include(p => p.ShippingType)
+                .Include(p => p.Customer)
+                .Include(p => p.SaleCurrency)
+                .Include(p => p.PurchaseCurrency)
+                .Where(p => p.PackageId == id).FirstOrDefaultAsync();
+            return Ok(package);
+        }
+
         [HttpGet("{shippId}")]
         public async Task<IActionResult> GetAllFilterByShippingType(int shippId)
         {
@@ -65,11 +77,47 @@ namespace AinAlfahd.Areas.Admin.APIs
                 SallingPrice = model.SallingPrice,
                 ModifyBy = userName,
                 ModifyOn = DateOnly.FromDateTime(DateTime.UtcNow),
+                PackageDt = model.PackageDt,
+                SallingPriceIQ = model.SallingPriceIQ,
             };
 
             await dBContext.Packages.AddAsync(package);
             await dBContext.SaveChangesAsync();
             return Ok(package); 
+        }
+
+
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> updatepackage(int id, [FromBody] PackageDto model)
+        {
+            string userName = string.Empty;
+
+            var user = await userManager.GetUserAsync(User);
+            if (user != null)
+                userName = user.UserName;
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var package = await dBContext.Packages.FindAsync(id);
+
+            package.ActualWeight = model.ActualWeight;
+            package.DimentioalWeight = model.DimentioalWeight;
+            package.ShippingTypeId = model.ShippingTypeId;
+            package.PurcheasCost = model.PurcheasCost;
+            package.CurrencyCostId = model.CurrencyCostId;
+            package.CurrencySaleId = model.CurrencySaleId;
+            package.CustomerId = model.CustomerId;
+            package.ActualWeightForCustomer = model.ActualWeightForCustomer;
+            package.SallingPrice = model.SallingPrice;
+            package.ModifyBy = userName;
+            package.ModifyOn = DateOnly.FromDateTime(DateTime.UtcNow);
+            package.PackageDt = model.PackageDt;
+            package.SallingPriceIQ = model.SallingPriceIQ;
+ 
+            await dBContext.SaveChangesAsync();
+            return Ok(package);
         }
 
         [HttpDelete("{id}")]
@@ -101,4 +149,7 @@ public class PackageDto
     public int CustomerId { get; set; }
     public decimal ActualWeightForCustomer { get; set; }
     public decimal SallingPrice { get; set; }
+    public DateOnly PackageDt { get; set; }
+    public decimal SallingPriceIQ { get; set; }
+
 }
